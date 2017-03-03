@@ -1,8 +1,24 @@
 {
   "name": "vue-native-scrollbar",
-  "description": "",
+  "description": "Vue directive for custom scrollbar that uses native scroll behavior. Lightweight, performant and without dependencies.",
   "author": "Dominik Serafin <dominikdsgnr@gmail.com>",
+  "license": "MIT",
+  "version": "0.1.0",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:DominikSerafin/vue-native-scrollbar.git"
+  },
+  "homepage": "https://github.com/DominikSerafin/vue-native-scrollbar",
+  "keywords": [
+    "vue",
+    "vue2",
+    "directive",
+    "scroll",
+    "scrollbar",
+    "native"
+  ],
+  "main": "dist/main.js",
   "scripts": {
     "dev": "webpack-dev-server --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
