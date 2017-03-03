@@ -1,9 +1,90 @@
-import { debounce, throttle, addClass, removeClass } from './helpers.js';
-(function () {
+;(function(){
+    'use strict'
+
 
 
 
     /*----------------------------------------*\
+
+        HELPERS
+
+    \*----------------------------------------*/
+
+
+
+
+    /*------------------------------------*\
+        debounce
+        https://remysharp.com/2010/07/21/throttling-function-calls
+    \*------------------------------------*/
+    var debounce = function(fn, delay) {
+        var timer = null;
+        return function () {
+            var context = this, args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                fn.apply(context, args);
+            }, delay);
+        };
+    };
+
+
+
+
+    /*------------------------------------*\
+        throttle
+        https://remysharp.com/2010/07/21/throttling-function-calls
+    \*------------------------------------*/
+    var throttle = function(fn, threshhold, scope) {
+        threshhold || (threshhold = 250);
+        var last,
+            deferTimer;
+        return function () {
+            var context = scope || this;
+
+            var now = +new Date,
+                args = arguments;
+            if (last && now < last + threshhold) {
+                // hold on to it
+                clearTimeout(deferTimer);
+                deferTimer = setTimeout(function () {
+                    last = now;
+                    fn.apply(context, args);
+                }, threshhold);
+            } else {
+                last = now;
+                fn.apply(context, args);
+            }
+        };
+    };
+
+
+
+
+    /*------------------------------------*\
+        classes
+        https://plainjs.com/javascript/attributes/adding-removing-and-testing-for-classes-9/
+    \*------------------------------------*/
+    var hasClass = function(el, className) {
+        return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className);
+    }
+
+    var addClass = function(el, className) {
+        if (el.classList) el.classList.add(className);
+        else if (!hasClass(el, className)) el.className += ' ' + className;
+    }
+
+    var removeClass = function(el, className) {
+        if (el.classList) el.classList.remove(className);
+        else el.className = el.className.replace(new RegExp('\\b'+ className+'\\b', 'g'), '');
+    }
+
+
+
+
+    /*----------------------------------------*\
+
+        VueScrollbar
 
         TODO:
 
@@ -42,6 +123,7 @@ import { debounce, throttle, addClass, removeClass } from './helpers.js';
 
 
 
+
         /*------------------------------------*\
             Configuration
         \*------------------------------------*/
@@ -51,6 +133,7 @@ import { debounce, throttle, addClass, removeClass } from './helpers.js';
         var indicatorDebounce = 500;
         var scrollingDelayedClassTime = 1000;
         var draggingDelayedClassTime = 1000;
+
 
 
 
@@ -104,7 +187,6 @@ import { debounce, throttle, addClass, removeClass } from './helpers.js';
         var setScrollbarEnabled = function(binding){
             binding._scrollbar.barEnabled = (binding._scrollbar.heightRatio>=1) ? false : true;
         };
-
 
 
 
@@ -213,8 +295,6 @@ import { debounce, throttle, addClass, removeClass } from './helpers.js';
 
 
 
-
-
         /*------------------------------------*\
             Refresh
         \*------------------------------------*/
@@ -240,6 +320,7 @@ import { debounce, throttle, addClass, removeClass } from './helpers.js';
 
             }.bind(this));
         };
+
 
 
 
@@ -325,9 +406,6 @@ import { debounce, throttle, addClass, removeClass } from './helpers.js';
                 document.addEventListener('mouseup', binding._scrollbar.documentMouseup, 0);
             }.bind(this);
         };
-
-
-
 
 
 
@@ -423,13 +501,6 @@ import { debounce, throttle, addClass, removeClass } from './helpers.js';
 
 
 
-
-
-
-
-
-
-
         /*------------------------------------*\
             Directive
         \*------------------------------------*/
@@ -456,22 +527,31 @@ import { debounce, throttle, addClass, removeClass } from './helpers.js';
 
 
 
-
     };
 
 
 
 
-    if (typeof exports == "object") {
-        module.exports = VueScrollbar;
-    } else if (typeof define == "function" && define.amd) {
-        define([], function(){ return VueScrollbar; })
-    } else if (window.Vue) {
-        window.VueCookie = VueScrollbar;
-        Vue.use(VueScrollbar);
+
+    /*------------------------------------*\
+        Auto Install
+    \*------------------------------------*/
+
+    if (typeof Vue !== 'undefined') {
+        Vue.use(VueScrollbar)
+    }
+
+
+    if(typeof exports === 'object' && typeof module === 'object') {
+        module.exports = VueScrollbar
+    } else if(typeof define === 'function' && define.amd) {
+        define(function () { return VueScrollbar })
+    } else if (typeof window !== 'undefined') {
+        window.VueScrollbar = VueScrollbar
     }
 
 
 
-})();
 
+
+})();
