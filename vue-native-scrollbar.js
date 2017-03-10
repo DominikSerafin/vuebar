@@ -224,6 +224,7 @@
             var el3 = binding._scrollbar.el3;
 
             // el1
+            el1.style.height = '100%';
             el1.style.position = 'relative';
             el1.style.overflow = 'hidden';
             el1.style.top = '0px';
