@@ -10,12 +10,12 @@ This is still work in progress.
 [serafin.io/vue-native-scrollbar/](http://serafin.io/vue-native-scrollbar/)
 
 ## NPM
-[vue-native-scrollbar](https://www.npmjs.com/package/vue-native-scrollbar)
+[npmjs.com/package/vue-native-scrollbar](https://www.npmjs.com/package/vue-native-scrollbar)
 
 
 
 ## Notes
 
-Inspired by [https://jamesflorentino.github.io/nanoScrollerJS/](nanoScroller)
+Inspired by [nanoScroller](https://jamesflorentino.github.io/nanoScrollerJS/)
 
-Developed for [https://ggather.com/](GGather.com)
+Developed for [GGather.com](https://ggather.com/)
