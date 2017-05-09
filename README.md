@@ -1,15 +1,23 @@
-# vue-native-scrollbar
+# Vue Native Scrollbar
 
-``` bash
-# install dependencies
-npm install
+Vue directive for custom scrollbar that uses native scroll behavior. Lightweight, performant and without dependencies.
 
-# serve for development with hot reload
-npm run dev
+## Work In Progress
 
-# build for production
-npm run build
-```
+This is still work in progress.
+
+## Official Website w/ Demo
+[serafin.io/vue-native-scrollbar/](http://serafin.io/vue-native-scrollbar/)
+
+## NPM
+[vue-native-scrollbar](https://www.npmjs.com/package/vue-native-scrollbar)
+
+
+
+---
+
+Developed for GGather.com
+
 
 
 
