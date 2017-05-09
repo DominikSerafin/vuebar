@@ -240,8 +240,11 @@
 
         var computeBarHeight = function(el){
             var state = getState(el);
-            state.barHeight = state.el2.clientHeight * state.visibleArea;
-
+            if (state.visibleArea >= 1) {
+                state.barHeight = 0;
+            } else {
+                state.barHeight = state.el2.clientHeight * state.visibleArea;
+            }
         };
 
         var computeBarEnabled = function(el){
