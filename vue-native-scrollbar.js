@@ -258,22 +258,29 @@
             var state = getState(el);
 
             var dragger = document.createElement('div');
+            var draggerStyler = document.createElement('div');
 
             dragger.className = (
                 state.options && state.options.draggerClass ? state.options.draggerClass : 'vue-scrollbar-dragger'
             );
 
-
             if (state.options && state.options.disableStyles) {} else {
                 dragger.style.position = 'absolute';
                 dragger.style.right = 0;
                 dragger.style.width = '10px';
-                dragger.style.backgroundColor = 'rgba(55, 55, 55,.9)';
                 dragger.style.transform = 'rotate3d(0,0,0,0)';
                 dragger.style.backfaceVisibility = 'hidden';
             }
 
+            draggerStyler.style.width = 'calc(100% - 2px)';
+            draggerStyler.style.height = 'calc(100% - 4px)';
+            draggerStyler.style.marginTop = '2px';
+            draggerStyler.style.backgroundColor = 'rgba(55, 55, 55,.6)';
+
+
+            dragger.appendChild(draggerStyler);
             state.el1.appendChild(dragger);
+
             return dragger;
         };
 
@@ -284,6 +291,7 @@
             // el1
             state.el1.style.position = 'relative';
             state.el1.style.overflow = 'hidden';
+            //state.el1.style.height = '100%';
 
             // el2
             state.el2.style.overflowX = 'hidden';
