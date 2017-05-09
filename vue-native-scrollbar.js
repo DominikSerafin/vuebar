@@ -261,7 +261,7 @@
             var draggerStyler = document.createElement('div');
 
             dragger.className = (
-                state.options && state.options.draggerClass ? state.options.draggerClass : 'vue-scrollbar-dragger'
+                state.options && state.options.draggerClass ? state.options.draggerClass : 'vns-dragger'
             );
 
             if (state.options && state.options.disableStyles) {} else {
@@ -271,6 +271,9 @@
                 dragger.style.transform = 'rotate3d(0,0,0,0)';
                 dragger.style.backfaceVisibility = 'hidden';
             }
+
+
+            draggerStyler.className = 'vns-dragger-styler';
 
             draggerStyler.style.width = 'calc(100% - 2px)';
             draggerStyler.style.height = 'calc(100% - 4px)';
@@ -289,6 +292,7 @@
             var state = getState(el);
 
             // el1
+            addClass(state.el1, 'vns');
             state.el1.style.position = 'relative';
             state.el1.style.overflow = 'hidden';
             //state.el1.style.height = '100%';
@@ -312,41 +316,37 @@
             state.dragger.style.top = Math.ceil( state.barTop ) + 'px';
 
 
-            // scrollbar enabled classs
+            // scrollbar enabled /disabled classes
             if (state.visibleArea<1) {
-                addClass(state.dragger, 'mod-scrollbar-enabled');
-                addClass(state.el1, 'mod-scrollbar-enabled');
+                removeClass(state.el1, 'vns-disabled');
+                addClass(state.el1, 'vns-enabled');
             } else {
-                removeClass(state.dragger, 'mod-scrollbar-enabled');
-                removeClass(state.el1, 'mod-scrollbar-enabled');
+                removeClass(state.el1, 'vns-enabled');
+                addClass(state.el1, 'vns-disabled');
             }
 
 
 
             // add scrolling class
-            addClass(state.dragger, 'mod-scrolling');
-            addClass(state.el1, 'mod-scrolling');
+            addClass(state.el1, 'vns-scrolling');
 
             // remove scrolling class
             state.scrollingClassTimeout ?
                 clearTimeout(state.scrollingClassTimeout) : null;
             state.scrollingClassTimeout = setTimeout(function() {
-                removeClass(state.dragger, 'mod-scrolling');
-                removeClass(state.el1, 'mod-scrolling');
+                removeClass(state.el1, 'vns-scrolling');
             }, state.config.scrollThrottle + 5);
 
 
 
             // add phantom scrolling class
-            addClass(state.dragger, 'mod-scrolling-phantom');
-            addClass(state.el1, 'mod-scrolling-phantom');
+            addClass(state.el1, 'vns-scrolling-phantom');
 
             // remove phantom scrolling class
             state.phantomScrollingClassTimeout ?
                 clearTimeout(state.phantomScrollingClassTimeout) : null;
             state.phantomScrollingClassTimeout = setTimeout(function() {
-                removeClass(state.dragger, 'mod-scrolling-phantom');
-                removeClass(state.el1, 'mod-scrolling-phantom');
+                removeClass(state.el1, 'vns-scrolling-phantom');
             }, state.config.scrollThrottle + state.config.phantomScrollingClassDelay);
 
 
@@ -427,9 +427,9 @@
                 }
 
                 // remove dragging class
-                removeClass(state.dragger, 'mod-dragging');
+                removeClass(state.el1, 'vns-dragging');
                 state.phantomDraggingClassTimeout = setTimeout(function() {
-                    removeClass(state.dragger, 'mod-dragging-phantom');
+                    removeClass(state.el1, 'vns-dragging-phantom');
                 }, state.config.phantomDraggingClassDelay);
 
 
@@ -457,10 +457,10 @@
                 }
 
                 // add dragging class
-                addClass(state.dragger, 'mod-dragging');
+                addClass(state.el1, 'vns-dragging');
                 state.phantomDraggingClassTimeout ?
                     clearTimeout(state.phantomDraggingClassTimeout) : null;
-                addClass(state.dragger, 'mod-dragging-phantom');
+                addClass(state.el1, 'vns-dragging-phantom');
 
 
                 // add events
