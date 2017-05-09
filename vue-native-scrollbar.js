@@ -4,13 +4,15 @@
 
     TODO:
 
+    * More Options
+    * Option to disable parent scroll
+      when reached bottom of scrollbar element
+    * Option to disable scrollbar
+
     * Any performance improvements
 
-    * [DONE] Reduce wrapper elements from 3 to 2 (it's possible)
-    * [DONE] Mouse/Dragger better sync
-    * [DONE] Dragger mousemove scrollTo bug
-      where it flickers when there's
-      a mousemoveThrottle applied
+    * Nested Scrollbar Elements
+    * Horizontal Scrolling & Scrollbar
 
     * Custom classes compatibility
       with Vue scoped styles
@@ -20,9 +22,10 @@
     * Option for programmatic refresh
     * Option for touch drag dragger
 
-    * [DONE?] Refresh on directive 'updated'
-      and 'componentUpdated' hooks
-    * Refresh on content change
+    * Refresh on directive 'updated'
+    * Refresh on directive 'componentUpdated'
+    * Refresh on content & nested content change
+    * Refresh on parent & child components change
     * Refresh on img inside content load
     * Refresh on page resize
     * Refresh on page orientationchange
@@ -126,10 +129,9 @@
                 config: {
                     scrollThrottle: 10,
                     mousemoveThrottle: 10,
-                    indicatorDebounce: 500, // TODO
                     resizeDebounce: 100,
-                    scrollingDelayedClassTime: 1000,
-                    draggingDelayedClassTime: 1000,
+                    phantomScrollingClassDelay: 1000,
+                    phantomDraggingClassDelay: 1000,
                 },
 
                 // binding + binding options
@@ -146,21 +148,22 @@
                 scrollTop: 0,
                 barTop: 0,
                 barHeight: 0,
-
                 mouseBarOffsetY: 0,
 
                 // helper properties
                 barDragging: false,
 
                 // timeouts for DOM class manipulation
-                scrollingDelayedClassTimeout: null,
-                draggingDelayedClassTimeout: null,
+                scrollingClassTimeout: null,
+                draggingClassTimeout: null,
+                phantomScrollingClassTimeout: null,
+                phantomDraggingClassTimeout: null,
 
                 // references to a functions we'll need when removing events
                 barMousedown: null,
                 documentMousemove: null,
                 documentMouseup: null,
-                windowResize: null,
+                //windowResize: null,
                 scrollHandler: null,
 
             }
@@ -247,13 +250,6 @@
             }
         };
 
-        var computeBarEnabled = function(el){
-            var state = getState(el);
-            state.barEnabled = (state.visibleArea>=1) ? false : true;
-        };
-
-
-
 
         /*------------------------------------*\
             Styles & DOM
@@ -302,42 +298,52 @@
         var updateDragger = function(el){
             var state = getState(el);
 
-            // computations
-            state.dragger.style.height = state.barHeight + 'px';
-            state.dragger.style.top = state.barTop + 'px';
 
-            // DOM 'scrolling' class
-            addClass(state.dragger, 'mod-scrolling');
-            addClass(state.el1, 'mod-scrolling');
+            // setting dragger styles (round up so there isn't any gaps)
+            state.dragger.style.height = Math.ceil( state.barHeight ) + 'px';
+            state.dragger.style.top = Math.ceil( state.barTop ) + 'px';
 
-            state.scrollingClassTimeout ?
-                clearTimeout(state.scrollingClassTimeout) : null;
 
-            state.scrollingClassTimeout = setTimeout(function() {
-                removeClass(state.dragger, 'mod-scrolling');
-                removeClass(state.el1, 'mod-scrolling');
-            }, state.config.scrollThrottle + 5);
-
-            // DOM 'scrolling delayed' class
-            addClass(state.dragger, 'mod-scrolling-delayed');
-            addClass(state.el1, 'mod-scrolling-delayed');
-
-            state.scrollingDelayedClassTimeout ?
-                clearTimeout(state.scrollingDelayedClassTimeout) : null;
-
-            state.scrollingDelayedClassTimeout = setTimeout(function() {
-                removeClass(state.dragger, 'mod-scrolling-delayed');
-                removeClass(state.el1, 'mod-scrolling-delayed');
-            }, state.config.scrollThrottle + state.config.scrollingDelayedClassTime);
-
-            // DOM scrollbar enabled class
-            if (state.barEnabled) {
+            // scrollbar enabled classs
+            if (state.visibleArea<1) {
                 addClass(state.dragger, 'mod-scrollbar-enabled');
                 addClass(state.el1, 'mod-scrollbar-enabled');
             } else {
                 removeClass(state.dragger, 'mod-scrollbar-enabled');
                 removeClass(state.el1, 'mod-scrollbar-enabled');
             }
+
+
+
+            // add scrolling class
+            addClass(state.dragger, 'mod-scrolling');
+            addClass(state.el1, 'mod-scrolling');
+
+            // remove scrolling class
+            state.scrollingClassTimeout ?
+                clearTimeout(state.scrollingClassTimeout) : null;
+            state.scrollingClassTimeout = setTimeout(function() {
+                removeClass(state.dragger, 'mod-scrolling');
+                removeClass(state.el1, 'mod-scrolling');
+            }, state.config.scrollThrottle + 5);
+
+
+
+            // add phantom scrolling class
+            addClass(state.dragger, 'mod-scrolling-phantom');
+            addClass(state.el1, 'mod-scrolling-phantom');
+
+            // remove phantom scrolling class
+            state.phantomScrollingClassTimeout ?
+                clearTimeout(state.phantomScrollingClassTimeout) : null;
+            state.phantomScrollingClassTimeout = setTimeout(function() {
+                removeClass(state.dragger, 'mod-scrolling-phantom');
+                removeClass(state.el1, 'mod-scrolling-phantom');
+            }, state.config.scrollThrottle + state.config.phantomScrollingClassDelay);
+
+
+
+
 
         };
 
@@ -358,15 +364,7 @@
         var refreshScrollbar = function(el){
             Vue.nextTick(function(){
 
-                // first time with original width...
                 computeVisibleArea(el);
-                computeBarEnabled(el);
-
-                // second time with new width... it's hackish...
-                computeVisibleArea(el);
-                computeBarEnabled(el);
-
-                // other
                 computeBarTop(el);
                 computeBarHeight(el);
                 updateDragger(el);
@@ -398,7 +396,6 @@
 
         var documentMousemove = function(el){
             var state = getState(el);
-
             return throttle(function(event){
                 computeBarTop(el, event);
                 updateDragger(el);
@@ -409,25 +406,29 @@
 
 
         var documentMouseup = function(el){
+            var state = getState(el);
             return function(event){
 
-                var state = getState(el);
-
+                //
                 state.barDragging = false;
 
+                // enable user select
+                state.el1.style.userSelect = '';
                 if (state.options && state.options.disableBodyUserSelect) {
                     document.body.style.userSelect = '';
-                } else {
-                    state.el1.style.userSelect = '';
                 }
 
+                // remove dragging class
                 removeClass(state.dragger, 'mod-dragging');
-                state.draggingDelayedClassTimeout = setTimeout(function() {
-                    removeClass(state.dragger, 'mod-dragging-delayed');
-                }, state.config.draggingDelayedClassTime);
+                state.phantomDraggingClassTimeout = setTimeout(function() {
+                    removeClass(state.dragger, 'mod-dragging-phantom');
+                }, state.config.phantomDraggingClassDelay);
 
+
+                // remove events
                 document.removeEventListener('mousemove', state.documentMousemove, 0);
                 document.removeEventListener('mouseup', state.documentMouseup, 0);
+
             }.bind(this);
 
         };
@@ -435,39 +436,41 @@
 
 
         var barMousedown = function(el){
+            var state = getState(el);
             return function(event){
-
-                var state = getState(el);
 
                 state.barDragging = true;
                 state.mouseBarOffsetY = event.layerY;
 
+                // disable user select
+                state.el1.style.userSelect = 'none';
                 if (state.options && state.options.disableBodyUserSelect) {
                     document.body.style.userSelect = 'none';
-                } else {
-                    state.el1.style.userSelect = 'none';
                 }
 
+                // add dragging class
                 addClass(state.dragger, 'mod-dragging');
+                state.phantomDraggingClassTimeout ?
+                    clearTimeout(state.phantomDraggingClassTimeout) : null;
+                addClass(state.dragger, 'mod-dragging-phantom');
 
-                state.draggingDelayedClassTimeout ?
-                    clearTimeout(state.draggingDelayedClassTimeout) : null;
 
-                addClass(state.dragger, 'mod-dragging-delayed');
-
+                // add events
                 document.addEventListener('mousemove', state.documentMousemove, 0);
                 document.addEventListener('mouseup', state.documentMouseup, 0);
+
+
             }.bind(this);
         };
 
 
 
-        var windowResize = function(el){
-            var state = getState(el);
-            return debounce(function(event){
-                // do stuff
-            }.bind(this), state.config.resizeDebounce)
-        };
+        //var windowResize = function(el){
+        //    var state = getState(el);
+        //    return debounce(function(event){
+        //        // do stuff
+        //    }.bind(this), state.config.resizeDebounce)
+        //};
 
 
 
@@ -500,7 +503,7 @@
             state.barMousedown = barMousedown(el);
             state.documentMousemove = documentMousemove(el);
             state.documentMouseup = documentMouseup(el);
-            state.windowResize = windowResize(el);
+            //state.windowResize = windowResize(el);
 
             // initializations
             setupElementsStyles(el);
