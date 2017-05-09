@@ -14,10 +14,8 @@ This is still work in progress.
 
 
 
----
+## Notes
 
-Developed for GGather.com
+Inspired by [https://jamesflorentino.github.io/nanoScrollerJS/](nanoScroller)
 
-
-
-
+Developed for [https://ggather.com/](GGather.com)
