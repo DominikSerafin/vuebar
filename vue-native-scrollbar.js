@@ -1,20 +1,46 @@
+/*----------------------------------------*\
+
+    Vue Native Scrollbar
+
+    TODO:
+
+    * Any performance improvements
+
+    * [DONE!] Reduce wrapper elements from 3 to 2 (it's possible)
+    * [KINDA DONE] Don't use "width: calc( 100% + 18px )", use only "right: -18px"
+
+    * Mouse/Dragger better sync
+    * Custom classes compatibility
+      with Vue scoped styles
+    * Dragger mousemove scrollTo bug
+      where it flickers when there's
+      a mousemoveThrottle applied
+
+    * Option for emitting Vue events
+    * Option for programmatic scrollTo
+    * Option for programmatic refresh
+    * Option for touch drag dragger
+
+    * [DONE?] Refresh on directive 'updated'
+      and 'componentUpdated' hooks
+    * Refresh on content change
+    * Refresh on img inside content load
+    * Refresh on page resize
+    * Refresh on page orientationchange
+    * Refresh on programmatic scroll
+
+    * Fix user select on IE & Firefox
+
+\*----------------------------------------*/
 ;(function(){
     'use strict'
 
 
 
 
-    /*----------------------------------------*\
-
-        HELPERS
-
-    \*----------------------------------------*/
-
-
-
 
     /*------------------------------------*\
-        debounce
+        Debounce Helper
         https://remysharp.com/2010/07/21/throttling-function-calls
     \*------------------------------------*/
     var debounce = function(fn, delay) {
@@ -29,10 +55,8 @@
     };
 
 
-
-
     /*------------------------------------*\
-        throttle
+        Throttle Helper
         https://remysharp.com/2010/07/21/throttling-function-calls
     \*------------------------------------*/
     var throttle = function(fn, threshhold, scope) {
@@ -61,8 +85,9 @@
 
 
 
+
     /*------------------------------------*\
-        classes
+        Class Manipulation Helper
         https://plainjs.com/javascript/attributes/adding-removing-and-testing-for-classes-9/
     \*------------------------------------*/
     var hasClass = function(el, className) {
@@ -82,363 +107,40 @@
 
 
 
-    /*----------------------------------------*\
-
-        VueScrollbar
-
-        TODO:
-
-        * Any performance improvements
-
-        * Reduce wrapper elements from 3 to 2 (it's possible)
-        * Don't use "width: calc( 100% + 18px )", use only "right: -18px"
-
-        * Mouse/Dragger better sync
-        * Custom classes compatibility
-          with Vue scoped styles
-        * Dragger mousemove scrollTo bug
-          where it flickers when there's
-          a mousemoveThrottle applied
-
-        * Option for emitting Vue events
-        * Option for programmatic scrollTo
-        * Option for programmatic refresh
-        * Option for touch drag dragger
-
-        * Refresh on directive 'updated'
-          and 'componentUpdated' hooks
-        * Refresh on content change
-        * Refresh on img inside content load
-        * Refresh on page resize
-        * Refresh on page orientationchange
-        * Refresh on programmatic scroll
-
-    \*----------------------------------------*/
 
 
-
-
+    /*------------------------------------*\
+        Vue Native Scrollbar
+    \*------------------------------------*/
     var VueScrollbar = {};
     VueScrollbar.install = function(Vue, options){
 
 
 
-
         /*------------------------------------*\
-            Configuration
+            Create State
         \*------------------------------------*/
-        var scrollThrottle = 10;
-        var resizeDebounce = 100;
-        var mousemoveThrottle = 1; // anything >1 makes dragger flicker
-        var indicatorDebounce = 500;
-        var scrollingDelayedClassTime = 1000;
-        var draggingDelayedClassTime = 1000;
-
-
-
-
-        /*------------------------------------*\
-            Mount Validation
-        \*------------------------------------*/
-        var markupValidation = function(el){
-            if (!el.firstChild) {
-                Vue.util.warn('(Vue-Scrollbar) Element 1 with v-scrollbar directive doesn\'t have required child element 2.');
-                return false;
-            }
-            if (el.childElementCount > 1) {
-                Vue.util.warn('(Vue-Scrollbar) Element 1 with v-scrollbar directive can have only one root element. It has ' + el.childElementCount + '.');
-                return false;
-            }
-            if (!el.firstChild.firstChild) {
-                Vue.util.warn('(Vue-Scrollbar) Element 2 doesn\'t have required child element 3.');
-                return false;
-            }
-            if (el.firstChild.childElementCount > 1) {
-                Vue.util.warn('(Vue-Scrollbar) Element 2 can have only one root element. It has ' + el.firstChild.childElementCount + '.');
-                return false;
-            }
-            return true;
-        };
-
-
-
-
-        /*------------------------------------*\
-            Computing Properties
-        \*------------------------------------*/
-        var setScrollHeightRatio = function(binding){
-            var el3 = binding._scrollbar.el3;
-            binding._scrollbar.heightRatio = (el3.clientHeight / el3.scrollHeight);
-        };
-
-        var setScrollbarTop = function(binding){
-            var el3 = binding._scrollbar.el3;
-            binding._scrollbar.barTop = String((el3.scrollTop / el3.scrollHeight) * 100) + '%';
-        };
-
-        var setScrollbarHeight = function(binding){
-            if (binding._scrollbar.heightRatio >= 1) {
-                binding._scrollbar.barHeight = 0 + '%';
-            } else {
-                binding._scrollbar.barHeight = String(binding._scrollbar.heightRatio * 100) + '%';
-            }
-        };
-
-        var setScrollbarEnabled = function(binding){
-            binding._scrollbar.barEnabled = (binding._scrollbar.heightRatio>=1) ? false : true;
-        };
-
-
-
-
-        /*------------------------------------*\
-            Styles & DOM
-        \*------------------------------------*/
-        var createDragger = function(binding, el2){
-            var dragger = document.createElement('div');
-
-            dragger.className = (
-                binding.value && binding.value.draggerClass ? binding.value.draggerClass : 'vue-scrollbar-dragger'
-            );
-
-
-            if (binding.value && binding.value.disableStyles) {} else {
-                dragger.style.position = 'absolute';
-                dragger.style.right = 0;
-                dragger.style.width = '10px';
-                dragger.style.backgroundColor = 'rgba(0,0,0,.5)';
-                dragger.style.borderRadius = '20px';
-                dragger.style.transform = 'rotate3d(0,0,0,0)';
-                dragger.style.backfaceVisibility = 'hidden';
-            }
-
-            el2.appendChild(dragger);
-            return dragger;
-        };
-
-
-        var setupElementsStyles = function(binding){
-
-            var el1 = binding._scrollbar.el1;
-            var el2 = binding._scrollbar.el2;
-            var el3 = binding._scrollbar.el3;
-
-            // el1
-            el1.style.height = '100%';
-            el1.style.position = 'relative';
-            el1.style.overflow = 'hidden';
-            el1.style.top = '0px';
-            el1.style.left = '0px';
-
-            // el2
-            el2.style.position = 'static';
-            el2.style.overflow = 'hidden';
-            el2.style.height = '100%';
-            el2.style.width = 'calc(100% + 18px)';
-
-            // el3
-            el3.style.position = 'relative';
-            el3.style.overflowY = 'auto';
-            el3.style.overflowX = 'hidden';
-            el3.style.height = '100%';
-            el3.style.width = 'auto';
-
-        };
-
-
-        var setupEl2Width = function(binding){
-            binding._scrollbar.el2.style.width = binding._scrollbar.barEnabled ? 'calc(100% + 18px)' : 'auto';
-        };
-
-
-
-        var updateDraggerStyles = function(binding){
-
-            // computations
-            binding._scrollbar.dragger.style.height = binding._scrollbar.barHeight;
-            binding._scrollbar.dragger.style.top = binding._scrollbar.barTop;
-
-            // DOM 'scrolling' class
-            addClass(binding._scrollbar.dragger, 'mod-scrolling');
-            addClass(binding._scrollbar.el1, 'mod-scrolling');
-
-            binding._scrollbar.scrollingClassTimeout ?
-                clearTimeout(binding._scrollbar.scrollingClassTimeout) : null;
-
-            binding._scrollbar.scrollingClassTimeout = setTimeout(function() {
-                removeClass(binding._scrollbar.dragger, 'mod-scrolling');
-                removeClass(binding._scrollbar.el1, 'mod-scrolling');
-            }, scrollThrottle + 5);
-
-            // DOM 'scrolling delayed' class
-            addClass(binding._scrollbar.dragger, 'mod-scrolling-delayed');
-            addClass(binding._scrollbar.el1, 'mod-scrolling-delayed');
-
-            binding._scrollbar.scrollingDelayedClassTimeout ?
-                clearTimeout(binding._scrollbar.scrollingDelayedClassTimeout) : null;
-
-            binding._scrollbar.scrollingDelayedClassTimeout = setTimeout(function() {
-                removeClass(binding._scrollbar.dragger, 'mod-scrolling-delayed');
-                removeClass(binding._scrollbar.el1, 'mod-scrolling-delayed');
-            }, scrollThrottle + scrollingDelayedClassTime);
-
-            // DOM scrollbar enabled class
-            if (binding._scrollbar.barEnabled) {
-                addClass(binding._scrollbar.dragger, 'mod-scrollbar-enabled');
-                addClass(binding._scrollbar.el1, 'mod-scrollbar-enabled');
-            } else {
-                removeClass(binding._scrollbar.dragger, 'mod-scrollbar-enabled');
-                removeClass(binding._scrollbar.el1, 'mod-scrollbar-enabled');
-            }
-
-        };
-
-
-
-
-        /*------------------------------------*\
-            Refresh
-        \*------------------------------------*/
-
-        var refreshScrollbar = function(binding, el){
-            var binding = el ? el._scrollbarBinding : binding;
-            Vue.nextTick(function(){
-
-                // first time with original width...
-                setScrollHeightRatio.call(this, binding);
-                setScrollbarEnabled.call(this, binding);
-                setupEl2Width.call(this, binding);
-
-                // second time with new width... it's hackish...
-                setScrollHeightRatio.call(this, binding);
-                setScrollbarEnabled.call(this, binding);
-                setupEl2Width.call(this, binding);
-
-                // other
-                setScrollbarTop.call(this, binding);
-                setScrollbarHeight.call(this, binding);
-                updateDraggerStyles.call(this, binding);
-
-            }.bind(this));
-        };
-
-
-
-
-        /*------------------------------------*\
-            Events & Handlers
-        \*------------------------------------*/
-        var scrollHandler = function(){
-            //if (!this._scrollbar.barEnabled) return false;
-            var binding = this.parentElement.parentElement._scrollbarBinding;
-            setScrollbarTop.call(this, binding);
-            updateDraggerStyles.call(this, binding);
-        };
-        var throttledScrollHandler = throttle(scrollHandler, scrollThrottle);
-
-
-
-        var windowResize = function(){
-            return debounce(function(event){
-                var binding = this;
-            }.bind(this), resizeDebounce)
-        };
-
-
-
-        var documentMousemove = function(){
-            return throttle(function(event){
-                var binding = this;
-                var delta = event.pageY - binding._scrollbar.barLastPageY;
-                binding._scrollbar.barLastPageY = event.pageY;
-                binding._scrollbar.el3.scrollTop += delta / binding._scrollbar.heightRatio;
-
-                setScrollbarTop.call(this, binding);
-                updateDraggerStyles.call(this, binding);
-
-            }.bind(this), mousemoveThrottle);
-        };
-
-
-        var documentMouseup = function(){
-            return function(event){
-                var binding = this;
-                binding._scrollbar.barDragging = false;
-
-                if (binding.value && binding.value.disableBodyUserSelect) {
-                    document.body.style.userSelect = '';
-                } else {
-                    binding._scrollbar.el1.style.userSelect = '';
-                }
-
-                removeClass(binding._scrollbar.dragger, 'mod-dragging');
-                binding._scrollbar.draggingDelayedClassTimeout = setTimeout(function() {
-                    removeClass(binding._scrollbar.dragger, 'mod-dragging-delayed');
-                }, draggingDelayedClassTime);
-
-                document.removeEventListener('mousemove', binding._scrollbar.documentMousemove, 0);
-                document.removeEventListener('mouseup', binding._scrollbar.documentMouseup, 0);
-            }.bind(this);
-
-        };
-
-
-
-        var barMousedown = function(){
-            return function(event){
-                var binding = this;
-                binding._scrollbar.barDragging = true;
-                binding._scrollbar.barLastPageY = event.pageY;
-
-                if (binding.value && binding.value.disableBodyUserSelect) {
-                    document.body.style.userSelect = 'none';
-                } else {
-                    binding._scrollbar.el1.style.userSelect = 'none';
-                }
-
-                addClass(binding._scrollbar.dragger, 'mod-dragging');
-
-                binding._scrollbar.draggingDelayedClassTimeout ?
-                    clearTimeout(binding._scrollbar.draggingDelayedClassTimeout) : null;
-
-                addClass(binding._scrollbar.dragger, 'mod-dragging-delayed');
-
-                document.addEventListener('mousemove', binding._scrollbar.documentMousemove, 0);
-                document.addEventListener('mouseup', binding._scrollbar.documentMouseup, 0);
-            }.bind(this);
-        };
-
-
-
-
-        /*------------------------------------*\
-            Logic
-        \*------------------------------------*/
-
-
-        var initScrollbar = function(binding, el){
-
-            // validate on directive bind if the markup is OK
-            if (!markupValidation.call(this, el)){return false;}
-
-            // get elements
-            var el1 = el;
-            var el2 = el1.firstChild;
-            var el3 = el2.firstChild;
-
-            // create dragger
-            var dragger = createDragger.call(this, binding, el2);
-
-            // scrollbar "state" -> vue docs say that directive "binding" property is read-only,
-            // but it's easier & cleaner that way and I haven' encountered any bugs related to this
-            // i only had to do some workarounds around hooks (el._scrollbarBinding)
-            binding._scrollbar = {
+        var createState = function(el){
+            el._vueNativeScrollbarState = {
+
+                // vue native scrollbar config
+                config: {
+                    scrollThrottle: 10, // TODO
+                    resizeDebounce: 100,
+                    mousemoveThrottle: 1, // anything >1 makes dragger flicker
+                    indicatorDebounce: 500, // TODO
+                    scrollingDelayedClassTime: 1000,
+                    draggingDelayedClassTime: 1000,
+                },
+
+                // binding + binding options
+                binding: null,
+                options: null,
 
                 // references to native DOM elements
-                el1: el1,
-                el2: el2,
-                el3: el3,
-                dragger: dragger,
+                el1: null,
+                el2: null,
+                dragger: null,
 
                 // helper properties
                 heightRatio: 0, // used for some calculations
@@ -455,22 +157,315 @@
                 draggingDelayedClassTimeout: null,
 
                 // references to a functions we'll need when removing events
-                barMousedown: barMousedown.call(binding),
-                documentMousemove: documentMousemove.call(binding),
-                documentMouseup: documentMouseup.call(binding),
-                windowResize: windowResize.call(binding),
+                barMousedown: null,
+                documentMousemove: null,
+                documentMouseup: null,
+                windowResize: null,
 
-            };
+            }
+            return el._vueNativeScrollbarState;
+        };
 
-            // workaround for hooks ('binding' gets resetted on all(?) hooks)
-            el._scrollbarBinding = binding;
+
+        /*------------------------------------*\
+            Get State
+        \*------------------------------------*/
+        var getState = function(el){
+            return el._vueNativeScrollbarState;
+        };
+
+
+
+
+
+
+        /*------------------------------------*\
+            Mount Validation
+        \*------------------------------------*/
+        var markupValidation = function(el){
+            if (!el.firstChild) {
+                Vue.util.warn('(Vue-Scrollbar) Element 1 with v-scrollbar directive doesn\'t have required child element 2.');
+                return false;
+            }
+            if (el.childElementCount > 1) {
+                Vue.util.warn('(Vue-Scrollbar) Element 1 with v-scrollbar directive can have only one root element. It has ' + el.childElementCount + '.');
+                return false;
+            }
+            return true;
+        };
+
+
+
+
+        /*------------------------------------*\
+            Computing Properties
+        \*------------------------------------*/
+        var setScrollHeightRatio = function(el){
+            var state = getState(el);
+            state.heightRatio = (state.el2.clientHeight / state.el2.scrollHeight);
+        };
+
+        var setScrollbarTop = function(el){
+            var state = getState(el);
+            state.barTop = String((state.el2.scrollTop / state.el2.scrollHeight) * 100) + '%';
+        };
+
+        var setScrollbarHeight = function(el){
+            var state = getState(el);
+            if (state.heightRatio >= 1) {
+                state.barHeight = 0 + '%';
+            } else {
+                state.barHeight = String(state.heightRatio * 100) + '%';
+            }
+        };
+
+        var setScrollbarEnabled = function(el){
+            var state = getState(el);
+            state.barEnabled = (state.heightRatio>=1) ? false : true;
+        };
+
+
+
+
+        /*------------------------------------*\
+            Styles & DOM
+        \*------------------------------------*/
+        var createDragger = function(el){
+            var state = getState(el);
+
+            var dragger = document.createElement('div');
+
+            dragger.className = (
+                state.options && state.options.draggerClass ? state.options.draggerClass : 'vue-scrollbar-dragger'
+            );
+
+
+            if (state.options && state.options.disableStyles) {} else {
+                dragger.style.position = 'absolute';
+                dragger.style.right = 0;
+                dragger.style.width = '10px';
+                dragger.style.backgroundColor = 'rgba(55, 55, 55,.9)';
+                //dragger.style.borderRadius = '20px';
+                dragger.style.transform = 'rotate3d(0,0,0,0)';
+                dragger.style.backfaceVisibility = 'hidden';
+            }
+
+            state.el1.appendChild(dragger);
+            return dragger;
+        };
+
+
+        var setupElementsStyles = function(el){
+            var state = getState(el);
+
+            // el1
+            state.el1.style.position = 'relative';
+            state.el1.style.overflow = 'hidden';
+
+            // el2
+            state.el2.style.overflowX = 'hidden';
+            state.el2.style.overflowY = 'scroll';
+            state.el2.style.height = '100%';
+            state.el2.style.width = 'calc(100% + 18px)';
+
+        };
+
+
+
+        var updateDraggerStyles = function(el){
+            var state = getState(el);
+
+            // computations
+            state.dragger.style.height = state.barHeight;
+            state.dragger.style.top = state.barTop;
+
+            // DOM 'scrolling' class
+            addClass(state.dragger, 'mod-scrolling');
+            addClass(state.el1, 'mod-scrolling');
+
+            state.scrollingClassTimeout ?
+                clearTimeout(state.scrollingClassTimeout) : null;
+
+            state.scrollingClassTimeout = setTimeout(function() {
+                removeClass(state.dragger, 'mod-scrolling');
+                removeClass(state.el1, 'mod-scrolling');
+            }, state.config.scrollThrottle + 5);
+
+            // DOM 'scrolling delayed' class
+            addClass(state.dragger, 'mod-scrolling-delayed');
+            addClass(state.el1, 'mod-scrolling-delayed');
+
+            state.scrollingDelayedClassTimeout ?
+                clearTimeout(state.scrollingDelayedClassTimeout) : null;
+
+            state.scrollingDelayedClassTimeout = setTimeout(function() {
+                removeClass(state.dragger, 'mod-scrolling-delayed');
+                removeClass(state.el1, 'mod-scrolling-delayed');
+            }, state.config.scrollThrottle + state.config.scrollingDelayedClassTime);
+
+            // DOM scrollbar enabled class
+            if (state.barEnabled) {
+                addClass(state.dragger, 'mod-scrollbar-enabled');
+                addClass(state.el1, 'mod-scrollbar-enabled');
+            } else {
+                removeClass(state.dragger, 'mod-scrollbar-enabled');
+                removeClass(state.el1, 'mod-scrollbar-enabled');
+            }
+
+        };
+
+
+
+
+        /*------------------------------------*\
+            Refresh
+        \*------------------------------------*/
+
+        var refreshScrollbar = function(el){
+            Vue.nextTick(function(){
+
+                // first time with original width...
+                setScrollHeightRatio(el);
+                setScrollbarEnabled(el);
+
+                // second time with new width... it's hackish...
+                setScrollHeightRatio(el);
+                setScrollbarEnabled(el);
+
+                // other
+                setScrollbarTop(el);
+                setScrollbarHeight(el);
+                updateDraggerStyles(el);
+
+            }.bind(this));
+        };
+
+
+
+
+        /*------------------------------------*\
+            Events & Handlers
+        \*------------------------------------*/
+        var scrollHandler = function(el){
+            //if (!this._scrollbar.barEnabled) return false;
+            var el = this.parentElement;
+            setScrollbarTop(el);
+            updateDraggerStyles(el);
+        };
+        var throttledScrollHandler = throttle(scrollHandler, 10);
+
+
+
+        var windowResize = function(el){
+            var state = getState(el);
+            return debounce(function(event){
+                var binding = this;
+            }.bind(this), state.config.resizeDebounce)
+        };
+
+
+
+        var documentMousemove = function(el){
+            var state = getState(el);
+
+            return throttle(function(event){
+
+                var delta = event.pageY - state.barLastPageY;
+                state.barLastPageY = event.pageY;
+                state.el2.scrollTop += delta / state.heightRatio;
+
+                setScrollbarTop(el);
+                updateDraggerStyles(el);
+
+            }.bind(this), state.config.mousemoveThrottle);
+        };
+
+
+        var documentMouseup = function(el){
+            return function(event){
+
+                var state = getState(el);
+
+                state.barDragging = false;
+
+                if (state.options && state.options.disableBodyUserSelect) {
+                    document.body.style.userSelect = '';
+                } else {
+                    state.el1.style.userSelect = '';
+                }
+
+                removeClass(state.dragger, 'mod-dragging');
+                state.draggingDelayedClassTimeout = setTimeout(function() {
+                    removeClass(state.dragger, 'mod-dragging-delayed');
+                }, state.config.draggingDelayedClassTime);
+
+                document.removeEventListener('mousemove', state.documentMousemove, 0);
+                document.removeEventListener('mouseup', state.documentMouseup, 0);
+            }.bind(this);
+
+        };
+
+
+
+        var barMousedown = function(el){
+            return function(event){
+
+                var state = getState(el);
+
+                state.barDragging = true;
+                state.barLastPageY = event.pageY;
+
+                if (state.options && state.options.disableBodyUserSelect) {
+                    document.body.style.userSelect = 'none';
+                } else {
+                    state.el1.style.userSelect = 'none';
+                }
+
+                addClass(state.dragger, 'mod-dragging');
+
+                state.draggingDelayedClassTimeout ?
+                    clearTimeout(state.draggingDelayedClassTimeout) : null;
+
+                addClass(state.dragger, 'mod-dragging-delayed');
+
+                document.addEventListener('mousemove', state.documentMousemove, 0);
+                document.addEventListener('mouseup', state.documentMouseup, 0);
+            }.bind(this);
+        };
+
+
+
+
+        /*------------------------------------*\
+            Logic
+        \*------------------------------------*/
+
+
+        var initScrollbar = function(el, binding){
+
+            // validate on directive bind if the markup is OK
+            if (!markupValidation.call(this, el)){return false;}
+
+            // create state
+            var state = createState(el);
+
+            // setup scrollbar "state"
+            state.binding = binding;
+            state.options = binding.value;
+            state.el1 = el;
+            state.el2 = el.firstChild;
+            state.dragger = createDragger(el);
+            state.barMousedown = barMousedown(el),
+            state.documentMousemove = documentMousemove(el),
+            state.documentMouseup = documentMouseup(el),
+            state.windowResize = windowResize(el),
 
             // initializations
-            setupElementsStyles.call(this, binding);
-            binding._scrollbar.el3.addEventListener('scroll', throttledScrollHandler, 0);
-            binding._scrollbar.dragger.addEventListener('mousedown', binding._scrollbar.barMousedown, 0);
-            //window.addEventListener('resize', binding._scrollbar.windowResize, 0);
-            refreshScrollbar.call(this, binding);
+            setupElementsStyles(el);
+            state.el2.addEventListener('scroll', throttledScrollHandler, 0);
+            state.dragger.addEventListener('mousedown', state.barMousedown, 0);
+            //window.addEventListener('resize', state.windowResize, 0);
+            refreshScrollbar(el);
 
         };
 
@@ -481,18 +476,18 @@
             var binding = el._scrollbarBinding;
 
             // clear events
-            //window.removeEventListener('resize', binding._scrollbar.windowResize, 0);
-            binding._scrollbar.dragger.removeEventListener('mousedown', binding._scrollbar.barMousedown, 0);
-            binding._scrollbar.el3.removeEventListener('scroll', throttledScrollHandler, 0);
+            //window.removeEventListener('resize', state.windowResize, 0);
+            state.dragger.removeEventListener('mousedown', state.barMousedown, 0);
+            state.el2.removeEventListener('scroll', throttledScrollHandler, 0);
 
             // clear dragger
-            binding._scrollbar.dragger.remove();
+            state.dragger.remove();
 
             // clear timeouts
-            binding._scrollbar.draggingDelayedClassTimeout ?
-                clearTimeout(binding._scrollbar.draggingDelayedClassTimeout) : null;
-            binding._scrollbar.scrollingDelayedClassTimeout ?
-                clearTimeout(binding._scrollbar.draggingDelayedClassTimeout) : null;
+            state.draggingDelayedClassTimeout ?
+                clearTimeout(state.draggingDelayedClassTimeout) : null;
+            state.scrollingDelayedClassTimeout ?
+                clearTimeout(state.draggingDelayedClassTimeout) : null;
 
             // cleanup of properties ( just to make sure (tm) )
             delete binding._scrollbar;
@@ -508,19 +503,21 @@
         Vue.directive('scrollbar', {
 
             bind: function(el, binding, vnode, oldVnode){
-                initScrollbar.call(this, binding, el);
+                initScrollbar.call(this, el, binding);
             },
 
             //inserted: function(el, binding, vnode, oldVnode){},
 
-            //update: function(el, binding, vnode, oldVnode){},
+            update: function(el, binding, vnode, oldVnode){
+                refreshScrollbar.call(this, el, binding);
+            },
 
             componentUpdated: function(el, binding, vnode, oldVnode){
-                refreshScrollbar.call(this, binding, el);
+                refreshScrollbar.call(this, el, binding);
             },
 
             unbind: function(el, binding, vnode, oldVnode){
-                destroyScrollbar.call(this, el);
+                destroyScrollbar.call(this, el, binding);
             },
 
         });
@@ -534,21 +531,23 @@
 
 
 
+
+
+
+
     /*------------------------------------*\
         Auto Install
     \*------------------------------------*/
-
-    if (typeof Vue !== 'undefined') {
-        Vue.use(VueScrollbar)
-    }
-
-
     if(typeof exports === 'object' && typeof module === 'object') {
         module.exports = VueScrollbar
     } else if(typeof define === 'function' && define.amd) {
         define(function () { return VueScrollbar })
     } else if (typeof window !== 'undefined') {
         window.VueScrollbar = VueScrollbar
+    }
+
+    if (typeof Vue !== 'undefined') {
+        Vue.use(VueScrollbar)
     }
 
 
