@@ -6,15 +6,14 @@
 
     * Any performance improvements
 
-    * [DONE!] Reduce wrapper elements from 3 to 2 (it's possible)
-    * [KINDA DONE] Don't use "width: calc( 100% + 18px )", use only "right: -18px"
-
-    * Mouse/Dragger better sync
-    * Custom classes compatibility
-      with Vue scoped styles
-    * Dragger mousemove scrollTo bug
+    * [DONE] Reduce wrapper elements from 3 to 2 (it's possible)
+    * [DONE] Mouse/Dragger better sync
+    * [DONE] Dragger mousemove scrollTo bug
       where it flickers when there's
       a mousemoveThrottle applied
+
+    * Custom classes compatibility
+      with Vue scoped styles
 
     * Option for emitting Vue events
     * Option for programmatic scrollTo
@@ -125,10 +124,10 @@
 
                 // vue native scrollbar config
                 config: {
-                    scrollThrottle: 10, // TODO
-                    resizeDebounce: 100,
-                    mousemoveThrottle: 1, // anything >1 makes dragger flicker
+                    scrollThrottle: 10,
+                    mousemoveThrottle: 10,
                     indicatorDebounce: 500, // TODO
+                    resizeDebounce: 100,
                     scrollingDelayedClassTime: 1000,
                     draggingDelayedClassTime: 1000,
                 },
@@ -142,15 +141,16 @@
                 el2: null,
                 dragger: null,
 
-                // helper properties
-                heightRatio: 0, // used for some calculations
-                barLastPageY: 0, // used calcualting position of dragger on mousemove
-                barEnabled: false, // info if the scrollbar is enabled at all ( content height < element height )
-                barDragging: false, // info if the scrollbar is dragging (read-only, not used by this lib itself)
-
                 // main properties that are computed on scroll and applied as DOM style
-                barTop: '0%',
-                barHeight: '10%',
+                visibleArea: 0,
+                scrollTop: 0,
+                barTop: 0,
+                barHeight: 0,
+
+                mouseBarOffsetY: 0,
+
+                // helper properties
+                barDragging: false,
 
                 // timeouts for DOM class manipulation
                 scrollingDelayedClassTimeout: null,
@@ -161,6 +161,7 @@
                 documentMousemove: null,
                 documentMouseup: null,
                 windowResize: null,
+                scrollHandler: null,
 
             }
             return el._vueNativeScrollbarState;
@@ -200,28 +201,52 @@
         /*------------------------------------*\
             Computing Properties
         \*------------------------------------*/
-        var setScrollHeightRatio = function(el){
+
+        var computeVisibleArea = function(el){
             var state = getState(el);
-            state.heightRatio = (state.el2.clientHeight / state.el2.scrollHeight);
+            state.visibleArea = (state.el2.clientHeight / state.el2.scrollHeight);
         };
 
-        var setScrollbarTop = function(el){
+        var computeScrollTop = function(el){
             var state = getState(el);
-            state.barTop = String((state.el2.scrollTop / state.el2.scrollHeight) * 100) + '%';
+            state.scrollTop = state.barTop * (state.el2.scrollHeight / state.el2.clientHeight);
         };
 
-        var setScrollbarHeight = function(el){
+        var computeBarTop = function(el, event){
             var state = getState(el);
-            if (state.heightRatio >= 1) {
-                state.barHeight = 0 + '%';
-            } else {
-                state.barHeight = String(state.heightRatio * 100) + '%';
+
+            // if the function gets called on scroll event
+            if (!event) {
+                state.barTop = state.el2.scrollTop * state.visibleArea;
+                return false;
+            } // else the function gets called when moving dragger with mouse
+
+
+            var relativeMouseY = (event.y - state.el1.getBoundingClientRect().top);
+            if (relativeMouseY <= state.mouseBarOffsetY) { // if bar is trying to go over top
+                state.barTop = 0;
             }
+
+            if (relativeMouseY > state.mouseBarOffsetY) { // if bar is moving between top and bottom
+                state.barTop = relativeMouseY - state.mouseBarOffsetY;
+            }
+
+
+            if ( (state.barTop + state.barHeight ) >= state.el2.clientHeight ) { // if bar is trying to go over bottom
+                state.barTop = state.el2.clientHeight - state.barHeight;
+            }
+
         };
 
-        var setScrollbarEnabled = function(el){
+        var computeBarHeight = function(el){
             var state = getState(el);
-            state.barEnabled = (state.heightRatio>=1) ? false : true;
+            state.barHeight = state.el2.clientHeight * state.visibleArea;
+
+        };
+
+        var computeBarEnabled = function(el){
+            var state = getState(el);
+            state.barEnabled = (state.visibleArea>=1) ? false : true;
         };
 
 
@@ -245,7 +270,6 @@
                 dragger.style.right = 0;
                 dragger.style.width = '10px';
                 dragger.style.backgroundColor = 'rgba(55, 55, 55,.9)';
-                //dragger.style.borderRadius = '20px';
                 dragger.style.transform = 'rotate3d(0,0,0,0)';
                 dragger.style.backfaceVisibility = 'hidden';
             }
@@ -272,12 +296,12 @@
 
 
 
-        var updateDraggerStyles = function(el){
+        var updateDragger = function(el){
             var state = getState(el);
 
             // computations
-            state.dragger.style.height = state.barHeight;
-            state.dragger.style.top = state.barTop;
+            state.dragger.style.height = state.barHeight + 'px';
+            state.dragger.style.top = state.barTop + 'px';
 
             // DOM 'scrolling' class
             addClass(state.dragger, 'mod-scrolling');
@@ -316,6 +340,13 @@
 
 
 
+        var updateScroll = function(el){
+            var state = getState(el);
+            state.el2.scrollTop = state.scrollTop;
+        };
+
+
+
 
         /*------------------------------------*\
             Refresh
@@ -325,17 +356,17 @@
             Vue.nextTick(function(){
 
                 // first time with original width...
-                setScrollHeightRatio(el);
-                setScrollbarEnabled(el);
+                computeVisibleArea(el);
+                computeBarEnabled(el);
 
                 // second time with new width... it's hackish...
-                setScrollHeightRatio(el);
-                setScrollbarEnabled(el);
+                computeVisibleArea(el);
+                computeBarEnabled(el);
 
                 // other
-                setScrollbarTop(el);
-                setScrollbarHeight(el);
-                updateDraggerStyles(el);
+                computeBarTop(el);
+                computeBarHeight(el);
+                updateDragger(el);
 
             }.bind(this));
         };
@@ -343,24 +374,21 @@
 
 
 
+
+
+
         /*------------------------------------*\
             Events & Handlers
         \*------------------------------------*/
+
         var scrollHandler = function(el){
-            //if (!this._scrollbar.barEnabled) return false;
-            var el = this.parentElement;
-            setScrollbarTop(el);
-            updateDraggerStyles(el);
-        };
-        var throttledScrollHandler = throttle(scrollHandler, 10);
-
-
-
-        var windowResize = function(el){
             var state = getState(el);
-            return debounce(function(event){
-                var binding = this;
-            }.bind(this), state.config.resizeDebounce)
+            return throttle(function(event){
+                if (!state.barDragging) {
+                    computeBarTop(el);
+                    updateDragger(el);
+                }
+            }.bind(this), state.config.scrollThrottle);
         };
 
 
@@ -369,14 +397,10 @@
             var state = getState(el);
 
             return throttle(function(event){
-
-                var delta = event.pageY - state.barLastPageY;
-                state.barLastPageY = event.pageY;
-                state.el2.scrollTop += delta / state.heightRatio;
-
-                setScrollbarTop(el);
-                updateDraggerStyles(el);
-
+                computeBarTop(el, event);
+                updateDragger(el);
+                computeScrollTop(el);
+                updateScroll(el);
             }.bind(this), state.config.mousemoveThrottle);
         };
 
@@ -413,7 +437,7 @@
                 var state = getState(el);
 
                 state.barDragging = true;
-                state.barLastPageY = event.pageY;
+                state.mouseBarOffsetY = event.layerY;
 
                 if (state.options && state.options.disableBodyUserSelect) {
                     document.body.style.userSelect = 'none';
@@ -432,6 +456,18 @@
                 document.addEventListener('mouseup', state.documentMouseup, 0);
             }.bind(this);
         };
+
+
+
+        var windowResize = function(el){
+            var state = getState(el);
+            return debounce(function(event){
+                // do stuff
+            }.bind(this), state.config.resizeDebounce)
+        };
+
+
+
 
 
 
@@ -455,16 +491,23 @@
             state.el1 = el;
             state.el2 = el.firstChild;
             state.dragger = createDragger(el);
-            state.barMousedown = barMousedown(el),
-            state.documentMousemove = documentMousemove(el),
-            state.documentMouseup = documentMouseup(el),
-            state.windowResize = windowResize(el),
+
+            state.scrollHandler = scrollHandler(el);
+
+            state.barMousedown = barMousedown(el);
+            state.documentMousemove = documentMousemove(el);
+            state.documentMouseup = documentMouseup(el);
+            state.windowResize = windowResize(el);
 
             // initializations
             setupElementsStyles(el);
-            state.el2.addEventListener('scroll', throttledScrollHandler, 0);
+
+            // add events
+            state.el2.addEventListener('scroll', state.scrollHandler, 0);
             state.dragger.addEventListener('mousedown', state.barMousedown, 0);
             //window.addEventListener('resize', state.windowResize, 0);
+
+            // refresh
             refreshScrollbar(el);
 
         };
@@ -472,13 +515,10 @@
 
         var destroyScrollbar = function(el){
 
-            // access binding
-            var binding = el._scrollbarBinding;
-
             // clear events
             //window.removeEventListener('resize', state.windowResize, 0);
             state.dragger.removeEventListener('mousedown', state.barMousedown, 0);
-            state.el2.removeEventListener('scroll', throttledScrollHandler, 0);
+            state.el2.removeEventListener('scroll', state.scrollHandler, 0);
 
             // clear dragger
             state.dragger.remove();
@@ -490,8 +530,7 @@
                 clearTimeout(state.draggingDelayedClassTimeout) : null;
 
             // cleanup of properties ( just to make sure (tm) )
-            delete binding._scrollbar;
-            delete el._scrollbarBinding;
+            delete el._vueNativeScrollbarState;
         };
 
 
