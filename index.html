@@ -27,12 +27,13 @@
             margin: 0 auto;
         }
         .el1 {
-            display: inline-block;
             width: 400px;
             height: 400px;
-            background-color: yellowgreen;
-            overflow: hidden;
+            background-color: green;
             color: white;
+        }
+        .el2 {
+            background-color: #41b883;
         }
         .content-btn {
             position: fixed;
@@ -62,32 +63,39 @@
 
         <br><br>
 
+
+
+
         <h3>v-scrollbar without any options</h3>
 
         <div class="el1" v-scrollbar>
             <div class="el2">
-                <div class="el3">
 
+                <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores obcaecati cumque incidunt quis dolore voluptate, ipsam saepe et voluptatum cupiditate reprehenderit, commodi adipisci. Saepe distinctio, eaque ipsa consectetur voluptas dicta?</div>
+                <div>Quod laborum commodi vel omnis voluptate, corrupti. Ipsum, sit. Voluptatem dolores suscipit, in magnam culpa similique, perspiciatis dolorum non eligendi, et autem quia, iste mollitia repudiandae! Dignissimos sunt consequuntur provident?</div>
+                <div>Perferendis fugiat reiciendis iusto animi sequi reprehenderit quasi rerum non amet laboriosam sit ullam pariatur quo explicabo in, aut voluptates totam nulla aliquid tempore architecto, aspernatur inventore temporibus consectetur. Dolorum.</div>
+                <div>Voluptatum quidem voluptate aspernatur sit veritatis repellat nemo doloremque maxime quasi voluptatibus, ex reiciendis totam quos consectetur modi, dolores ad, in placeat. Eaque possimus sed dolorum error officia fugit dignissimos.</div>
+                <div>Numquam sit illo dignissimos incidunt laborum, minima alias repellendus reiciendis unde voluptate dolorum qui perferendis aliquid eum magnam sint iusto nostrum totam cupiditate. Atque, commodi est beatae voluptatem nisi necessitatibus.</div>
+                <div>Numquam sit illo dignissimos incidunt laborum, minima alias repellendus reiciendis unde voluptate dolorum qui perferendis aliquid eum magnam sint iusto nostrum totam cupiditate. Atque, commodi est beatae voluptatem nisi necessitatibus.</div>
+                <div>Numquam sit illo dignissimos incidunt laborum, minima alias repellendus reiciendis unde voluptate dolorum qui perferendis aliquid eum magnam sint iusto nostrum totam cupiditate. Atque, commodi est beatae voluptatem nisi necessitatibus.</div>
+
+
+                <div v-if="content">
                     <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores obcaecati cumque incidunt quis dolore voluptate, ipsam saepe et voluptatum cupiditate reprehenderit, commodi adipisci. Saepe distinctio, eaque ipsa consectetur voluptas dicta?</div>
                     <div>Quod laborum commodi vel omnis voluptate, corrupti. Ipsum, sit. Voluptatem dolores suscipit, in magnam culpa similique, perspiciatis dolorum non eligendi, et autem quia, iste mollitia repudiandae! Dignissimos sunt consequuntur provident?</div>
                     <div>Perferendis fugiat reiciendis iusto animi sequi reprehenderit quasi rerum non amet laboriosam sit ullam pariatur quo explicabo in, aut voluptates totam nulla aliquid tempore architecto, aspernatur inventore temporibus consectetur. Dolorum.</div>
                     <div>Voluptatum quidem voluptate aspernatur sit veritatis repellat nemo doloremque maxime quasi voluptatibus, ex reiciendis totam quos consectetur modi, dolores ad, in placeat. Eaque possimus sed dolorum error officia fugit dignissimos.</div>
                     <div>Numquam sit illo dignissimos incidunt laborum, minima alias repellendus reiciendis unde voluptate dolorum qui perferendis aliquid eum magnam sint iusto nostrum totam cupiditate. Atque, commodi est beatae voluptatem nisi necessitatibus.</div>
-                    <div>Numquam sit illo dignissimos incidunt laborum, minima alias repellendus reiciendis unde voluptate dolorum qui perferendis aliquid eum magnam sint iusto nostrum totam cupiditate. Atque, commodi est beatae voluptatem nisi necessitatibus.</div>
-                    <div>Numquam sit illo dignissimos incidunt laborum, minima alias repellendus reiciendis unde voluptate dolorum qui perferendis aliquid eum magnam sint iusto nostrum totam cupiditate. Atque, commodi est beatae voluptatem nisi necessitatibus.</div>
-
-
-                    <div v-if="content">
-                        <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores obcaecati cumque incidunt quis dolore voluptate, ipsam saepe et voluptatum cupiditate reprehenderit, commodi adipisci. Saepe distinctio, eaque ipsa consectetur voluptas dicta?</div>
-                        <div>Quod laborum commodi vel omnis voluptate, corrupti. Ipsum, sit. Voluptatem dolores suscipit, in magnam culpa similique, perspiciatis dolorum non eligendi, et autem quia, iste mollitia repudiandae! Dignissimos sunt consequuntur provident?</div>
-                        <div>Perferendis fugiat reiciendis iusto animi sequi reprehenderit quasi rerum non amet laboriosam sit ullam pariatur quo explicabo in, aut voluptates totam nulla aliquid tempore architecto, aspernatur inventore temporibus consectetur. Dolorum.</div>
-                        <div>Voluptatum quidem voluptate aspernatur sit veritatis repellat nemo doloremque maxime quasi voluptatibus, ex reiciendis totam quos consectetur modi, dolores ad, in placeat. Eaque possimus sed dolorum error officia fugit dignissimos.</div>
-                        <div>Numquam sit illo dignissimos incidunt laborum, minima alias repellendus reiciendis unde voluptate dolorum qui perferendis aliquid eum magnam sint iusto nostrum totam cupiditate. Atque, commodi est beatae voluptatem nisi necessitatibus.</div>
-                    </div>
-
                 </div>
+
             </div>
         </div>
+
+
+
+
+
+
 
 
 
@@ -98,7 +106,6 @@
 
         <div class="el1" v-scrollbar>
             <div class="el2">
-                <div class="el3">
 
                     <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores obcaecati cumque incidunt quis dolore voluptate, ipsam saepe et voluptatum cupiditate reprehenderit, commodi adipisci. Saepe distinctio, eaque ipsa consectetur voluptas dicta?</div>
 
@@ -110,7 +117,6 @@
                         <div>Numquam sit illo dignissimos incidunt laborum, minima alias repellendus reiciendis unde voluptate dolorum qui perferendis aliquid eum magnam sint iusto nostrum totam cupiditate. Atque, commodi est beatae voluptatem nisi necessitatibus.</div>
                     </div>
 
-                </div>
             </div>
         </div>
 
@@ -124,7 +130,6 @@
 
         <div class="el1" v-scrollbar>
             <div class="el2">
-                <div class="el3">
 
                     <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores obcaecati cumque incidunt quis dolore voluptate, ipsam saepe et voluptatum cupiditate reprehenderit, commodi adipisci. Saepe distinctio, eaque ipsa consectetur voluptas dicta?</div>
 
@@ -132,7 +137,6 @@
                         <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores obcaecati cumque incidunt quis dolore voluptate, ipsam saepe et voluptatum cupiditate reprehenderit, commodi adipisci. Saepe distinctio, eaque ipsa consectetur voluptas dicta?</div>
                     </div>
 
-                </div>
             </div>
         </div>
 
@@ -144,7 +148,6 @@
 
         <div class="el1" v-scrollbar>
             <div class="el2">
-                <div class="el3">
 
                     <div v-if="!content">
                         <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores obcaecati cumque incidunt quis dolore voluptate, ipsam saepe et voluptatum cupiditate reprehenderit, commodi adipisci. Saepe distinctio, eaque ipsa consectetur voluptas dicta?</div>
@@ -163,7 +166,6 @@
                         <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores obcaecati cumque incidunt quis dolore voluptate, ipsam saepe et voluptatum cupiditate reprehenderit, commodi adipisci. Saepe distinctio, eaque ipsa consectetur voluptas dicta?</div>
                     </div>
 
-                </div>
             </div>
         </div>
 
@@ -176,7 +178,6 @@
 
         <div class="el1" v-scrollbar>
             <div class="el2">
-                <div class="el3">
 
                     <div class="content-padding">
 
@@ -195,7 +196,6 @@
                     </div>
 
 
-                </div>
             </div>
         </div>
 
