@@ -4,41 +4,20 @@
 
     TODO:
 
-    * More Options
-    * Option to disable parent scroll
-      when reached bottom of scrollbar element
-    * Option to disable scrollbar
+    * Fix refresh sometimes not firing on child components update
 
-    * Any performance improvements
+    * Option to dynamically enable/disable scrollbar
 
-    * Nested Scrollbar Elements
-    * Horizontal Scrolling & Scrollbar
-
-    * Custom classes compatibility
-      with Vue scoped styles
-
-    * Option for emitting Vue events
-    * Option for programmatic scrollTo
-    * Option for programmatic refresh
-    * Option for touch drag dragger
-
-    * Refresh on directive 'updated'
-    * Refresh on directive 'componentUpdated'
-    * Refresh on content & nested content change
-    * Refresh on parent & child components change
-    * Refresh on img inside content load
-    * Refresh on page resize
-    * Refresh on page orientationchange
-    * Refresh on programmatic scroll
-
-    * Fix user select on IE & Firefox
+    * Support for touch dragging dragger
+    * Support for touch preventing parent scroll
+    * Support for horizontal scrolling
+    * Support for refresh on dynamic content (like img) load
+    * Support for refresh on page orientationchange
+    * Support for lass compatibility with component scoped stylesheets
 
 \*----------------------------------------*/
 ;(function(){
     'use strict'
-
-
-
 
 
     /*------------------------------------*\
@@ -55,7 +34,6 @@
             }, delay);
         };
     };
-
 
     /*------------------------------------*\
         Throttle Helper
@@ -84,10 +62,6 @@
         };
     };
 
-
-
-
-
     /*------------------------------------*\
         Class Manipulation Helper
         https://plainjs.com/javascript/attributes/adding-removing-and-testing-for-classes-9/
@@ -105,6 +79,21 @@
         if (el.classList) el.classList.remove(className);
         else el.className = el.className.replace(new RegExp('\\b'+ className+'\\b', 'g'), '');
     }
+
+
+    /*------------------------------------*\
+        Style Vendor Prefixes
+    \*------------------------------------*/
+    function compatStyle(element, property, value) {
+        element.style["webkit" + property] = value;
+        element.style["moz" + property] = value;
+        element.style["ms" + property] = value;
+        element.style["o" + property] = value;
+        element.style[ property.slice(0,1).toLowerCase() + property.substring(1) ] = value;
+    }
+
+
+
 
 
 
@@ -127,44 +116,58 @@
 
                 // vue native scrollbar config
                 config: {
+
                     scrollThrottle: 10,
                     mousemoveThrottle: 10,
+                    resizeRefresh: true,
                     resizeDebounce: 100,
-                    phantomScrollingClassDelay: 1000,
-                    phantomDraggingClassDelay: 1000,
+                    unselectableBody: true,
+                    scrollingPhantomDelay: 1000,
+                    draggingPhantomDelay: 1000,
+                    preventParentScroll: false,
+
+                    el1Class: 'vns',
+                    el1ScrollEnabledClass: 'vns-enabled',
+                    el1ScrollDisabledClass: 'vns-disabled',
+                    el1ScrollingClass: 'vns-scrolling',
+                    el1ScrollingPhantomClass: 'vns-scrolling-phantom',
+                    el1DraggingClass: 'vns-dragging',
+                    el1DraggingPhantomClass: 'vns-dragging-phantom',
+
+                    draggerClass: 'vns-dragger',
+                    draggerStylerClass: 'vns-dragger-styler',
+
                 },
 
-                // binding + binding options
+                // reference to binding
                 binding: null,
-                options: null,
 
-                // references to native DOM elements
+                // references to directive DOM elements
                 el1: null,
                 el2: null,
                 dragger: null,
 
-                // main properties that are computed on scroll and applied as DOM style
-                visibleArea: 0,
-                scrollTop: 0,
-                barTop: 0,
-                barHeight: 0,
-                mouseBarOffsetY: 0,
+                // properties computed for internal directive logic & DOM manipulations
+                visibleArea: 0, // ratio between container height and scrollable content height
+                scrollTop: 0, // position of content scrollTop in px
+                barTop: 0, // position of dragger in px
+                barHeight: 0, // height of dragger in px
+                mouseBarOffsetY: 0, // relative position of mouse at the time of clicking on dragger
+                barDragging: false, // when the dragger is used
 
-                // helper properties
-                barDragging: false,
-
-                // timeouts for DOM class manipulation
+                // references to timeouts for DOM class manipulation
                 scrollingClassTimeout: null,
                 draggingClassTimeout: null,
-                phantomScrollingClassTimeout: null,
-                phantomDraggingClassTimeout: null,
+                scrollingPhantomClassTimeout: null,
+                draggingPhantomClassTimeout: null,
 
                 // references to a functions we'll need when removing events
                 barMousedown: null,
                 documentMousemove: null,
                 documentMouseup: null,
-                //windowResize: null,
+                windowResize: null,
                 scrollHandler: null,
+                wheelHandler: null,
 
             }
             return el._vueNativeScrollbarState;
@@ -177,6 +180,10 @@
         var getState = function(el){
             return el._vueNativeScrollbarState;
         };
+
+
+
+
 
 
 
@@ -197,6 +204,10 @@
             }
             return true;
         };
+
+
+
+
 
 
 
@@ -225,7 +236,7 @@
             } // else the function gets called when moving dragger with mouse
 
 
-            var relativeMouseY = (event.y - state.el1.getBoundingClientRect().top);
+            var relativeMouseY = (event.clientY - state.el1.getBoundingClientRect().top);
             if (relativeMouseY <= state.mouseBarOffsetY) { // if bar is trying to go over top
                 state.barTop = 0;
             }
@@ -251,6 +262,15 @@
         };
 
 
+
+
+
+
+
+
+
+
+
         /*------------------------------------*\
             Styles & DOM
         \*------------------------------------*/
@@ -260,11 +280,9 @@
             var dragger = document.createElement('div');
             var draggerStyler = document.createElement('div');
 
-            dragger.className = (
-                state.options && state.options.draggerClass ? state.options.draggerClass : 'vns-dragger'
-            );
+            dragger.className = state.config.draggerClass;
 
-            if (state.options && state.options.disableStyles) {} else {
+            if (state.config.disableStyles) {} else {
                 dragger.style.position = 'absolute';
                 dragger.style.right = 0;
                 dragger.style.width = '10px';
@@ -273,7 +291,7 @@
             }
 
 
-            draggerStyler.className = 'vns-dragger-styler';
+            draggerStyler.className = state.config.draggerStylerClass;
 
             draggerStyler.style.width = 'calc(100% - 2px)';
             draggerStyler.style.height = 'calc(100% - 4px)';
@@ -288,24 +306,6 @@
         };
 
 
-        var setupElementsStyles = function(el){
-            var state = getState(el);
-
-            // el1
-            addClass(state.el1, 'vns');
-            state.el1.style.position = 'relative';
-            state.el1.style.overflow = 'hidden';
-            //state.el1.style.height = '100%';
-
-            // el2
-            state.el2.style.overflowX = 'hidden';
-            state.el2.style.overflowY = 'scroll';
-            state.el2.style.height = '100%';
-            state.el2.style.width = 'calc(100% + 18px)';
-
-        };
-
-
 
         var updateDragger = function(el){
             var state = getState(el);
@@ -316,42 +316,67 @@
             state.dragger.style.top = Math.ceil( state.barTop ) + 'px';
 
 
+
             // scrollbar enabled /disabled classes
             if (state.visibleArea<1) {
-                removeClass(state.el1, 'vns-disabled');
-                addClass(state.el1, 'vns-enabled');
+                removeClass(state.el1, state.config.el1ScrollDisabledClass);
+                addClass(state.el1, state.config.el1ScrollEnabledClass);
             } else {
-                removeClass(state.el1, 'vns-enabled');
-                addClass(state.el1, 'vns-disabled');
+                removeClass(state.el1, state.config.el1ScrollEnabledClass);
+                addClass(state.el1, state.config.el1ScrollDisabledClass);
             }
 
 
 
             // add scrolling class
-            addClass(state.el1, 'vns-scrolling');
+            addClass(state.el1, state.config.el1ScrollingClass);
 
             // remove scrolling class
             state.scrollingClassTimeout ?
                 clearTimeout(state.scrollingClassTimeout) : null;
             state.scrollingClassTimeout = setTimeout(function() {
-                removeClass(state.el1, 'vns-scrolling');
+                removeClass(state.el1, state.config.el1ScrollingClass);
             }, state.config.scrollThrottle + 5);
 
 
 
             // add phantom scrolling class
-            addClass(state.el1, 'vns-scrolling-phantom');
+            addClass(state.el1, state.config.el1ScrollingPhantomClass);
 
             // remove phantom scrolling class
-            state.phantomScrollingClassTimeout ?
-                clearTimeout(state.phantomScrollingClassTimeout) : null;
-            state.phantomScrollingClassTimeout = setTimeout(function() {
-                removeClass(state.el1, 'vns-scrolling-phantom');
-            }, state.config.scrollThrottle + state.config.phantomScrollingClassDelay);
+            state.scrollingPhantomClassTimeout ?
+                clearTimeout(state.scrollingPhantomClassTimeout) : null;
+            state.scrollingPhantomClassTimeout = setTimeout(function() {
+                removeClass(state.el1, state.config.el1ScrollingPhantomClass);
+            }, state.config.scrollThrottle + state.config.scrollingPhantomDelay);
 
 
 
 
+
+        };
+
+
+
+        var preventParentScroll = function(el, event){
+            var state = getState(el);
+
+            var scrollDist = state.el2.scrollHeight - state.el2.clientHeight;
+            var scrollTop = state.el2.scrollTop;
+            var deltaY = event.deltaY;
+
+            var wheelingUp = event.deltaY < 0;
+            var wheelingDown = event.deltaY > 0;
+
+            if ( (scrollTop <= 0) && wheelingUp) {
+                event.preventDefault();
+                return false;
+            }
+
+            if ( (scrollTop >= scrollDist) && wheelingDown) {
+                event.preventDefault();
+                return false;
+            }
 
         };
 
@@ -365,11 +390,30 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
         /*------------------------------------*\
             Refresh
         \*------------------------------------*/
 
-        var refreshScrollbar = function(el){
+        var refreshScrollbar = function(el, onInitial){
+
+            if (onInitial) {
+                computeVisibleArea(el);
+                computeBarTop(el);
+                computeBarHeight(el);
+                updateDragger(el);
+            }
+
             Vue.nextTick(function(){
 
                 computeVisibleArea(el);
@@ -379,6 +423,18 @@
 
             }.bind(this));
         };
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -398,6 +454,14 @@
                     updateDragger(el);
                 }
             }.bind(this), state.config.scrollThrottle);
+        };
+
+
+        var wheelHandler = function(el){
+            var state = getState(el);
+            return function(event){
+                preventParentScroll(el, event);
+            }.bind(this);
         };
 
 
@@ -422,15 +486,13 @@
 
                 // enable user select
                 state.el1.style.userSelect = '';
-                if (state.options && state.options.disableBodyUserSelect) {
-                    document.body.style.userSelect = '';
-                }
+                state.config.unselectableBody ? compatStyle(document.body, 'UserSelect', '') : null;
 
                 // remove dragging class
-                removeClass(state.el1, 'vns-dragging');
-                state.phantomDraggingClassTimeout = setTimeout(function() {
-                    removeClass(state.el1, 'vns-dragging-phantom');
-                }, state.config.phantomDraggingClassDelay);
+                removeClass(state.el1, state.config.el1DraggingClass);
+                state.draggingPhantomClassTimeout = setTimeout(function() {
+                    removeClass(state.el1, state.config.el1DraggingPhantomClass);
+                }, state.config.draggingPhantomDelay);
 
 
                 // remove events
@@ -452,16 +514,13 @@
 
                 // disable user select
                 state.el1.style.userSelect = 'none';
-                if (state.options && state.options.disableBodyUserSelect) {
-                    document.body.style.userSelect = 'none';
-                }
+                state.config.unselectableBody ? compatStyle(document.body, 'UserSelect', 'none') : null;
 
                 // add dragging class
-                addClass(state.el1, 'vns-dragging');
-                state.phantomDraggingClassTimeout ?
-                    clearTimeout(state.phantomDraggingClassTimeout) : null;
-                addClass(state.el1, 'vns-dragging-phantom');
-
+                addClass(state.el1, state.config.el1DraggingClass);
+                state.draggingPhantomClassTimeout ?
+                    clearTimeout(state.draggingPhantomClassTimeout) : null;
+                addClass(state.el1, state.config.el1DraggingPhantomClass);
 
                 // add events
                 document.addEventListener('mousemove', state.documentMousemove, 0);
@@ -473,12 +532,24 @@
 
 
 
-        //var windowResize = function(el){
-        //    var state = getState(el);
-        //    return debounce(function(event){
-        //        // do stuff
-        //    }.bind(this), state.config.resizeDebounce)
-        //};
+        var windowResize = function(el){
+            var state = getState(el);
+            return debounce(function(event){
+                refreshScrollbar(el);
+            }.bind(this), state.config.resizeDebounce)
+        };
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -499,52 +570,82 @@
             // create state
             var state = createState(el);
 
+            // setup options
+            var options = binding.value ? binding.value : {};
+            for (var key in options){
+                state.config[key] = options[key];
+            };
+
             // setup scrollbar "state"
             state.binding = binding;
-            state.options = binding.value;
             state.el1 = el;
             state.el2 = el.firstChild;
             state.dragger = createDragger(el);
 
-            state.scrollHandler = scrollHandler(el);
-
+            // create and reference event listeners
             state.barMousedown = barMousedown(el);
             state.documentMousemove = documentMousemove(el);
             state.documentMouseup = documentMouseup(el);
-            //state.windowResize = windowResize(el);
+            state.windowResize = windowResize(el);
+            state.scrollHandler = scrollHandler(el);
+            state.wheelHandler = wheelHandler(el);
 
-            // initializations
-            setupElementsStyles(el);
+            // el1 styles and class
+            addClass(state.el1, state.config.el1Class);
+            state.el1.style.position = 'relative';
+            state.el1.style.overflow = 'hidden';
+
+            // el2 styles
+            state.el2.style.overflowX = 'hidden';
+            state.el2.style.overflowY = 'scroll';
+            state.el2.style.height = '100%';
+            state.el2.style.width = 'calc(100% + 18px)';
 
             // add events
+            // - wheel event is only needed when preventParentScroll option is enabled
+            // - resize event is only needed when resizeRefresh option is enabled
             state.el2.addEventListener('scroll', state.scrollHandler, 0);
             state.dragger.addEventListener('mousedown', state.barMousedown, 0);
-            //window.addEventListener('resize', state.windowResize, 0);
+            state.config.preventParentScroll ? state.el2.addEventListener('wheel', state.wheelHandler, 0) : null;
+            state.config.resizeRefresh ? window.addEventListener('resize', state.windowResize, 0) : null;
 
-            // refresh
-            refreshScrollbar(el);
+            // initial calculations using refresh scrollbar
+            refreshScrollbar(el, 1);
 
         };
+
+
+
+
+
+
+
+
+
+
 
 
         var destroyScrollbar = function(el){
 
             // clear events
-            //window.removeEventListener('resize', state.windowResize, 0);
             state.dragger.removeEventListener('mousedown', state.barMousedown, 0);
             state.el2.removeEventListener('scroll', state.scrollHandler, 0);
+            state.el2.removeEventListener('wheel', state.scrollHandler, 0);
+            window.removeEventListener('resize', state.windowResize, 0);
 
-            // clear dragger
-            state.dragger.remove();
+            // clear elements
+            state.dragger.removeChild(state.dragger.firstChild);
+            state.el2.removeChild(state.dragger);
 
-            // clear timeouts
-            state.draggingDelayedClassTimeout ?
-                clearTimeout(state.draggingDelayedClassTimeout) : null;
-            state.scrollingDelayedClassTimeout ?
-                clearTimeout(state.draggingDelayedClassTimeout) : null;
+            // clear timeouts that may be still running
+            state.scrollingPhantomClassTimeout ?
+                clearTimeout(state.scrollingPhantomClassTimeout) : null;
+            state.draggingPhantomClassTimeout ?
+                clearTimeout(state.draggingPhantomClassTimeout) : null;
 
-            // cleanup of properties ( just to make sure (tm) )
+            // delete state object from element
             delete el._vueNativeScrollbarState;
+
         };
 
 
@@ -562,29 +663,22 @@
             //inserted: function(el, binding, vnode, oldVnode){},
 
             update: function(el, binding, vnode, oldVnode){
-                refreshScrollbar.call(this, el, binding);
+                refreshScrollbar.call(this, el, 0);
             },
 
             componentUpdated: function(el, binding, vnode, oldVnode){
-                refreshScrollbar.call(this, el, binding);
+                refreshScrollbar.call(this, el, 0);
             },
 
             unbind: function(el, binding, vnode, oldVnode){
-                destroyScrollbar.call(this, el, binding);
+                destroyScrollbar.call(this, el);
             },
 
         });
 
 
 
-
     };
-
-
-
-
-
-
 
 
 
@@ -602,8 +696,6 @@
     if (typeof Vue !== 'undefined') {
         Vue.use(VueScrollbar)
     }
-
-
 
 
 
