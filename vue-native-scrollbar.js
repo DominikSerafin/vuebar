@@ -7,9 +7,11 @@
     * Dragger drag only with left click
 
     * Fix refresh sometimes not firing on child components update
+    * Fix position of el2 on mobile browser where there aren't any scrollbars (overflow-y: scroll thing)
 
     * Option to dynamically enable/disable scrollbar
 
+    * Support for MutationObserver refresh
     * Support for touch dragging dragger
     * Support for touch preventing parent scroll
     * Support for horizontal scrolling
@@ -120,7 +122,7 @@
                 config: {
 
                     scrollThrottle: 10,
-                    mousemoveThrottle: 10,
+                    draggerThrottle: 10,
                     resizeRefresh: true,
                     resizeDebounce: 100,
                     unselectableBody: true,
@@ -129,8 +131,8 @@
                     preventParentScroll: false,
 
                     el1Class: 'vns',
-                    el1ScrollEnabledClass: 'vns-enabled',
-                    el1ScrollDisabledClass: 'vns-disabled',
+                    el1ScrollVisibleClass: 'vns-visible',
+                    el1ScrollInvisibleClass: 'vns-invisible',
                     el1ScrollingClass: 'vns-scrolling',
                     el1ScrollingPhantomClass: 'vns-scrolling-phantom',
                     el1DraggingClass: 'vns-dragging',
@@ -284,22 +286,9 @@
 
             dragger.className = state.config.draggerClass;
 
-            if (state.config.disableStyles) {} else {
-                dragger.style.position = 'absolute';
-                dragger.style.right = 0;
-                dragger.style.width = '10px';
-                dragger.style.transform = 'rotate3d(0,0,0,0)';
-                dragger.style.backfaceVisibility = 'hidden';
-            }
-
+            dragger.style.position = 'absolute';
 
             draggerStyler.className = state.config.draggerStylerClass;
-
-            draggerStyler.style.width = 'calc(100% - 2px)';
-            draggerStyler.style.height = 'calc(100% - 4px)';
-            draggerStyler.style.marginTop = '2px';
-            draggerStyler.style.backgroundColor = 'rgba(55, 55, 55,.6)';
-
 
             dragger.appendChild(draggerStyler);
             state.el1.appendChild(dragger);
@@ -309,52 +298,55 @@
 
 
 
-        var updateDragger = function(el){
+        var updateDragger = function(el, options){
+            var options = options ? options : {};
             var state = getState(el);
 
 
-            // setting dragger styles (round up so there isn't any gaps)
-            state.dragger.style.height = Math.ceil( state.barHeight ) + 'px';
-            state.dragger.style.top = Math.ceil( state.barTop ) + 'px';
+            // setting dragger styles
+            state.dragger.style.height = parseInt( Math.round( state.barHeight)  ) + 'px';
+            state.dragger.style.top = parseInt( Math.round( state.barTop ) ) + 'px';
+            //state.dragger.style.height = Math.ceil( state.barHeight ) + 'px';
+            //state.dragger.style.top = Math.ceil( state.barTop ) + 'px';
 
 
-
-            // scrollbar enabled /disabled classes
+            // scrollbar visible / invisible classes
             if (state.visibleArea<1) {
-                removeClass(state.el1, state.config.el1ScrollDisabledClass);
-                addClass(state.el1, state.config.el1ScrollEnabledClass);
+                removeClass(state.el1, state.config.el1ScrollInvisibleClass);
+                addClass(state.el1, state.config.el1ScrollVisibleClass);
             } else {
-                removeClass(state.el1, state.config.el1ScrollEnabledClass);
-                addClass(state.el1, state.config.el1ScrollDisabledClass);
+                removeClass(state.el1, state.config.el1ScrollVisibleClass);
+                addClass(state.el1, state.config.el1ScrollInvisibleClass);
             }
 
 
 
-            // add scrolling class
-            addClass(state.el1, state.config.el1ScrollingClass);
-
-            // remove scrolling class
-            state.scrollingClassTimeout ?
-                clearTimeout(state.scrollingClassTimeout) : null;
-            state.scrollingClassTimeout = setTimeout(function() {
-                removeClass(state.el1, state.config.el1ScrollingClass);
-            }, state.config.scrollThrottle + 5);
+            if (options.withScrollingClasses) {
 
 
+                // add scrolling class
+                addClass(state.el1, state.config.el1ScrollingClass);
 
-            // add phantom scrolling class
-            addClass(state.el1, state.config.el1ScrollingPhantomClass);
-
-            // remove phantom scrolling class
-            state.scrollingPhantomClassTimeout ?
-                clearTimeout(state.scrollingPhantomClassTimeout) : null;
-            state.scrollingPhantomClassTimeout = setTimeout(function() {
-                removeClass(state.el1, state.config.el1ScrollingPhantomClass);
-            }, state.config.scrollThrottle + state.config.scrollingPhantomDelay);
+                // remove scrolling class
+                state.scrollingClassTimeout ?
+                    clearTimeout(state.scrollingClassTimeout) : null;
+                state.scrollingClassTimeout = setTimeout(function() {
+                    removeClass(state.el1, state.config.el1ScrollingClass);
+                }, state.config.scrollThrottle + 5);
 
 
 
+                // add phantom scrolling class
+                addClass(state.el1, state.config.el1ScrollingPhantomClass);
 
+                // remove phantom scrolling class
+                state.scrollingPhantomClassTimeout ?
+                    clearTimeout(state.scrollingPhantomClassTimeout) : null;
+                state.scrollingPhantomClassTimeout = setTimeout(function() {
+                    removeClass(state.el1, state.config.el1ScrollingPhantomClass);
+                }, state.config.scrollThrottle + state.config.scrollingPhantomDelay);
+
+            }
 
         };
 
@@ -407,14 +399,16 @@
             Refresh
         \*------------------------------------*/
 
-        var refreshScrollbar = function(el, onInitial){
+        var refreshScrollbar = function(el, options){
+            var options = options ? options : {};
 
-            if (onInitial) {
+            if (options.init) {
                 computeVisibleArea(el);
                 computeBarTop(el);
                 computeBarHeight(el);
                 updateDragger(el);
             }
+
 
             Vue.nextTick(function(){
 
@@ -451,9 +445,11 @@
         var scrollHandler = function(el){
             var state = getState(el);
             return throttle(function(event){
+                computeVisibleArea(el);
+                computeBarHeight(el); // fallback for an undetected content change
                 if (!state.barDragging) {
                     computeBarTop(el);
-                    updateDragger(el);
+                    updateDragger(el, {withScrollingClasses: true});
                 }
             }.bind(this), state.config.scrollThrottle);
         };
@@ -475,7 +471,7 @@
                 updateDragger(el);
                 computeScrollTop(el);
                 updateScroll(el);
-            }.bind(this), state.config.mousemoveThrottle);
+            }.bind(this), state.config.draggerThrottle);
         };
 
 
@@ -537,7 +533,7 @@
         var windowResize = function(el){
             var state = getState(el);
             return debounce(function(event){
-                refreshScrollbar(el);
+                refreshScrollbar(el, {resize: true});
             }.bind(this), state.config.resizeDebounce)
         };
 
@@ -614,7 +610,7 @@
             state.config.resizeRefresh ? window.addEventListener('resize', state.windowResize, 0) : null;
 
             // initial calculations using refresh scrollbar
-            refreshScrollbar(el, 1);
+            refreshScrollbar(el, {init: 1});
 
         };
 
@@ -667,11 +663,11 @@
             //inserted: function(el, binding, vnode, oldVnode){},
 
             update: function(el, binding, vnode, oldVnode){
-                refreshScrollbar.call(this, el, 0);
+                refreshScrollbar.call(this, el, {update: true});
             },
 
             componentUpdated: function(el, binding, vnode, oldVnode){
-                refreshScrollbar.call(this, el, 0);
+                refreshScrollbar.call(this, el, {update: true});
             },
 
             unbind: function(el, binding, vnode, oldVnode){
