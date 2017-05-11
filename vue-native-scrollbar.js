@@ -4,6 +4,8 @@
 
     TODO:
 
+    * Dragger drag only with left click
+
     * Fix refresh sometimes not firing on child components update
 
     * Option to dynamically enable/disable scrollbar
@@ -596,10 +598,12 @@
             state.el1.style.overflow = 'hidden';
 
             // el2 styles
+            var edge = window.navigator.userAgent.indexOf('Edge') > -1;
             state.el2.style.overflowX = 'hidden';
             state.el2.style.overflowY = 'scroll';
+            state.el2.style.msOverflowStyle = 'scrollbar';
             state.el2.style.height = '100%';
-            state.el2.style.width = 'calc(100% + 18px)';
+            state.el2.style.width = 'calc(100% + '+ (edge ? 12 : 17) +'px)';
 
             // add events
             // - wheel event is only needed when preventParentScroll option is enabled
