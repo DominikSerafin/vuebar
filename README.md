@@ -21,6 +21,4 @@ Vue 2 directive for custom scrollbar that uses native scroll behavior. Lightweig
 [author](https://serafin.io/)
 
 
-[ggather](https://ggather.com
-
-/)
+[ggather](https://ggather.com/)
