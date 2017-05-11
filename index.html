@@ -26,6 +26,22 @@
             background-color: #3079f4;
         }
 
+
+        code {
+            background-color: #eee;
+            background-color: #f0f6ff;
+            display: inline-block;
+        }
+
+        code.full {
+            display: block;
+            padding: 10px 20px;
+        }
+
+        pre {
+            margin: 0;
+        }
+
         #app {
             display: block;
             margin: 0 auto;
@@ -90,7 +106,7 @@
         }
 
         .main-title {
-            font-size: 40px;
+            font-size: 47px;
             font-weight: 700;
             color: #3079f4;
             color: #1c69ec;
@@ -120,10 +136,10 @@
             margin-top: 50px;
             padding: 0px;
             font-weight: 700;
-            font-size: 30px;
+            font-size: 25px;
             line-height: 1.4;
             padding-left: 15px;
-            padding-top: 5px;
+            padding-top: 15px;
             padding-bottom: 5px;
             background-color: white;
             color: #f0f6ff;
@@ -155,7 +171,7 @@
         }
 
         .container h3.first {
-            margin: 0;
+            margin-top: 0;
         }
 
         .container p {
@@ -168,6 +184,21 @@
         .container.mod-table {
             padding: 0;
         }
+
+
+        .pure-button {
+            background-color: #f0f6ff;
+            color: #3079f4;
+            font-weight: 500;
+        }
+        .pure-button:hover {
+            background: #f0f6ff;
+        }
+
+        .pure-button:focus {
+            background: #f0f6ff;
+        }
+
 
         .pure-table {
             border-color: #0d4cb9;
@@ -303,6 +334,10 @@
             padding: 20px;
         }
 
+        .comment {
+            opacity: .3;
+        }
+
     </style>
 
 </head>
@@ -383,7 +418,7 @@
 
 
 
-            <p class="main-desc">Vue directive for custom scrollbar that uses native scroll behavior. <br>Lightweight, performant, customizable and without dependencies.</p>
+            <p class="main-desc">Vue 2 directive for custom scrollbar that uses native scroll behavior. <br>Lightweight, performant, customizable and without dependencies.</p>
 
             <div>
                 <a class="main-ggather" href="https://ggather.com/" target="_blank">
@@ -417,26 +452,102 @@
 
              <p>   It uses native scroll events to detect and synchronize scrollbar position. This makes possible to hack into the native events of scrolling element without hassle.</p>
 
-            <p> It was created initially for GGather.com where it plays nicely with a lot of dynamic content changes and most importantly - with infinite scrolling. And now after some testing, fixes &amp; improvements I'm sharing it with community.</p>
-
-
-
-            <h3 >Important</h3>
-
-            <ul>
-                <li>lorem</li>
-                <li>ipsum</li>
-            </ul>
-
-
-
-            <h3>Installation</h3>
-
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis molestiae ea porro, asperiores quaerat alias voluptas, reiciendis culpa tempore, corrupti dolores soluta nemo incidunt harum obcaecati rem sequi, nobis. Eaque!</p>
+            <p> It was created initially for GGather.com where it plays nicely with a lot of dynamic content changes and most importantly - with infinite scrolling. And now after testing, fixes &amp; improvements I'm sharing it with community.</p>
 
 
 
         </div>
+
+
+
+
+
+        <h2 class="container-title">Installation</h2>
+        <div class="container">
+
+
+
+            <h3 class="first">NPM</h3>
+
+<code class="full"><pre>npm install vue-native-scrollbar --save</pre></code>
+
+            <h3>CDN</h3>
+
+<code class="full"><pre>https://unpkg.com/vue-native-scrollbar</pre></code>
+
+
+            <h3>Manual</h3>
+
+            <p>Download the .js file directly from latest build and include manually in your project</p>
+
+<a class="pure-button" target="_blank" href="https://raw.githubusercontent.com/DominikSerafin/vue-native-scrollbar/master/vue-native-scrollbar.js" download>vue-native-scrollbar.js</a>
+
+
+
+
+        </div>
+
+
+
+        <h2 class="container-title">Usage</h2>
+        <div class="container">
+
+
+
+            <h3 class="first">Markup</h3>
+
+<code class="full"><pre>
+<strong>&#x3C;div v-scrollbar&#x3E;</strong> <span class="comment">&#x3C;!-- el1 --&#x3E;</span>
+  <strong>&#x3C;div&#x3E;</strong> <span class="comment">&#x3C;!-- el2 --&#x3E;</span>
+     <span class="comment">&#x3C;!-- your scrollable content --&#x3E;</span>
+  <strong>&#x3C;/div&#x3E;</strong>
+  <span class="comment">&#x3C;!-- dragger will be automatically added here --&#x3E;</span>
+<strong>&#x3C;/div&#x3E;</strong>
+</pre></code>
+
+
+            <h3>How It Works</h3>
+
+            <p>Every Vue Native Scrollbar (referenced further  as VNS) scrollable content needs to be wrapped in two elements. First outermost parent element <code>el1</code> hides the native browser scrollbar of the second parent element <code>el2</code> and it also contains the custom scrollbar element (referenced further as <code>dragger</code>) which gets appended automatically on the VNS initialization. </p>
+
+            <p>The VNS internals listen to <code>el2</code> scroll event and synchronizes <code>dragger</code> position when you scroll. And vice versa - when you directly use <code>dragger</code> it listens to mouse events to detect the position of dragger and sets scroll position of <code>el2</code>.</p>
+
+            <p>Other than setting the scroll position (<code>scrollTop</code>) when you use <code>dragger</code> the VNS doesn't interfere at all with native browser scrolling and you can listen to scroll/wheel/etc. events as you would normally do.</p>
+
+            <p>This also means the scroll behavior will remain unchanged. You'll still be able to use mouse wheel click scrolling or touch scrolling with inertia. It doesn't try to reimplement the scrolling from scratch like most of similar libraries try (with bad results).</p>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+        <h2 class="container-title">Other Information</h2>
+        <div class="container">
+
+
+            <h3 class="first">Compatibility</h3>
+
+            <p>It works as it should in all current major browsers and also there aren't any problems above (and including) IE9. If you spot any problems, please fill in issue or preferably pull request.</p>
+
+
+            <h3>Gotchas</h3>
+
+            <ul>
+                <li>Sometimes in rare cases the scrollbar won't refresh on child components update. In that case please manually use <code>$forceUpdate</code> on component where you're using VNS to refresh the scrollbar position.</li>
+                <li>If you don't see the scrollbar maybe you forgot to set the height of the first element?</li>
+            </ul>
+
+        </div>
+
+
+
+
 
 
 
@@ -468,7 +579,7 @@
                         <td>preventParentScroll</td>
                         <td>Boolean</td>
                         <td>false</td>
-                        <td>Prevent parent taking over scrolling after reaching bottom or top of vue native scrollbar element. This feature is in beta - right now it supports only detecting mouse wheel scroll event and doesn't support touch scrolling. Pull requests welcome.</td>
+                        <td>Prevent parent taking over scrolling after reaching bottom or top of vue native scrollbar element. This feature is in beta - right now it supports only detecting mouse wheel event and doesn't support touch scrolling. Pull requests welcome.</td>
                     </tr>
 
                     <tr>
@@ -627,7 +738,23 @@
 
 
 
-        <!--
+        <h2 class="container-title">F.A.Q.</h2>
+        <div class="container">
+
+
+            <h3 class="first">My scrollbar doesn't update.</h3>
+
+            <p></p>
+
+            <h3>My</h3>
+            <p></p>
+
+
+
+
+
+        </div>
+
 
 
 
@@ -827,7 +954,6 @@
             </div>
         </div>
 
-         -->
 
 
 
