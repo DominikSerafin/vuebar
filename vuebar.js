@@ -22,7 +22,7 @@
         function createState(el){
             el._vuebarState = {
 
-                // vuebarconfig
+                // vuebar "state" + defaults
                 config: {
 
                     scrollThrottle: 10,
@@ -100,10 +100,6 @@
         function markupValidation(el){
             if (!el.firstChild) {
                 Vue.util.warn('(Vuebar) Element 1 with v-bar directive doesn\'t have required child element 2.');
-                return false;
-            }
-            if (el.childElementCount > 1) {
-                Vue.util.warn('(Vuebar) Element 1 with v-bar directive can have only one root element. It has ' + el.childElementCount + '.');
                 return false;
             }
             return true;
