@@ -793,7 +793,7 @@
 
                 <li>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Directive instead custom component, which saves a lot of headaches.
+                    Directive instead of a custom component, which saves a lot of headaches.
                 </li>
 
 
@@ -867,7 +867,13 @@
 <a class="pure-button" target="_blank" href="https://raw.githubusercontent.com/DominikSerafin/vuebar/master/vuebar.js" download>vuebar.js</a>
 
 
+            <h3>Include in browser environment</h3>
+<code class="full"><pre>&#x3C;script src=&#x22;vuebar.js&#x22;&#x3E;&#x3C;/script&#x3E;</pre></code>
 
+            <h3>Import in your build</h3>
+
+<code class="full"><pre>import VueBar from 'vuebar';
+Vue.use(VueBar);</pre></code>
 
         </div>
 
@@ -1132,7 +1138,8 @@
         <h2 class="container-title"  id="styling">Styling</h2>
         <div class="container">
 
-        <h3 class="first">How to Style Scrollbar</h3>
+        Every Vuebar element has a child <code>dragger</code> element. That element also has its own child - a <code>dragger-styler</code> element that's purely there for you to style it any way you want. You can also style the original <code>dragger</code> element - just remember it has <code>position: absolute</code> style always applied and <code>height</code> and <code>top</code> styles dynamically added &amp; changed when scrolling.
+
 
         <h3>Default Style</h3>
 
@@ -1140,7 +1147,7 @@
 
 <code class="full"><pre>
 .vb > .vb-dragger {
-    z-index: 2;
+    z-index: 5;
     width: 12px;
     right: 0;
 }
