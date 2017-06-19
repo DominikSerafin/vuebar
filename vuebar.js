@@ -2,7 +2,7 @@
     Vuebar
 \*----------------------------------------*/
 ;(function(){
-    'use strict'
+    'use strict';
 
 
 
@@ -77,9 +77,9 @@
                 scrollHandler: null,
                 wheelHandler: null,
 
-            }
+            };
             return el._vuebarState;
-        };
+        }
 
 
 
@@ -89,7 +89,7 @@
         \*------------------------------------*/
         function getState(el){
             return el._vuebarState;
-        };
+        }
 
 
 
@@ -103,7 +103,7 @@
                 return false;
             }
             return true;
-        };
+        }
 
 
 
@@ -114,12 +114,12 @@
         function computeVisibleArea(el){
             var state = getState(el);
             state.visibleArea = (state.el2.clientHeight / state.el2.scrollHeight);
-        };
+        }
 
         function computeScrollTop(el){
             var state = getState(el);
             state.scrollTop = state.barTop * (state.el2.scrollHeight / state.el2.clientHeight);
-        };
+        }
 
         function computeBarTop(el, event){
             var state = getState(el);
@@ -145,7 +145,7 @@
                 state.barTop = state.el2.clientHeight - state.barHeight;
             }
 
-        };
+        }
 
         function computeBarHeight(el){
             var state = getState(el);
@@ -154,7 +154,7 @@
             } else {
                 state.barHeight = state.el2.clientHeight * state.visibleArea;
             }
-        };
+        }
 
 
 
@@ -178,7 +178,7 @@
             state.el1.appendChild(dragger);
 
             return dragger;
-        };
+        }
 
 
         function updateDragger(el, options){
@@ -229,7 +229,7 @@
 
             }
 
-        };
+        }
 
 
 
@@ -253,14 +253,14 @@
                 return false;
             }
 
-        };
+        }
 
 
 
         function updateScroll(el){
             var state = getState(el);
             state.el2.scrollTop = state.scrollTop;
-        };
+        }
 
 
 
@@ -285,7 +285,7 @@
                 computeBarHeight(el);
                 updateDragger(el);
             }.bind(this));
-        };
+        }
 
 
 
@@ -304,7 +304,7 @@
                     updateDragger(el, {withScrollingClasses: true});
                 }
             }.bind(this), state.config.scrollThrottle);
-        };
+        }
 
 
         function wheelHandler(el){
@@ -312,7 +312,7 @@
             return function(event){
                 preventParentScroll(el, event);
             }.bind(this);
-        };
+        }
 
 
         function documentMousemove(el){
@@ -323,7 +323,7 @@
                 computeScrollTop(el);
                 updateScroll(el);
             }.bind(this), state.config.draggerThrottle);
-        };
+        }
 
 
         function documentMouseup(el){
@@ -350,7 +350,7 @@
 
             }.bind(this);
 
-        };
+        }
 
 
         function barMousedown(el){
@@ -358,7 +358,7 @@
             return function(event){
 
                 // don't do nothing if it's not left mouse button
-                if (event.which!==1){return false};
+                if (event.which!==1){return false}
 
                 state.barDragging = true;
                 state.mouseBarOffsetY = event.offsetY;
@@ -379,15 +379,15 @@
 
 
             }.bind(this);
-        };
+        }
 
 
         function windowResize(el){
             var state = getState(el);
             return debounce(function(event){
                 refreshScrollbar(el, {resize: true});
-            }.bind(this), state.config.resizeDebounce)
-        };
+            }.bind(this), state.config.resizeDebounce);
+        }
 
 
 
@@ -409,7 +409,7 @@
             var options = binding.value ? binding.value : {};
             for (var key in options){
                 state.config[key] = options[key];
-            };
+            }
 
             // setup scrollbar "state"
             state.binding = binding;
@@ -449,7 +449,7 @@
             // initial calculations using refresh scrollbar
             refreshScrollbar(el, {init: true});
 
-        };
+        }
 
 
 
@@ -476,7 +476,7 @@
             // delete state object from element
             delete el._vuebarState;
 
-        };
+        }
 
 
 
@@ -523,8 +523,8 @@
                     last = now;
                     fn.apply(context, args);
                 }
-            };
-        };
+            }
+        }
 
 
 
@@ -578,7 +578,7 @@
             return {
                 edge: edge,
                 mobile: mobile,
-            }
+            };
 
         }
 
@@ -612,7 +612,6 @@
 
 
 
-
     };
 
 
@@ -622,15 +621,15 @@
         Autoinstall
     \*------------------------------------*/
     if(typeof exports === 'object' && typeof module === 'object') {
-        module.exports = VueBar
+        module.exports = VueBar;
     } else if(typeof define === 'function' && define.amd) {
-        define(function () { return VueBar })
+        define(function () { return VueBar });
     } else if (typeof window !== 'undefined') {
-        window.VueBar = VueBar
+        window.VueBar = VueBar;
     }
 
     if (typeof Vue !== 'undefined') {
-        Vue.use(VueBar)
+        Vue.use(VueBar);
     }
 
 
