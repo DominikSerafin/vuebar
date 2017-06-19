@@ -361,7 +361,7 @@
                 if (event.which!==1){return false};
 
                 state.barDragging = true;
-                state.mouseBarOffsetY = event.layerY;
+                state.mouseBarOffsetY = event.offsetY;
 
                 // disable user select
                 state.el1.style.userSelect = 'none';
