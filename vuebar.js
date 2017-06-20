@@ -269,19 +269,13 @@
             // if there is rule added already then don't continue
             if (ruleExists) { return false };
 
-            // insert rule for all browsers, except IE before version 9
+            // insert rule
+            // - we only need to use insertRule and don't need to use addRule at all
+            //   because we're only targeting chrome browser
             if (sheet.insertRule) {
                 sheet.insertRule(selector + '{display:none}', 0);
             }
 
-            // add rule for ie before version 9
-            // - we dont need it because we're only targeting webkit
-            // - to remove
-            /*
-            else if (sheet.addRule) {
-                sheet.addRule('.' + state.config.el2Class + '::-webkit-scrollbar', 'display:none', 0);
-            }
-            */
         }
 
 
