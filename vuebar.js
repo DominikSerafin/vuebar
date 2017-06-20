@@ -320,7 +320,7 @@
         function refreshScrollbar(el, options){
             var options = options ? options : {};
 
-            if (options.init) {
+            if (options.immediate) {
                 computeVisibleArea(el);
                 computeBarTop(el);
                 computeBarHeight(el);
@@ -511,7 +511,7 @@
             state.config.resizeRefresh ? window.addEventListener('resize', state.windowResize, 0) : null;
 
             // initial calculations using refresh scrollbar
-            refreshScrollbar(el, {init: true});
+            refreshScrollbar(el, {immediate: true});
 
         }
 
@@ -711,11 +711,11 @@
             //inserted: function(el, binding, vnode, oldVnode){},
 
             update: function(el, binding, vnode, oldVnode){
-                refreshScrollbar.call(this, el, {update: true});
+                refreshScrollbar.call(this, el);
             },
 
             componentUpdated: function(el, binding, vnode, oldVnode){
-                refreshScrollbar.call(this, el, {update: true});
+                refreshScrollbar.call(this, el);
             },
 
             unbind: function(el, binding, vnode, oldVnode){
