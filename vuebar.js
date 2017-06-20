@@ -267,7 +267,7 @@
             }
 
             // if there is rule added already then don't continue
-            if (ruleExists) { return false };
+            if ( ruleExists ) { return false }
 
             // insert rule
             // - we only need to use insertRule and don't need to use addRule at all
@@ -328,6 +328,7 @@
             }
 
             Vue.nextTick(function(){
+                if ( !getState(el) ) { return false }
                 computeVisibleArea(el);
                 computeBarTop(el);
                 computeBarHeight(el);
@@ -406,7 +407,7 @@
             return function(event){
 
                 // don't do nothing if it's not left mouse button
-                if (event.which!==1){return false}
+                if ( event.which!==1 ) { return false }
 
                 state.barDragging = true;
                 state.mouseBarOffsetY = event.offsetY;
@@ -445,16 +446,20 @@
         \*------------------------------------*/
 
 
-        function initScrollbar(el, binding){
+        function initScrollbar(el, kwargs){
 
             // validate on directive bind if the markup is OK
-            if (!markupValidation.call(this, el)){return false;}
+            if ( !markupValidation.call(this, el) ) { return false }
 
             // create state
             var state = createState(el);
 
-            // setup options
-            var options = binding.value ? binding.value : {};
+            // get options object
+            // - it will come from directive binding (there is a 'value' property)
+            // - or it will come from public method direct options object
+            var options = kwargs.value ? kwargs.value : (kwargs ? kwargs : {});
+
+            // overwrite defaults with provided options
             for (var key in options){
                 state.config[key] = options[key];
             }
@@ -463,9 +468,9 @@
             var browser = detectBrowser();
 
             // setup scrollbar "state"
-            state.binding = binding;
+            state.binding = kwargs.value ? kwargs : null;
             state.el1 = el;
-            state.el2 = el.firstChild;
+            state.el2 = el.firstElementChild;
             state.dragger = createDragger(el);
 
             // create and reference event listeners
@@ -483,12 +488,14 @@
 
             // el2 styles and class
             addClass(state.el2, state.config.el2Class);
+            state.el2.style.display = 'block';
             state.el2.style.overflowX = 'hidden';
             state.el2.style.overflowY = 'scroll';
             state.el2.style.msOverflowStyle = 'scrollbar';
             state.el2.style.height = '100%';
 
             if (state.config.useScrollbarPseudo && browser.chrome) {
+                state.el2.style.width = '100%';
                 hideScrollbarUsingPseudoElement(el);
             } else {
                 var widthPixels = browser.mobile ? 0 : ( browser.edge ? 12 : 17 );
@@ -520,7 +527,31 @@
             state.el2.removeEventListener('wheel', state.scrollHandler, 0);
             window.removeEventListener('resize', state.windowResize, 0);
 
-            // clear elements
+            // clear el1 styles and class
+            removeClass(state.el1, state.config.el1Class);
+            removeClass(state.el1, state.config.el1ScrollVisibleClass);
+            removeClass(state.el1, state.config.el1ScrollInvisibleClass);
+            removeClass(state.el1, state.config.el1ScrollingClass);
+            removeClass(state.el1, state.config.el1ScrollingPhantomClass);
+            removeClass(state.el1, state.config.el1DraggingClass);
+            state.el1.style.position = '';
+            state.el1.style.overflow = '';
+
+            // clear el2 styles and class
+            removeClass(state.el2, state.config.el2Class);
+            state.el2.style.display = '';
+            state.el2.style.overflowX = '';
+            state.el2.style.overflowY = '';
+            state.el2.style.msOverflowStyle = '';
+            state.el2.style.height = '';
+            state.el2.style.width = '';
+
+            // clear scrollar pseudo element styles
+            // TODO - remove only injected styles used in the element, not the whole style element
+            //var styleElm = document.getElementById('vuebar-pseudo-element-styles');
+            //document.head.removeChild(styleElm);
+
+            // clear dragger
             state.dragger.removeChild(state.dragger.firstChild);
             state.el1.removeChild(state.dragger);
 
@@ -533,6 +564,18 @@
             // delete state object from element
             delete el._vuebarState;
 
+        }
+
+
+
+
+        function publicMethods(){
+            return {
+                getState: getState,
+                initScrollbar: initScrollbar,
+                destroyScrollbar: destroyScrollbar,
+                refreshScrollbar: refreshScrollbar,
+            };
         }
 
 
@@ -644,6 +687,14 @@
             };
 
         }
+
+
+
+        /*------------------------------------*\
+            Public Methods Install
+        \*------------------------------------*/
+        Vue.vuebar = publicMethods();
+        Vue.prototype.$vuebar = publicMethods();
 
 
 

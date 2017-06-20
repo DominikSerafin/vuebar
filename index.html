@@ -930,6 +930,7 @@ Vue.use(VueBar);</pre></code>
 </pre></code>
 
 
+
             <h3>How it works</h3>
 
             <p>Every Vuebar scrollable content needs to be wrapped in parent element <code>el1</code> that hides the native browser scrollbar of the second parent element <code>el2</code> and it also contains the custom scrollbar element (referenced further as <code>dragger</code>) which gets appended automatically on the Vuebar initialization. </p>
@@ -943,18 +944,54 @@ Vue.use(VueBar);</pre></code>
             <p>This also means the scroll behavior will remain unchanged. You'll still be able to use mouse wheel click scrolling or touch scrolling with momentum. It doesn't try to reimplement the scrolling from scratch like most of similar libraries try (with bad results).</p>
 
 
-            <h3>Gotchas</h3>
+
+            <h3>Public methods (experimental &amp; work in progress)</h3>
+
+            <p>You can access them from your component context: <code>this.$vuebar</code>. Alternatively you can access them from your main Vue instance: <code>Vue.vuebar</code>. </p>
+
+            <p>Every method needs to have passed Vuebar scroll container element as the first argument.</p>
 
             <ul>
 
                 <li>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Sometimes in rare cases the scrollbar won't refresh on child components update. In such cases please manually use <code>$forceUpdate</code> (in the scope of component containing Vuebar) to refresh scrollbar.
+                    <code>getState(DOM Element)</code>
                 </li>
 
                 <li>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Right now Vuebar doesn't support loading detection of img elements so either set width and height properties of image from beginning or manually detect load events and <code>$forceUpdate</code> component to refresh scrollbar. Pull requests welcome.
+                    <code>initScrollbar(DOM Element, options)</code>
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <code>destroyScrollbar(DOM Element)</code>
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <code>refreshScrollbar(DOM Element)</code>
+                </li>
+
+
+
+            </ul>
+
+
+
+            <h3>Gotchas</h3>
+
+            <ul>
+
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    Sometimes in rare cases the scrollbar won't refresh on child components update. In such cases please manually use <code>$forceUpdate</code> (in the scope of component containing Vuebar) to refresh scrollbar. Or you can use <code>refreshScrollbar</code> method.
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    Right now Vuebar doesn't support loading detection of img elements so either set width and height properties of image from beginning or manually detect load events and <code>$forceUpdate</code> component to refresh scrollbar or use <code>refreshScrollbar</code> method. Pull requests welcome.
                 </li>
 
             </ul>
@@ -966,7 +1003,7 @@ Vue.use(VueBar);</pre></code>
             <ul>
                 <li>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    If you want to access internal Vuebar state (like scrollbar height, scrollbar top or even <code>dragger</code> element reference) then you can access <code>_vuebarState</code> property of element 1 with v-bar directive.
+                    If you want to access internal Vuebar state (like scrollbar height, scrollbar top or even <code>dragger</code> element reference) then you can access <code>_vuebarState</code> property of element 1 with v-bar directive. Or you can use <code>getState</code> method.
                 </li>
 
                 <li>
@@ -1270,7 +1307,7 @@ Vue.use(VueBar);</pre></code>
             </button>
         </h3>
 
-        <div class="el1" v-bar>
+        <div class="el1" v-bar  ref="example1El">
             <div class="el2">
 
             <div v-if="example1Content">
@@ -1469,6 +1506,8 @@ Vue.use(VueBar);</pre></code>
                 example4Content: false,
             }
         })
+
+        console.dir( app.$vuebar.getState(app.$refs.example1El) );
     </script>
 
 </body>
