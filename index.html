@@ -934,7 +934,7 @@ Vue.use(VueBar);</pre></code>
 
             <p>Every Vuebar scrollable content needs to be wrapped in parent element <code>el1</code> that hides the native browser scrollbar of the second parent element <code>el2</code> and it also contains the custom scrollbar element (referenced further as <code>dragger</code>) which gets appended automatically on the Vuebar initialization. </p>
 
-            <p><strong>New in 0.0.7:</strong> Instead of hiding the scrollbar using <code>el1</code> Vuebar now has a <code>'useScrollbarPseudo'</code> feature that hides the scrollbar using pseudo element selector <code>::-webkit-scrollbar</code>. It works only in Chrome at the moment.</p>
+            <p><strong>New in 0.0.6:</strong> Instead of hiding the scrollbar using <code>el1</code> Vuebar now has a <code>useScrollbarPseudo</code> feature that hides the scrollbar using pseudo element selector <code>::-webkit-scrollbar</code>. It works only in Chrome at the moment.</p>
 
             <p>The Vuebar internals listen to <code>el2</code> scroll event and synchronize <code>dragger</code> position when you scroll. And vice versa - when you directly use <code>dragger</code> it listens to mouse events to detect the position of dragger and sets scroll position of <code>el2</code>.</p>
 
@@ -1408,7 +1408,7 @@ Vue.use(VueBar);</pre></code>
 
                 <li>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Hide scrollbar using scrollbar selectors instead of hiding it with overflow (Chrome &amp; Safari only)
+                    <code>useScrollbarPseudo</code> support for Safari (it works only on Chrome at the moment because I don't have access to desktop Safari).
                 </li>
 
 
