@@ -28,6 +28,7 @@
                     scrollThrottle: 10,
                     draggerThrottle: 10,
                     resizeRefresh: true,
+                    observerThrottle: 100,
                     resizeDebounce: 100,
                     unselectableBody: true,
                     scrollingPhantomDelay: 1000,
@@ -65,6 +66,9 @@
                 barHeight: 0, // height of dragger in px
                 mouseBarOffsetY: 0, // relative position of mouse at the time of clicking on dragger
                 barDragging: false, // when the dragger is used
+
+                // reference to MutationObserver
+                mutationObserver: null,
 
                 // references to timeouts for DOM class manipulation
                 scrollingClassTimeout: null,
@@ -434,8 +438,28 @@
         function windowResize(el){
             var state = getState(el);
             return debounce(function(event){
-                refreshScrollbar(el, {resize: true});
+                refreshScrollbar(el);
             }.bind(this), state.config.resizeDebounce);
+        }
+
+
+
+
+        function initMutationObserver(el){
+            var state = getState(el);
+
+            var observer = new MutationObserver(throttle(function(mutations) {
+                refreshScrollbar(el);
+                console.warn(mutations);
+            }, state.config.observerThrottle));
+
+            observer.observe(state.el2, {
+                childList: true,
+                characterData: true,
+                subtree: true,
+            });
+
+            return observer;
         }
 
 
@@ -480,6 +504,9 @@
             state.windowResize = windowResize(el);
             state.scrollHandler = scrollHandler(el);
             state.wheelHandler = wheelHandler(el);
+
+            // initialize and reference mutation observer
+            state.mutationObserver = initMutationObserver(el);
 
             // el1 styles and class
             addClass(state.el1, state.config.el1Class);
@@ -527,6 +554,9 @@
             state.el2.removeEventListener('wheel', state.scrollHandler, 0);
             window.removeEventListener('resize', state.windowResize, 0);
 
+            // disconnect mutation observer
+            state.mutationObserver.disconnect();
+
             // clear el1 styles and class
             removeClass(state.el1, state.config.el1Class);
             removeClass(state.el1, state.config.el1ScrollVisibleClass);
@@ -548,8 +578,10 @@
 
             // clear scrollar pseudo element styles
             // TODO - remove only injected styles used in the element, not the whole style element
-            //var styleElm = document.getElementById('vuebar-pseudo-element-styles');
-            //document.head.removeChild(styleElm);
+            /*
+            var styleElm = document.getElementById('vuebar-pseudo-element-styles');
+            document.head.removeChild(styleElm);
+            */
 
             // clear dragger
             state.dragger.removeChild(state.dragger.firstChild);
@@ -704,15 +736,21 @@
         \*------------------------------------*/
         Vue.directive('bar', {
 
+            /*
             bind: function(el, binding, vnode, oldVnode){
                 initScrollbar.call(this, el, binding);
             },
+            */
 
-            //inserted: function(el, binding, vnode, oldVnode){},
-
-            update: function(el, binding, vnode, oldVnode){
-                refreshScrollbar.call(this, el);
+            inserted: function(el, binding, vnode, oldVnode){
+                initScrollbar.call(this, el, binding);
             },
+
+            /*
+            update: function(el, binding, vnode, oldVnode){
+                //refreshScrollbar.call(this, el);
+            },
+            */
 
             componentUpdated: function(el, binding, vnode, oldVnode){
                 refreshScrollbar.call(this, el);

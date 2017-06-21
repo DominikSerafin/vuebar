@@ -771,6 +771,8 @@
 
             <p class="main-desc">Vue 2 directive for custom scrollbar that uses native scroll behavior. <br>Lightweight, performant, customizable and without dependencies.</p>
 
+            <!-- <img src="https://unsplash.it/4900/4900"> -->
+
             <div>
                 <a class="main-ggather" href="https://ggather.com/" >
 
@@ -949,14 +951,9 @@ Vue.use(VueBar);</pre></code>
 
             <p>You can access them from your component context: <code>this.$vuebar</code>. Alternatively you can access them from your main Vue instance: <code>Vue.vuebar</code>. </p>
 
-            <p>Every method needs to have passed Vuebar scroll container element as the first argument.</p>
+            <p>Every method needs to have passed Vuebar scroll container element as the first argument. You can do that easily using `$refs`.</p>
 
             <ul>
-
-                <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    <code>getState(DOM Element)</code>
-                </li>
 
                 <li>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
@@ -965,13 +962,19 @@ Vue.use(VueBar);</pre></code>
 
                 <li>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <code>getState(DOM Element)</code>
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <code>refreshScrollbar(DOM Element, options)</code>
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     <code>destroyScrollbar(DOM Element)</code>
                 </li>
 
-                <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    <code>refreshScrollbar(DOM Element)</code>
-                </li>
 
 
 
@@ -979,22 +982,6 @@ Vue.use(VueBar);</pre></code>
 
 
 
-            <h3>Gotchas</h3>
-
-            <ul>
-
-
-                <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Sometimes in rare cases the scrollbar won't refresh on child components update. In such cases please manually use <code>$forceUpdate</code> (in the scope of component containing Vuebar) to refresh scrollbar. Or you can use <code>refreshScrollbar</code> method.
-                </li>
-
-                <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Right now Vuebar doesn't support loading detection of img elements so either set width and height properties of image from beginning or manually detect load events and <code>$forceUpdate</code> component to refresh scrollbar or use <code>refreshScrollbar</code> method. Pull requests welcome.
-                </li>
-
-            </ul>
 
             <h3>Tips</h3>
 
@@ -1086,6 +1073,14 @@ Vue.use(VueBar);</pre></code>
                     </tr>
 
 
+                    <tr>
+                        <td>observerThrottle</td>
+                        <td>Integer</td>
+                        <td>100</td>
+                        <td>How frequently in ms should scroll position update when there's a DOM change detected from <a href="https://developer.mozilla.org/en/docs/Web/API/MutationObserver" target="_blank">MutationObserver</a>. It fires in 3 scenarios; `subtree` change, `childList` change and `characterData` change.</td>
+                    </tr>
+
+
 
                     <tr>
                         <td>resizeRefresh</td>
@@ -1101,6 +1096,7 @@ Vue.use(VueBar);</pre></code>
                         <td>100</td>
                         <td>Debounce value in ms controlling how frequently resize refresh is fired. Relevant only if resizeRefresh is enabled.</td>
                     </tr>
+
 
                     <tr>
                         <td class="small">scrollingPhantomDelay</td>
@@ -1311,11 +1307,11 @@ Vue.use(VueBar);</pre></code>
             <div class="el2">
 
             <div v-if="example1Content">
-             By examining data from the two volcanoes, Mr. Jones and his team suggested an alternative: The chemical signature, along with this double-track volcanism as it’s called, occurred three million years ago when the plates above the hot spot shifted direction, moving north. This shimmy rearranged zones of magma that are heated under different pressures in the shallower part of the mantle — when they cool, the volcanic rock that results reflects this difference. Previously stacked on top of one another, the movement of the plates exposed now geographically separates magma zones that fed the volcanoes individually. Mauna Loa, the biggest volcano on Earth — and one of the most active — covers half the Island of Hawaii. Just 35 miles to the northeast, Mauna Kea, known to native Hawaiians as Mauna a Wakea, rises nearly 14,000 feet above sea level. To them it represents a spiritual connection between our planet and the heavens above. These volcanoes, which have beguiled millions of tourists visiting the Hawaiian islands, have also plagued scientists with a long-running mystery: If they are so close together, how did they develop in two parallel tracks along the Hawaiian-Emperor chain formed over the same hot spot in the Pacific Ocean — and why are their chemical compositions so different? "We knew this was related to something much deeper, but we couldn’t see what,” said Tim Jones, an earth science Ph.D. student at Australian National University and the lead author of a paper published in Nature on Wednesday that may hold the answer. Mr. Jones and his colleagues developed a model that simulates what’s happening in our planet’s mantle, beneath the crust that we live on, offering a window to the center of the Earth — or close to it.<br><br>
+            By examining data from the two volcanoes, Mr. Jones and his team suggested an alternative: The chemical signature, along with this double-track volcanism as it’s called, occurred three million years ago when the plates above the hot spot shifted direction, moving north. This shimmy rearranged zones of magma that are heated under different pressures in the shallower part of the mantle — when they cool, the volcanic rock that results reflects this difference. Previously stacked on top of one another, the movement of the plates exposed now geographically separates magma zones that fed the volcanoes individually. Mauna Loa, the biggest volcano on Earth — and one of the most active — covers half the Island of Hawaii. Just 35 miles to the northeast, Mauna Kea, known to native Hawaiians as Mauna a Wakea, rises nearly 14,000 feet above sea level. To them it represents a spiritual connection between our planet and the heavens above. These volcanoes, which have beguiled millions of tourists visiting the Hawaiian islands, have also plagued scientists with a long-running mystery: If they are so close together, how did they develop in two parallel tracks along the Hawaiian-Emperor chain formed over the same hot spot in the Pacific Ocean — and why are their chemical compositions so different? "We knew this was related to something much deeper, but we couldn’t see what,” said Tim Jones, an earth science Ph.D. student at Australian National University and the lead author of a paper published in Nature on Wednesday that may hold the answer. Mr. Jones and his colleagues developed a model that simulates what’s happening in our planet’s mantle, beneath the crust that we live on, offering a window to the center of the Earth — or close to it.<br><br>
             </div>
 
 
-             Their study may one day allow a reconstruction of the history of the movement of Earth’s plates — and the processes linked to these movements over billions of years, like mass extinction events, diamond and oil deposits, and changes in climate. If you were to drill nearly 4,000 miles into the Earth, you’d reach its core, a ball of solid iron surrounded by liquid that scientists estimate is hotter than the sun. Before making it there, you’d hit the mantle — an 1,800-mile-thick layer of solid rock that can flow like a liquid, just substantially slower. This mantle is the reason plates move across the surface. It’s why we have continents, earthquakes and volcanoes. The closest anyone ever got to the mantle was a seven-mile-deep hole drilled into the crust on a peninsula in western Russia.
+            Their study may one day allow a reconstruction of the history of the movement of Earth’s plates — and the processes linked to these movements over billions of years, like mass extinction events, diamond and oil deposits, and changes in climate. If you were to drill nearly 4,000 miles into the Earth, you’d reach its core, a ball of solid iron surrounded by liquid that scientists estimate is hotter than the sun. Before making it there, you’d hit the mantle — an 1,800-mile-thick layer of solid rock that can flow like a liquid, just substantially slower. This mantle is the reason plates move across the surface. It’s why we have continents, earthquakes and volcanoes. The closest anyone ever got to the mantle was a seven-mile-deep hole drilled into the crust on a peninsula in western Russia.
             But now we can better understand what’s happening below by looking at Mauna Kea and Mauna Loa, said Mr. Jones. The prevailing hypothesis has been that volcanoes like these two in Hawaii are chemical fingerprints of the Earth’s composition at the deep mantle, just at the border of its core.
             Scientists have seismic evidence that the deep part of the mantle is a graveyard where long ago slabs of earth were subducted, or thrust underneath one another, creating separate regions with different chemical compositions that eventually made their way to the surface in a hot mantle plume, or upwelling, as the core heated the rock into magma.
 
@@ -1402,16 +1398,15 @@ Vue.use(VueBar);</pre></code>
                     Vue 1.x support.
                 </li>
 
-
                 <li>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Support for compatibility of Vuebar element classes with component scoped selectors.
+                    Support for horizontal scrolling.
                 </li>
 
 
                 <li>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Support for scrollbar refresh on dynamic content (mainly img) load (MutationObserver?).
+                    Support for compatibility of Vuebar element classes with component scoped selectors. (Is it even possible?).
                 </li>
 
 
@@ -1443,22 +1438,11 @@ Vue.use(VueBar);</pre></code>
                 </li>
 
 
-                <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Support for horizontal scrolling.
-                </li>
-
-
-                <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Issue of scrollbar sometimes not refreshing on child components updates.
-                </li>
-
             </ul>
 
             <h3>Credits</h3>
 
-            <p>Created by <a href="https://serafin.io/">Dominik Serafin</a> for <a href="https://ggather.com">GGather.com</a>. <br>Inspired by <a href="https://jamesflorentino.github.io/nanoScrollerJS/">nanoScroller</a>.</p>
+            <p>Created by <a href="https://serafin.io/">Dominik Serafin</a> for <a href="https://ggather.com">GGather.com</a>. <br>Inspired by <a href="https://jamesflorentino.github.io/nanoScrollerJS/">nanoScroller</a> and <a href="http://automattic.github.io/antiscroll/">Antiscroll</a>.</p>
 
 
 
@@ -1501,7 +1485,8 @@ Vue.use(VueBar);</pre></code>
             }
         })
 
-        console.dir( app.$vuebar.getState(app.$refs.example1El) );
+        //console.dir( app.$vuebar.getState(app.$refs.example1El) );
+
     </script>
 
 </body>
