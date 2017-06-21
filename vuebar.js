@@ -446,11 +446,12 @@
 
 
         function initMutationObserver(el){
+            if (typeof MutationObserver === typeof void 0) { return null }
+
             var state = getState(el);
 
             var observer = new MutationObserver(throttle(function(mutations) {
                 refreshScrollbar(el);
-                console.warn(mutations);
             }, state.config.observerThrottle));
 
             observer.observe(state.el2, {
@@ -555,7 +556,7 @@
             window.removeEventListener('resize', state.windowResize, 0);
 
             // disconnect mutation observer
-            state.mutationObserver.disconnect();
+            state.mutationObserver ? state.mutationObserver.disconnect() : null;
 
             // clear el1 styles and class
             removeClass(state.el1, state.config.el1Class);
@@ -701,12 +702,24 @@
         \*------------------------------------*/
         function detectBrowser(){
 
+            function getIEVersion() {
+                var match = window.navigator.userAgent.match(/(?:MSIE |Trident\/.*; rv:)(\d+)/);
+                return match ? parseInt(match[1]) : undefined;
+            }
+
             var ua = window.navigator.userAgent;
             var vendor = window.navigator.vendor;
             var edge = ua.indexOf('Edge') > -1;
             var chrome = (
                 (ua.toLowerCase().indexOf('chrome') > -1) && (vendor.toLowerCase().indexOf('google') > -1)
             );
+
+            var ie8 = getIEVersion() == 8;
+            var ie9 = getIEVersion() == 9;
+            var ie10 = getIEVersion() == 10;
+            var ie11 = getIEVersion() == 11;
+
+            var ie = ie8 || ie9 || ie10 || ie11;
 
             // regex below thanks to http://detectmobilebrowsers.com/
             var uaOrVendor = ua || vendor || window.opera;
@@ -716,6 +729,11 @@
                 edge: edge,
                 chrome: chrome,
                 mobile: mobile,
+                ie: ie,
+                ie8: ie8,
+                ie9: ie9,
+                ie10: ie10,
+                ie11: ie11,
             };
 
         }
