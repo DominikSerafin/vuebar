@@ -241,8 +241,7 @@
 
 
         // this is an experimental feature
-        // - it works only on chrome for now
-        // - theoretically it should also work on safari but I don't have an environment to test it
+        // - it works only on chrome and safari
         // - instead of hiding scrollbar by overflowing it with its parent set to overflow:hidden
         //   we hide scrollbar using pseudo-element selector ::-webkit-scrollbar
         function hideScrollbarUsingPseudoElement(el){
@@ -275,7 +274,7 @@
 
             // insert rule
             // - we only need to use insertRule and don't need to use addRule at all
-            //   because we're only targeting chrome browser
+            //   because we're only targeting chrome & safari browsers
             if (sheet.insertRule) {
                 sheet.insertRule(selector + '{display:none}', 0);
             }
@@ -522,7 +521,7 @@
             state.el2.style.msOverflowStyle = 'scrollbar';
             state.el2.style.height = '100%';
 
-            if (state.config.useScrollbarPseudo && browser.chrome) {
+            if ( state.config.useScrollbarPseudo && (browser.chrome || browser.safari) ) {
                 state.el2.style.width = '100%';
                 hideScrollbarUsingPseudoElement(el);
             } else {
@@ -714,6 +713,8 @@
                 (ua.toLowerCase().indexOf('chrome') > -1) && (vendor.toLowerCase().indexOf('google') > -1)
             );
 
+            var safari = !!window.safari;
+
             var ie8 = getIEVersion() == 8;
             var ie9 = getIEVersion() == 9;
             var ie10 = getIEVersion() == 10;
@@ -728,6 +729,7 @@
             return {
                 edge: edge,
                 chrome: chrome,
+                safari: safari,
                 mobile: mobile,
                 ie: ie,
                 ie8: ie8,
