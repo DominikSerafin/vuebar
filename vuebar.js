@@ -750,7 +750,7 @@
                 (ua.toLowerCase().indexOf('chrome') > -1) && (vendor.toLowerCase().indexOf('google') > -1)
             );
 
-            var safari = !!window.safari;
+            var safari = !!window.safari || ((ua.toLowerCase().indexOf('safari') > -1) && (vendor.toLowerCase().indexOf('apple') > -1));
 
             var ie8 = getIEVersion() == 8;
             var ie9 = getIEVersion() == 9;
