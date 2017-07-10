@@ -6,7 +6,6 @@
 
 
 
-
     /*------------------------------------*\
         Vuebar
     \*------------------------------------*/
@@ -59,6 +58,9 @@
                 el2: null,
                 dragger: null,
 
+                // scrollbar width
+                barWidth: getBarWidth(),
+
                 // properties computed for internal directive logic & DOM manipulations
                 visibleArea: 0, // ratio between container height and scrollable content height
                 scrollTop: 0, // position of content scrollTop in px
@@ -110,6 +112,35 @@
                 return false;
             }
             return true;
+        }
+
+
+
+
+        /*------------------------------------*\
+            Get scrollbar width
+        \*------------------------------------*/
+        function getBarWidth(){
+            var fullWidth = 0;
+            var barWidth = 0;
+            var wrapper = document.createElement('div');
+            var child = document.createElement('div');
+
+            wrapper.style.position = 'absolute';
+            wrapper.style.top = '-100px';
+            wrapper.style.left = '-100px';
+            wrapper.style.width = '30px';
+            wrapper.style.overflow = 'hidden';
+            
+            wrapper.appendChild(child);
+            document.body.appendChild(wrapper);
+            fullWidth = child.offsetWidth;
+            wrapper.style.overflowY = 'scroll';
+            barWidth = fullWidth - child.offsetWidth;
+
+            wrapper.remove();
+
+            return barWidth;
         }
 
 
@@ -525,7 +556,13 @@
                 state.el2.style.width = '100%';
                 hideScrollbarUsingPseudoElement(el);
             } else {
-                var widthPixels = browser.mobile ? 0 : ( browser.edge ? 12 : 17 );
+                var widthPixels = state.barWidth;
+
+                if (state.barWidth === 0) {
+                    state.el2.style.paddingRight = '20px';
+                    compatStyle(state.el2, 'BoxSizing', 'content-box');
+                }
+
                 state.el2.style.width = 'calc(100% + ' + widthPixels + 'px)';
             }
 
@@ -713,7 +750,7 @@
                 (ua.toLowerCase().indexOf('chrome') > -1) && (vendor.toLowerCase().indexOf('google') > -1)
             );
 
-            var safari = !!window.safari || ((ua.toLowerCase().indexOf('safari') > -1) && (vendor.toLowerCase().indexOf('apple') > -1));
+            var safari = !!window.safari;
 
             var ie8 = getIEVersion() == 8;
             var ie9 = getIEVersion() == 9;
