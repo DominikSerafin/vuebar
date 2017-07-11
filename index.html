@@ -43,6 +43,7 @@
             overflow: hidden;
             padding: 0;
             background-color: #3079f4;
+            -webkit-overflow-scrolling: touch;
         }
 
 
@@ -943,7 +944,7 @@ Vue.use(VueBar);</pre></code>
 
             <p>Every Vuebar scrollable content needs to be wrapped in parent element <code>el1</code> that hides the native browser scrollbar of the second parent element <code>el2</code> and it also contains the custom scrollbar element (referenced further as <code>dragger</code>) which gets appended automatically on the Vuebar initialization. </p>
 
-            <p><strong>New in 0.0.6:</strong> Instead of hiding the scrollbar using <code>el1</code> Vuebar now has a <code>useScrollbarPseudo</code> feature that hides the scrollbar using pseudo element selector <code>::-webkit-scrollbar</code>. Due to browsers limitations it works only in Chrome &amp; Safari at the moment.</p>
+            <p><strong>New in 0.0.6:</strong> Instead of hiding the scrollbar using <code>el1</code> Vuebar now has a <code>useScrollbarPseudo</code> feature that hides the scrollbar using pseudo element selector <code>::-webkit-scrollbar</code>. Due to browsers limitations for now it works only on desktop Chrome &amp; desktop Safari at the moment.</p>
 
             <p>The Vuebar internals listen to <code>el2</code> scroll event and synchronize <code>dragger</code> position when you scroll. And vice versa - when you directly use <code>dragger</code> it listens to mouse events to detect the position of dragger and sets scroll position of <code>el2</code>.</p>
 
@@ -1065,7 +1066,7 @@ Vue.use(VueBar);</pre></code>
                         <td>useScrollbarPseudo</td>
                         <td>Boolean</td>
                         <td>false</td>
-                        <td><strong>This is an experimental feature that works only in Google Chrome and Apple Safari.</strong> Instead of hiding scrollbars by using hidden overflow this feature will hide them using <code>::-webkit-scrollbar</code> pseudo element selectors.</td>
+                        <td><strong>This is an experimental feature that works only in desktop Google Chrome and  desktop Apple Safari.</strong> Instead of hiding scrollbars by using hidden overflow this feature will hide them using <code>::-webkit-scrollbar</code> pseudo element selectors.</td>
                     </tr>
 
                     <tr>
