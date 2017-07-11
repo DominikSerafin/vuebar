@@ -110,6 +110,10 @@
             padding-bottom: 50px;
         }
 
+        .mod-ms-autohiding {
+            -ms-overflow-style: -ms-autohiding-scrollbar;
+        }
+
         .pkg-link {
 
             text-decoration: none;
@@ -953,7 +957,7 @@ Vue.use(VueBar);</pre></code>
 
             <p>You can access them from your component context: <code>this.$vuebar</code>. Alternatively you can access them from your main Vue instance: <code>Vue.vuebar</code>. </p>
 
-            <p>Every method needs to have passed Vuebar scroll container element as the first argument. You can do that easily using `$refs`.</p>
+            <p>Every method needs to have passed Vuebar scroll container element as the first argument. You can do that easily using <code>$refs</code>.</p>
 
             <ul>
 
@@ -1007,6 +1011,11 @@ Vue.use(VueBar);</pre></code>
 
                 <li>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    If the original browser scrollbar is floated/overlayed (<code>-ms-autohiding-scrollbar</code>, touch devices, etc.) then <code>el2</code> also has <code>padding-right</code> changed.
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     Similar thing with <code>dragger</code> - it has programmatically added styles <code>position: absolute</code> and <code>height</code> with <code>top</code> that have values in pixels relative to scroll position.
                 </li>
 
@@ -1053,20 +1062,18 @@ Vue.use(VueBar);</pre></code>
 
 
                     <tr>
-                        <td>visibleOnAllDevices</td>
-                        <td>Boolean</td>
-                        <td>false</td>
-                        <td>TODO DESCRIPTION</td>
-                    </tr>
-
-
-                    <tr>
                         <td>useScrollbarPseudo</td>
                         <td>Boolean</td>
                         <td>false</td>
                         <td><strong>This is an experimental feature that works only in Google Chrome and Apple Safari.</strong> Instead of hiding scrollbars by using hidden overflow this feature will hide them using <code>::-webkit-scrollbar</code> pseudo element selectors.</td>
                     </tr>
 
+                    <tr>
+                        <td>enableIfFloating</td>
+                        <td>Boolean</td>
+                        <td>true</td>
+                        <td>Show dragger if the element has a floating/overlaying scrollbar. It happens on touch devices and on IE &amp; Edge with <code>-ms-autohiding-scrollbar</code>.</td>
+                    </tr>
 
                     <tr>
                         <td>scrollThrottle</td>
@@ -1087,7 +1094,7 @@ Vue.use(VueBar);</pre></code>
                         <td>observerThrottle</td>
                         <td>Integer</td>
                         <td>100</td>
-                        <td>How frequently in ms should scroll position update when there's a DOM change detected from <a href="https://developer.mozilla.org/en/docs/Web/API/MutationObserver" target="_blank">MutationObserver</a>. It fires in 3 scenarios; `subtree` change, `childList` change and `characterData` change.</td>
+                        <td>How frequently in ms should scroll position update when there's a DOM change detected from <a href="https://developer.mozilla.org/en/docs/Web/API/MutationObserver" target="_blank">MutationObserver</a>. It fires in 3 scenarios; <code>subtree</code> change, <code>childList</code> change and <code>characterData</code> change.</td>
                     </tr>
 
 
@@ -1165,7 +1172,7 @@ Vue.use(VueBar);</pre></code>
                         <td class="small">el1ScrollInvisibleClass</td>
                         <td>String</td>
                         <td>'vb-invisible'</td>
-                        <td>Added dynamically when the scrollbar is invisible - there's nothing to scroll.</td>
+                        <td>Added dynamically when the scrollbar is invisible.</td>
                     </tr>
 
                     <tr>
@@ -1306,7 +1313,7 @@ Vue.use(VueBar);</pre></code>
 
 
 
-        <h3>Default without options
+        <h3>1. Default without options
             <button class="pure-button button-xsmall" type="button" @click="example1Content=!example1Content">
                 <span v-if="!example1Content">Update with additional content</span>
                 <span v-if="example1Content">Hide additional content</span>
@@ -1336,7 +1343,7 @@ Vue.use(VueBar);</pre></code>
 
 
 
-        <h3>Enabled <code>preventParentScroll</code>
+        <h3>2. Option <code>preventParentScroll</code> set to <code>true</code>.
             <button class="pure-button button-xsmall" type="button" @click="example2Content=!example2Content">
                 <span v-if="!example2Content">Update with additional content</span>
                 <span v-if="example2Content">Hide additional content</span>
@@ -1356,8 +1363,18 @@ Vue.use(VueBar);</pre></code>
 
 
 
+        <h3>3. Option <code>enableIfOverlay</code> set to <code>false</code>. Difference visible only on touch devices and on IE &amp; Edge with <code>-ms-autohiding-scrollbar</code> style.</h3>
 
-        <h3>Enabled <code>useScrollbarPseudo</code> (it works only on Chrome &amp; Safari; inspect <code>el2</code> to see the difference)</h3>
+        <div class="el1  mod-ms-autohiding" v-bar="{enableIfOverlay: false}">
+            <div class="el2">
+            Giant larvaceans are one important group we need to learn more about.” In the past, other scientists have tried studying giant larvaceans in the laboratory. But these efforts always failed because the animals’ houses were too fragile to be harvested and collected specimens were never able to build houses outside the ocean.To study the zooplankton in their natural habitat, Dr. Katija and her collaborators developed a new deep-sea imaging instrument, called DeepPIV, which they paired with a remotely operated vehicle. DeepPIV projects a sheet of laser light that cuts straight through a larvacean’s mucus house. A high-definition camera on the remotely operated vehicle can then capture the inner pumping mechanisms illuminated by the laser.Swimming hundreds of feet beneath the ocean’s surface in many parts of the world are prolific architects called giant larvaceans. These zooplankton are not particularly giant themselves (they resemble tadpoles and are about the size of a pinkie finger), but every day, they construct one or more spacious "houses” that can exceed three feet in length. The houses are transparent mucus structures that encase the creatures inside. Giant larvaceans beat their tails to pump seawater through these structures, which filter tiny bits of dead or drifting organic matter for the animals to eat. When their filters get clogged, the larvaceans abandon ship and construct a new house. Laden with debris from the water column, old houses rapidly sink to the seafloor. In a study published in Science Advances on Wednesday, scientists near California’s Monterey Bay have found that, through this process, giant larvaceans can filter all of the bay’s water from about 300 to 1,000 feet deep in less than two weeks, making them the fastest known zooplankton filter feeders. In doing so, the creatures help transfer carbon that has been removed from the atmosphere by photosynthesizing organisms to the deep sea, where it can be buried and stored long term. And given their abundance in other parts of the world, these organisms likely play a crucial role in the global carbon cycle. When it comes to the flow of carbon in the ocean, "we don’t know nearly as much as we should,” said Kakani Katija, a principal engineer at the Monterey Bay Aquarium Research Institute and the study’s lead author. "If we really want to understand how the system works, we have to look at all the players involved.
+            </div>
+        </div>
+
+
+
+
+        <h3>4. Option <code>useScrollbarPseudo</code> set to <code>true</code> It works only on Chrome &amp; Safari. Inspect <code>el2</code> to see the difference.</h3>
 
         <div class="el1" v-bar="{el2Class: 'vb-content-scrollbar-pseudo', useScrollbarPseudo: true}">
             <div class="el2">
@@ -1366,7 +1383,7 @@ Vue.use(VueBar);</pre></code>
         </div>
 
 
-        <h3>Choppy - <code>scrollThrottle</code> and <code>draggerThrottle</code> set to 100</h3>
+        <h3>5. Choppy but performant. Options <code>scrollThrottle</code> and <code>draggerThrottle</code> set to <code>100</code>.</h3>
 
         <div class="el1" v-bar="{scrollThrottle: 100, draggerThrottle: 100, }">
 
@@ -1380,7 +1397,7 @@ Vue.use(VueBar);</pre></code>
 
 
 
-        <h3>Scrollbar invisible</h3>
+        <h3>6. Scrollbar invisible. Content is not tall enough.</h3>
 
         <div class="el1" v-bar>
             <div class="el2">
