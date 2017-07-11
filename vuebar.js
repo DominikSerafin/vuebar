@@ -58,9 +58,6 @@
                 el2: null,
                 dragger: null,
 
-                // scrollbar width
-                barWidth: getBarWidth(),
-
                 // properties computed for internal directive logic & DOM manipulations
                 visibleArea: 0, // ratio between container height and scrollable content height
                 scrollTop: 0, // position of content scrollTop in px
@@ -114,34 +111,6 @@
             return true;
         }
 
-
-
-
-        /*------------------------------------*\
-            Get scrollbar width
-        \*------------------------------------*/
-        function getBarWidth(){
-            var fullWidth = 0;
-            var barWidth = 0;
-            var wrapper = document.createElement('div');
-            var child = document.createElement('div');
-
-            wrapper.style.position = 'absolute';
-            wrapper.style.top = '-100px';
-            wrapper.style.left = '-100px';
-            wrapper.style.width = '30px';
-            wrapper.style.overflow = 'hidden';
-            
-            wrapper.appendChild(child);
-            document.body.appendChild(wrapper);
-            fullWidth = child.offsetWidth;
-            wrapper.style.overflowY = 'scroll';
-            barWidth = fullWidth - child.offsetWidth;
-
-            wrapper.remove();
-
-            return barWidth;
-        }
 
 
 
@@ -552,18 +521,17 @@
             state.el2.style.msOverflowStyle = 'scrollbar';
             state.el2.style.height = '100%';
 
+
+            // hide original browser scrollbar using pseudo css selectors (only chrome & safari)
             if ( state.config.useScrollbarPseudo && (browser.chrome || browser.safari) ) {
                 state.el2.style.width = '100%';
                 hideScrollbarUsingPseudoElement(el);
-            } else {
-                var widthPixels = state.barWidth;
+            }
 
-                if (state.barWidth === 0) {
-                    state.el2.style.paddingRight = '20px';
-                    compatStyle(state.el2, 'BoxSizing', 'content-box');
-                }
-
-                state.el2.style.width = 'calc(100% + ' + widthPixels + 'px)';
+            // hide original browser scrollbar behind element edges and hidden overflow
+            else {
+                var widthPixels = browserScrollbarWidth();
+                state.el2.style.width = state.barWidth ? '100%' : 'calc(100% + ' + widthPixels + 'px)';
             }
 
             // add events
@@ -638,6 +606,12 @@
 
 
 
+
+
+
+        /*------------------------------------*\
+            Public Methods Install
+        \*------------------------------------*/
         function publicMethods(){
             return {
                 getState: getState,
@@ -646,6 +620,47 @@
                 refreshScrollbar: refreshScrollbar,
             };
         }
+        Vue.vuebar = publicMethods();
+        Vue.prototype.$vuebar = publicMethods();
+
+
+
+
+
+
+        /*------------------------------------*\
+            Directive Install
+        \*------------------------------------*/
+        Vue.directive('bar', {
+
+            /*
+            bind: function(el, binding, vnode, oldVnode){
+                initScrollbar.call(this, el, binding);
+            },
+            */
+
+            inserted: function(el, binding, vnode, oldVnode){
+                initScrollbar.call(this, el, binding);
+            },
+
+            /*
+            update: function(el, binding, vnode, oldVnode){
+                //refreshScrollbar.call(this, el);
+            },
+            */
+
+            componentUpdated: function(el, binding, vnode, oldVnode){
+                refreshScrollbar.call(this, el);
+            },
+
+            unbind: function(el, binding, vnode, oldVnode){
+                destroyScrollbar.call(this, el);
+            },
+
+        });
+
+
+
 
 
 
@@ -697,6 +712,18 @@
 
 
 
+        /*------------------------------------*\
+            Style Vendor Prefixes Helper
+        \*------------------------------------*/
+        function compatStyle(element, property, value) {
+            element.style["webkit" + property] = value;
+            element.style["moz" + property] = value;
+            element.style["ms" + property] = value;
+            element.style["o" + property] = value;
+            element.style[ property.slice(0,1).toLowerCase() + property.substring(1) ] = value;
+        }
+
+
 
         /*------------------------------------*\
             Class Manipulation Helper
@@ -716,19 +743,6 @@
             else el.className = el.className.replace(new RegExp('\\b'+ className+'\\b', 'g'), '');
         }
 
-
-
-
-        /*------------------------------------*\
-            Style Vendor Prefixes Helper
-        \*------------------------------------*/
-        function compatStyle(element, property, value) {
-            element.style["webkit" + property] = value;
-            element.style["moz" + property] = value;
-            element.style["ms" + property] = value;
-            element.style["o" + property] = value;
-            element.style[ property.slice(0,1).toLowerCase() + property.substring(1) ] = value;
-        }
 
 
 
@@ -779,45 +793,38 @@
 
 
 
-        /*------------------------------------*\
-            Public Methods Install
-        \*------------------------------------*/
-        Vue.vuebar = publicMethods();
-        Vue.prototype.$vuebar = publicMethods();
-
 
 
 
         /*------------------------------------*\
-            Directive Install
+            Get Native Scrollbar Width Helper
         \*------------------------------------*/
-        Vue.directive('bar', {
+        function browserScrollbarWidth(){
+            var fullWidth = 0;
+            var barWidth = 0;
 
-            /*
-            bind: function(el, binding, vnode, oldVnode){
-                initScrollbar.call(this, el, binding);
-            },
-            */
+            var wrapper = document.createElement('div');
+            var child = document.createElement('div');
 
-            inserted: function(el, binding, vnode, oldVnode){
-                initScrollbar.call(this, el, binding);
-            },
+            wrapper.style.position = 'absolute';
+            wrapper.style.top = '-100px';
+            wrapper.style.left = '-100px';
+            wrapper.style.width = '100px';
+            wrapper.style.overflow = 'hidden';
 
-            /*
-            update: function(el, binding, vnode, oldVnode){
-                //refreshScrollbar.call(this, el);
-            },
-            */
+            wrapper.appendChild(child);
+            document.body.appendChild(wrapper);
 
-            componentUpdated: function(el, binding, vnode, oldVnode){
-                refreshScrollbar.call(this, el);
-            },
+            fullWidth = child.offsetWidth;
+            wrapper.style.overflowY = 'scroll';
+            barWidth = fullWidth - child.offsetWidth;
 
-            unbind: function(el, binding, vnode, oldVnode){
-                destroyScrollbar.call(this, el);
-            },
+            document.body.removeChild(wrapper);
 
-        });
+            return barWidth;
+        }
+
+
 
 
 
