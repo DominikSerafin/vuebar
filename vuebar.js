@@ -30,7 +30,7 @@
                     observerThrottle: 100,
                     resizeDebounce: 100,
                     unselectableBody: true,
-                    enableIfFloating: true,
+                    overrideFloatingScrollbar: true,
                     scrollingPhantomDelay: 1000,
                     draggingPhantomDelay: 1000,
                     preventParentScroll: false,
@@ -502,7 +502,7 @@
             // dragger enabled?
             var elNativeScrollbarWidth = getNativeScrollbarWidth(el.firstElementChild);
             var overlayScrollbar = elNativeScrollbarWidth == 0;
-            state.draggerEnabled = ( (!overlayScrollbar) || state.config.enableIfFloating ) ? 1 : 0;
+            state.draggerEnabled = ( (!overlayScrollbar) || state.config.overrideFloatingScrollbar ) ? 1 : 0;
 
             // setup scrollbar "state"
             state.binding = kwargs.value ? kwargs : null;
@@ -857,8 +857,6 @@
 
             container.removeChild(wrapper);
 
-
-            console.warn(container, barWidth);
             return barWidth;
         }
 
