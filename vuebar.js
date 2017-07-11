@@ -549,7 +549,6 @@
                     state.el2.style.width = '100%';
                     compatStyle(state.el2, 'BoxSizing', 'content-box');
                     state.el2.style.paddingRight = '20px';
-
                 }
 
                 // hide original browser scrollbar behind element edges and hidden overflow
@@ -577,6 +576,12 @@
 
         function destroyScrollbar(el){
             var state = getState(el);
+
+            // safeguard for good measure... (issue #5)
+            if (!state) {
+                Vue.util.warn('(Vuebar) Couldn\'t read "state" while destroying scrollbar. If you see this please open issue in https://github.com/DominikSerafin/vuebar with stack trace and other useful information. Thank you!');
+                return false;
+            }
 
             // clear events
             state.dragger.removeEventListener('mousedown', state.barMousedown, 0);
