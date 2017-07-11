@@ -30,7 +30,7 @@
                     observerThrottle: 100,
                     resizeDebounce: 100,
                     unselectableBody: true,
-                    visibleOnAllDevices: false,
+                    enableIfFloating: true,
                     scrollingPhantomDelay: 1000,
                     draggingPhantomDelay: 1000,
                     preventParentScroll: false,
@@ -59,9 +59,8 @@
                 el2: null,
                 dragger: null,
 
-                // dont show scrollbar (mostly for touch devices with floating scrollbar)
-                // mitigated by 'visibleOnAllDevices' setting
-                forceDisable: false,
+                // show dragger
+                draggerEnabled: null,
 
                 // properties computed for internal directive logic & DOM manipulations
                 visibleArea: 0, // ratio between container height and scrollable content height
@@ -184,6 +183,10 @@
 
             dragger.style.position = 'absolute';
 
+            if (!state.draggerEnabled) {
+                dragger.style.display = 'none';
+            }
+
             draggerStyler.className = state.config.draggerStylerClass;
 
             dragger.appendChild(draggerStyler);
@@ -204,7 +207,7 @@
             //state.dragger.style.top = Math.ceil( state.barTop ) + 'px';
 
             // scrollbar visible / invisible classes
-            if (state.visibleArea<1) {
+            if (state.draggerEnabled && (state.visibleArea<1)) {
                 removeClass(state.el1, state.config.el1ScrollInvisibleClass);
                 addClass(state.el1, state.config.el1ScrollVisibleClass);
             } else {
@@ -496,6 +499,11 @@
             // detect browser
             var browser = detectBrowser();
 
+            // dragger enabled?
+            var elNativeScrollbarWidth = getNativeScrollbarWidth(el.firstElementChild);
+            var overlayScrollbar = elNativeScrollbarWidth == 0;
+            state.draggerEnabled = ( (!overlayScrollbar) || state.config.enableIfFloating ) ? 1 : 0;
+
             // setup scrollbar "state"
             state.binding = kwargs.value ? kwargs : null;
             state.el1 = el;
@@ -523,21 +531,32 @@
             state.el2.style.display = 'block';
             state.el2.style.overflowX = 'hidden';
             state.el2.style.overflowY = 'scroll';
-            state.el2.style.msOverflowStyle = 'scrollbar';
             state.el2.style.height = '100%';
 
+            // do the magic
+            if (state.draggerEnabled) {
 
-            // hide original browser scrollbar using pseudo css selectors (only chrome & safari)
-            if ( state.config.useScrollbarPseudo && (browser.chrome || browser.safari) ) {
-                state.el2.style.width = '100%';
-                hideScrollbarUsingPseudoElement(el);
-            }
+                // hide original browser scrollbar using pseudo css selectors (only chrome & safari)
+                if ( state.config.useScrollbarPseudo && (browser.chrome || browser.safari) ) {
+                    state.el2.style.width = '100%';
+                    hideScrollbarUsingPseudoElement(el);
+                }
 
-            // hide original browser scrollbar behind element edges and hidden overflow
-            else {
-                state.el2.style.width = (
-                    browser.scrollbarWidth ? 'calc(100% + ' + browser.scrollbarWidth + 'px)' : '100%'
-                );
+                // hide original browser overlay scrollbar and add padding to compensate for that
+                else if (overlayScrollbar) {
+                    /* state.el2.style.width = 'calc(100% + ' + 20 + 'px)';
+                    compatStyle(state.el2, 'BoxSizing', 'border-box'); */
+                    state.el2.style.width = '100%';
+                    compatStyle(state.el2, 'BoxSizing', 'content-box');
+                    state.el2.style.paddingRight = '20px';
+
+                }
+
+                // hide original browser scrollbar behind element edges and hidden overflow
+                else {
+                    state.el2.style.width = 'calc(100% + ' + elNativeScrollbarWidth + 'px)';
+                }
+
             }
 
             // add events
@@ -764,32 +783,9 @@
                 return match ? parseInt(match[1]) : undefined;
             }
 
-            // calculate browser scrollbar width
-            function scrollbarWidth() {
-                var fullWidth = 0;
-                var barWidth = 0;
-                var wrapper= document.createElement('div');
-                var child = document.createElement('div');
-                wrapper.style.position = 'absolute';
-                wrapper.style.top = '-100px';
-                wrapper.style.left = '-100px';
-                wrapper.style.width = '100px';
-                wrapper.style.overflow = 'hidden';
-                wrapper.appendChild(child);
-                document.body.appendChild(wrapper);
-                fullWidth = child.offsetWidth;
-                wrapper.style.overflowY = 'scroll';
-                barWidth = fullWidth - child.offsetWidth;
-                document.body.removeChild(wrapper);
-                return barWidth;
-            }
-
             // user agent & vendor
             var ua = window.navigator.userAgent;
             var vendor = window.navigator.vendor;
-
-            // scrollbar width
-            var scrollbarWidth = scrollbarWidth();
 
             // chrome
             var chrome = (
@@ -816,7 +812,6 @@
 
             // construct return object
             return {
-                scrollbarWidth: scrollbarWidth,
                 edge: edge,
                 chrome: chrome,
                 safari: safari,
@@ -830,6 +825,42 @@
 
         }
 
+
+        /*------------------------------------*\
+            Calculate scrollbar width in element
+            - if the width is 0 it means the scrollbar is floated/overlayed
+            - accepts "container" paremeter because ie & edge can have different
+              scrollbar behaviors for different elements using '-ms-overflow-style'
+        \*------------------------------------*/
+        function getNativeScrollbarWidth(container) {
+
+            var container = container ? container : document.body;
+
+            var fullWidth = 0;
+            var barWidth = 0;
+
+            var wrapper = document.createElement('div');
+            var child = document.createElement('div');
+
+            wrapper.style.position = 'absolute';
+            wrapper.style.top = '-100px';
+            wrapper.style.left = '-100px';
+            wrapper.style.width = '100px';
+            wrapper.style.overflow = 'hidden';
+
+            wrapper.appendChild(child);
+            container.appendChild(wrapper);
+
+            fullWidth = child.offsetWidth;
+            wrapper.style.overflowY = 'scroll';
+            barWidth = fullWidth - child.offsetWidth;
+
+            container.removeChild(wrapper);
+
+
+            console.warn(container, barWidth);
+            return barWidth;
+        }
 
 
 
