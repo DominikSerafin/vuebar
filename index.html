@@ -653,9 +653,9 @@
                 <li><a href="#about">About <span>01</span> </a></li>
                 <li><a href="#installation">Installation <span>02</span> </a></li>
                 <li><a href="#usage">Usage <span>03</span> </a></li>
-                <li><a href="#options">Customization Options <span>04</span> </a></li>
-                <li><a href="#options-classes">Customization Options  <span>05</span><br>  (custom classes) &nbsp;&nbsp;&nbsp;&nbsp; </a></li>
-                <li><a href="#styling">Styling <span>06</span> </a></li>
+                <li><a href="#styling">Styling <span>04</span> </a></li>
+                <li><a href="#options">Customization Options <span>05</span> </a></li>
+                <li><a href="#options-classes">Customization Options  <span>06</span><br>  (custom classes) &nbsp;&nbsp;&nbsp;&nbsp; </a></li>
                 <li><a href="#examples">Examples <span>07</span> </a></li>
                 <li><a href="#credits">Contributing &amp; Credits <span>08</span> </a></li>
 
@@ -1035,6 +1035,76 @@ Vue.use(Vuebar);</pre></code>
 
 
 
+
+
+        <h2 class="container-title"  id="styling">Styling</h2>
+        <div class="container">
+
+        Every Vuebar element has a child <code>dragger</code> element. That element also has its own child - a <code>dragger-styler</code> element that's purely there for you to style it any way you want. You can also style the original <code>dragger</code> element - just remember it has <code>position: absolute</code> style always applied and <code>height</code> and <code>top</code> styles dynamically added &amp; changed when scrolling.
+
+
+        <h3>Default Style</h3>
+
+        <p>If you were looking for this library it means you want to style your scrollbars as you want - so Vuebar doesn't include default styles internally. But if you e.g. want to quickly try or understand how you should style Vuebar scrollbars then below are prepared default styles that you can copy-paste into your project.  </p>
+
+<code class="full"><pre>
+.vb > .vb-dragger {
+    z-index: 5;
+    width: 12px;
+    right: 0;
+}
+
+.vb > .vb-dragger > .vb-dragger-styler {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: rotate3d(0,0,0,0);
+    transform: rotate3d(0,0,0,0);
+    -webkit-transition:
+        background-color 100ms ease-out,
+        margin 100ms ease-out,
+        height 100ms ease-out;
+    transition:
+        background-color 100ms ease-out,
+        margin 100ms ease-out,
+        height 100ms ease-out;
+    background-color: rgba(48, 121, 244,.1);
+    margin: 5px 5px 5px 0;
+    border-radius: 20px;
+    height: calc(100% - 10px);
+    display: block;
+}
+
+.vb.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler {
+    background-color: rgba(48, 121, 244,.3);
+}
+
+.vb > .vb-dragger:hover > .vb-dragger-styler {
+    background-color: rgba(48, 121, 244,.5);
+    margin: 0px;
+    height: 100%;
+}
+
+.vb.vb-dragging > .vb-dragger > .vb-dragger-styler {
+    background-color: rgba(48, 121, 244,.5);
+    margin: 0px;
+    height: 100%;
+}
+
+.vb.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler {
+    background-color: rgba(48, 121, 244,.5);
+}
+</pre></code>
+
+        </div>
+
+
+
+
+
+
+
+
+
         <h2 class="container-title  mod-table"  id="options">Customization options</h2>
         <div class="container  mod-table">
 
@@ -1239,68 +1309,6 @@ Vue.use(Vuebar);</pre></code>
 
 
 
-
-
-
-        <h2 class="container-title"  id="styling">Styling</h2>
-        <div class="container">
-
-        Every Vuebar element has a child <code>dragger</code> element. That element also has its own child - a <code>dragger-styler</code> element that's purely there for you to style it any way you want. You can also style the original <code>dragger</code> element - just remember it has <code>position: absolute</code> style always applied and <code>height</code> and <code>top</code> styles dynamically added &amp; changed when scrolling.
-
-
-        <h3>Default Style</h3>
-
-        <p>If you were looking for this library it means you want to style your scrollbars as you want - so Vuebar doesn't include default styles internally. But if you e.g. want to quickly try or understand how you should style Vuebar scrollbars then below are prepared default styles that you can copy-paste into your project.  </p>
-
-<code class="full"><pre>
-.vb > .vb-dragger {
-    z-index: 5;
-    width: 12px;
-    right: 0;
-}
-
-.vb > .vb-dragger > .vb-dragger-styler {
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    -webkit-transform: rotate3d(0,0,0,0);
-    transform: rotate3d(0,0,0,0);
-    -webkit-transition:
-        background-color 100ms ease-out,
-        margin 100ms ease-out,
-        height 100ms ease-out;
-    transition:
-        background-color 100ms ease-out,
-        margin 100ms ease-out,
-        height 100ms ease-out;
-    background-color: rgba(48, 121, 244,.1);
-    margin: 5px 5px 5px 0;
-    border-radius: 20px;
-    height: calc(100% - 10px);
-    display: block;
-}
-
-.vb.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler {
-    background-color: rgba(48, 121, 244,.3);
-}
-
-.vb > .vb-dragger:hover > .vb-dragger-styler {
-    background-color: rgba(48, 121, 244,.5);
-    margin: 0px;
-    height: 100%;
-}
-
-.vb.vb-dragging > .vb-dragger > .vb-dragger-styler {
-    background-color: rgba(48, 121, 244,.5);
-    margin: 0px;
-    height: 100%;
-}
-
-.vb.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler {
-    background-color: rgba(48, 121, 244,.5);
-}
-</pre></code>
-
-        </div>
 
 
 
