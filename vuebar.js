@@ -785,7 +785,7 @@
             // get ie version helper
             function getIEVersion() {
                 var match = window.navigator.userAgent.match(/(?:MSIE |Trident\/.*; rv:)(\d+)/);
-                return match ? parseInt(match[1]) : undefined;
+                return match ? parseInt(match[1]) : void 0;
             }
 
             // user agent & vendor
@@ -875,15 +875,15 @@
     /*------------------------------------*\
         Expose / Autoinstall
     \*------------------------------------*/
-    if(typeof exports === 'object' && typeof module === 'object') {
+    if (typeof exports === 'object' && typeof module === 'object') {
         module.exports = Vuebar;
-    } else if(typeof define === 'function' && define.amd) {
+    } else if (typeof define === 'function' && define.amd) {
         define(function () { return Vuebar });
-    } else if (typeof window !== 'undefined') {
+    } else if (typeof window !== typeof void 0) {
         window.Vuebar = Vuebar;
     }
 
-    if (typeof Vue !== 'undefined') {
+    if (typeof Vue !== typeof void 0) {
         Vue.use(Vuebar);
     }
 
