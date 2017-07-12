@@ -17,13 +17,13 @@
 
         /*------------------------------------*\
             Create State
+            - contains default values
         \*------------------------------------*/
         function createState(el){
             el._vuebarState = {
 
-                // vuebar "state" + defaults
+                // config with default values that may be overwritten on directive intialization
                 config: {
-
                     scrollThrottle: 10,
                     draggerThrottle: 10,
                     resizeRefresh: true,
@@ -48,7 +48,6 @@
 
                     draggerClass: 'vb-dragger',
                     draggerStylerClass: 'vb-dragger-styler',
-
                 },
 
                 // reference to binding
@@ -218,7 +217,6 @@
 
 
             if (options.withScrollingClasses) {
-
 
                 // add scrolling class
                 addClass(state.el1, state.config.el1ScrollingClass);
@@ -474,14 +472,20 @@
 
 
         /*------------------------------------*\
-            Logic
+            Initialize Scrollbar
         \*------------------------------------*/
-
-
         function initScrollbar(el, kwargs){
 
             // validate on directive bind if the markup is OK
             if ( !markupValidation.call(this, el) ) { return false }
+
+            // safeguard to not initialize vuebar when it's already initialized
+            // it may happen because we try to initialize vuebar both on "bind" and "inserted" hooks
+            if (el._vuebarState) {
+                // and I'm actually curious if that can happen
+                Vue.util.warn('(Vuebar) Tried to initialize second time. If you see this please create an issue on https://github.com/DominikSerafin/vuebar with all relevent debug information. Thank you!');
+                return false;
+            }
 
             // create state
             var state = createState(el);
@@ -574,14 +578,12 @@
 
 
 
-        function destroyScrollbar(el){
+        /*------------------------------------*\
+            Destroy Scrollbar
+        \*------------------------------------*/
+        function destroyScrollbar(el, options){
+            var options = options ? options : {};
             var state = getState(el);
-
-            // safeguard for good measure... (issue #5)
-            if (!state) {
-                Vue.util.warn('(Vuebar) Couldn\'t read "state" while destroying scrollbar. If you see this please open issue in https://github.com/DominikSerafin/vuebar with stack trace and other useful information. Thank you!');
-                return false;
-            }
 
             // clear events
             state.dragger.removeEventListener('mousedown', state.barMousedown, 0);
@@ -592,31 +594,32 @@
             // disconnect mutation observer
             state.mutationObserver ? state.mutationObserver.disconnect() : null;
 
-            // clear el1 styles and class
+            // clear el1 classes
             removeClass(state.el1, state.config.el1Class);
             removeClass(state.el1, state.config.el1ScrollVisibleClass);
             removeClass(state.el1, state.config.el1ScrollInvisibleClass);
             removeClass(state.el1, state.config.el1ScrollingClass);
             removeClass(state.el1, state.config.el1ScrollingPhantomClass);
             removeClass(state.el1, state.config.el1DraggingClass);
-            state.el1.style.position = '';
-            state.el1.style.overflow = '';
 
-            // clear el2 styles and class
+            // clear el1 styles
+            if (options.clearStyles) {
+                state.el1.style.position = '';
+                state.el1.style.overflow = '';
+            }
+
+            // clear el2 classes
             removeClass(state.el2, state.config.el2Class);
-            state.el2.style.display = '';
-            state.el2.style.overflowX = '';
-            state.el2.style.overflowY = '';
-            state.el2.style.msOverflowStyle = '';
-            state.el2.style.height = '';
-            state.el2.style.width = '';
 
-            // clear scrollar pseudo element styles
-            // TODO - remove only injected styles used in the element, not the whole style element
-            /*
-            var styleElm = document.getElementById('vuebar-pseudo-element-styles');
-            document.head.removeChild(styleElm);
-            */
+            // clear el2 styles
+            if (options.clearStyles) {
+                state.el2.style.display = '';
+                state.el2.style.overflowX = '';
+                state.el2.style.overflowY = '';
+                state.el2.style.msOverflowStyle = '';
+                state.el2.style.height = '';
+                state.el2.style.width = '';
+            }
 
             // clear dragger
             state.dragger.removeChild(state.dragger.firstChild);
@@ -632,7 +635,6 @@
             delete el._vuebarState;
 
         }
-
 
 
 
@@ -657,34 +659,33 @@
 
 
 
-
         /*------------------------------------*\
             Directive Install
         \*------------------------------------*/
         Vue.directive('bar', {
 
-            /*
-            bind: function(el, binding, vnode, oldVnode){
-                initScrollbar.call(this, el, binding);
-            },
-            */
+            bind: function(el, binding, vnode){
 
-            inserted: function(el, binding, vnode, oldVnode){
-                initScrollbar.call(this, el, binding);
-            },
+                // although this is hacky, the timeout is required
+                // - getNativeScrollbarWidth doesn't calculate proper width without timeout
+                //   (maybe because the el isn't in DOM yet?)
+                // - for some reason "inserted" hook doesn't fire when transition is used
+                //   so we cant initScrollbar there
+                setTimeout(function() {
+                    initScrollbar.call(this, el, binding);
+                }.bind(this), 0);
 
-            /*
-            update: function(el, binding, vnode, oldVnode){
-                //refreshScrollbar.call(this, el);
             },
-            */
 
             componentUpdated: function(el, binding, vnode, oldVnode){
                 refreshScrollbar.call(this, el);
             },
 
             unbind: function(el, binding, vnode, oldVnode){
-                destroyScrollbar.call(this, el);
+                // we shouldn't clearStyles because it actually doesn't matter that much
+                // the element will be always deleted on unbind and its styles also
+                // and if we do clear styles then it looks bad on transitions
+                destroyScrollbar.call(this, el, {clearStyles: false});
             },
 
         });
@@ -756,7 +757,7 @@
 
 
         /*------------------------------------*\
-            Class Manipulation Helper
+            Class Manipulation Helpers
             https://plainjs.com/javascript/attributes/adding-removing-and-testing-for-classes-9/
         \*------------------------------------*/
         function hasClass(el, className) {
@@ -838,7 +839,6 @@
               scrollbar behaviors for different elements using '-ms-overflow-style'
         \*------------------------------------*/
         function getNativeScrollbarWidth(container) {
-
             var container = container ? container : document.body;
 
             var fullWidth = 0;
@@ -848,10 +848,14 @@
             var child = document.createElement('div');
 
             wrapper.style.position = 'absolute';
-            wrapper.style.top = '-100px';
-            wrapper.style.left = '-100px';
+            wrapper.style.pointerEvents = 'none';
+            wrapper.style.bottom = '0';
+            wrapper.style.right = '0';
             wrapper.style.width = '100px';
             wrapper.style.overflow = 'hidden';
+
+            wrapper.style.height = '100px';
+            wrapper.style.background = 'red';
 
             wrapper.appendChild(child);
             container.appendChild(wrapper);
@@ -868,14 +872,12 @@
 
 
 
-
     };
 
 
 
-
     /*------------------------------------*\
-        Autoinstall
+        Expose / Autoinstall
     \*------------------------------------*/
     if(typeof exports === 'object' && typeof module === 'object') {
         module.exports = VueBar;
