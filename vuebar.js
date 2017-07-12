@@ -667,10 +667,10 @@
             bind: function(el, binding, vnode){
 
                 // although this is hacky, the timeout is required
-                // - getNativeScrollbarWidth doesn't calculate proper width without timeout
+                // - getNativeScrollbarWidth doesn't calculate proper width on "bind" without timeout
                 //   (maybe because the el isn't in DOM yet?)
                 // - for some reason "inserted" hook doesn't fire when transition is used
-                //   so we cant initScrollbar there
+                //   so we cant initScrollbar there https://github.com/vuejs/vue/issues/6076
                 setTimeout(function() {
                     initScrollbar.call(this, el, binding);
                 }.bind(this), 0);
