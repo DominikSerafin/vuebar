@@ -480,7 +480,6 @@
             if ( !markupValidation.call(this, el) ) { return false }
 
             // safeguard to not initialize vuebar when it's already initialized
-            // it may happen because we try to initialize vuebar both on "bind" and "inserted" hooks
             if (el._vuebarState) {
                 // and I'm actually curious if that can happen
                 Vue.util.warn('(Vuebar) Tried to initialize second time. If you see this please create an issue on https://github.com/DominikSerafin/vuebar with all relevent debug information. Thank you!');
@@ -853,9 +852,6 @@
             wrapper.style.right = '0';
             wrapper.style.width = '100px';
             wrapper.style.overflow = 'hidden';
-
-            wrapper.style.height = '100px';
-            wrapper.style.background = 'red';
 
             wrapper.appendChild(child);
             container.appendChild(wrapper);
