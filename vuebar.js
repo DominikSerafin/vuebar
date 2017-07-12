@@ -9,8 +9,8 @@
     /*------------------------------------*\
         Vuebar
     \*------------------------------------*/
-    var VueBar = {};
-    VueBar.install = function(Vue, options){
+    var Vuebar = {};
+    Vuebar.install = function(Vue, options){
 
 
 
@@ -876,15 +876,15 @@
         Expose / Autoinstall
     \*------------------------------------*/
     if(typeof exports === 'object' && typeof module === 'object') {
-        module.exports = VueBar;
+        module.exports = Vuebar;
     } else if(typeof define === 'function' && define.amd) {
-        define(function () { return VueBar });
+        define(function () { return Vuebar });
     } else if (typeof window !== 'undefined') {
-        window.VueBar = VueBar;
+        window.Vuebar = Vuebar;
     }
 
     if (typeof Vue !== 'undefined') {
-        Vue.use(VueBar);
+        Vue.use(Vuebar);
     }
 
 
