@@ -14,7 +14,6 @@
 
 
 
-
         /*------------------------------------*\
             Create State
             - contains default values
@@ -295,7 +294,6 @@
 
             var scrollDist = state.el2.scrollHeight - state.el2.clientHeight;
             var scrollTop = state.el2.scrollTop;
-            var deltaY = event.deltaY;
 
             var wheelingUp = event.deltaY < 0;
             var wheelingDown = event.deltaY > 0;
@@ -366,7 +364,6 @@
 
 
         function wheelHandler(el){
-            var state = getState(el);
             return function(event){
                 preventParentScroll(el, event);
             }.bind(this);
@@ -663,17 +660,8 @@
         \*------------------------------------*/
         Vue.directive('bar', {
 
-            bind: function(el, binding, vnode){
-
-                // although this is hacky, the timeout is required
-                // - getNativeScrollbarWidth doesn't calculate proper width on "bind" without timeout
-                //   (maybe because the el isn't in DOM yet?)
-                // - for some reason "inserted" hook doesn't fire when transition is used
-                //   so we cant initScrollbar there https://github.com/vuejs/vue/issues/6076
-                setTimeout(function() {
-                    initScrollbar.call(this, el, binding);
-                }.bind(this), 0);
-
+            inserted: function(el, binding, vnode){
+                initScrollbar.call(this, el, binding);
             },
 
             componentUpdated: function(el, binding, vnode, oldVnode){
@@ -746,10 +734,10 @@
             Style Vendor Prefixes Helper
         \*------------------------------------*/
         function compatStyle(element, property, value) {
-            element.style["webkit" + property] = value;
-            element.style["moz" + property] = value;
-            element.style["ms" + property] = value;
-            element.style["o" + property] = value;
+            element.style['webkit' + property] = value;
+            element.style['moz' + property] = value;
+            element.style['ms' + property] = value;
+            element.style['o' + property] = value;
             element.style[ property.slice(0,1).toLowerCase() + property.substring(1) ] = value;
         }
 
