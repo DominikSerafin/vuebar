@@ -120,8 +120,7 @@
         /*------------------------------------*\
             Mount Validation
         \*------------------------------------*/
-        function validation(el, kwargs){
-            var options = kwargs.value ? kwargs.value : (kwargs ? kwargs : {});
+        function validation(el, options){
 
             // safeguard to not initialize vuebar when it's already initialized
             if (el._vuebarState) {
@@ -192,7 +191,7 @@
         function computeBarTop(el, mousemoveEvent){
             var state = getState(el);
 
-            // if the function gets called on scroll  event
+            // if the function gets called on scroll event
             if (!mousemoveEvent) {
                 state.barTop = state.el2.scrollTop * state.visibleArea;
                 return false;
