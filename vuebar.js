@@ -15,6 +15,19 @@
 
 
         /*------------------------------------*\
+            LOG UTILITY
+            TO DELETE
+        \*------------------------------------*/
+        function log(el, thing){
+            var state = getState(el);
+            if (state.el1.className.indexOf('el1full') > -1) {
+                console.warn(thing);
+            }
+        }
+
+
+
+        /*------------------------------------*\
             Create State
             - contains default values
         \*------------------------------------*/
@@ -25,6 +38,7 @@
                 config: {
                     scrollThrottle: 10,
                     draggerThrottle: 10,
+                    draggerMinHeight: 40,
                     resizeRefresh: true,
                     observerThrottle: 100,
                     resizeDebounce: 100,
@@ -64,7 +78,8 @@
                 visibleArea: 0, // ratio between container height and scrollable content height
                 scrollTop: 0, // position of content scrollTop in px
                 barTop: 0, // position of dragger in px
-                barHeight: 0, // height of dragger in px
+                barHeight: 0, // height of dragger in
+                barHeightMinHeightDiff: 0, // difference between normal dragger height and min height
                 mouseBarOffsetY: 0, // relative position of mouse at the time of clicking on dragger
                 barDragging: false, // when the dragger is used
 
@@ -105,11 +120,28 @@
         /*------------------------------------*\
             Mount Validation
         \*------------------------------------*/
-        function markupValidation(el){
+        function validation(el, kwargs){
+            var options = kwargs.value ? kwargs.value : (kwargs ? kwargs : {});
+
+            // safeguard to not initialize vuebar when it's already initialized
+            if (el._vuebarState) {
+                // and I'm actually curious if that can happen
+                Vue.util.warn('(Vuebar) Tried to initialize second time. If you see this please create an issue on https://github.com/DominikSerafin/vuebar with all relevent debug information. Thank you!');
+                return false;
+            }
+
+            // markup validation
             if (!el.firstChild) {
                 Vue.util.warn('(Vuebar) Element 1 with v-bar directive doesn\'t have required child element 2.');
                 return false;
             }
+
+            // dragger min height validation
+            if (options.draggerMinHeight < 0) {
+                Vue.util.warn('(Vuebar) Option "draggerMinHeight" must be greater or equal to 0.');
+                return false;
+            }
+
             return true;
         }
 
@@ -130,39 +162,61 @@
             state.scrollTop = state.barTop * (state.el2.scrollHeight / state.el2.clientHeight);
         }
 
-        function computeBarTop(el, event){
+        function computeBarHeight(el){
             var state = getState(el);
 
-            // if the function gets called on scroll event
-            if (!event) {
-                state.barTop = state.el2.scrollTop * state.visibleArea;
+            // if content is shorter than container
+            if (state.visibleArea >= 1) {
+                state.barHeight = 0;
                 return false;
-            } // else the function gets called when moving dragger with mouse
-
-
-            var relativeMouseY = (event.clientY - state.el1.getBoundingClientRect().top);
-            if (relativeMouseY <= state.mouseBarOffsetY) { // if bar is trying to go over top
-                state.barTop = 0;
             }
 
-            if (relativeMouseY > state.mouseBarOffsetY) { // if bar is moving between top and bottom
-                state.barTop = relativeMouseY - state.mouseBarOffsetY;
+            // else calculate proper bar height
+
+            var height = state.el2.clientHeight * state.visibleArea;
+
+            // is there difference between normal height and min height
+            state.barHeightMinHeightDiff = state.config.draggerMinHeight - height;
+
+            // if yes, add difference
+            if (state.barHeightMinHeightDiff > 0) {
+                height += state.barHeightMinHeightDiff;
             }
 
-
-            if ( (state.barTop + state.barHeight ) >= state.el2.clientHeight ) { // if bar is trying to go over bottom
-                state.barTop = state.el2.clientHeight - state.barHeight;
-            }
+            // apply to state
+            state.barHeight = height;
 
         }
 
-        function computeBarHeight(el){
+        // computeBarTop needs to be called after computeBarHeight
+        function computeBarTop(el, mousemoveEvent){
             var state = getState(el);
-            if (state.visibleArea >= 1) {
-                state.barHeight = 0;
-            } else {
-                state.barHeight = state.el2.clientHeight * state.visibleArea;
+
+            // if the function gets called on scroll  event
+            if (!mousemoveEvent) {
+                state.barTop = state.el2.scrollTop * state.visibleArea;
+                return false;
             }
+            // else the function gets called when moving dragger with mouse
+
+            // get relative mouse position to el1
+            var relativeMouseY = (mousemoveEvent.clientY - state.el1.getBoundingClientRect().top);
+
+            // if bar is trying to go over top
+            if (relativeMouseY <= state.mouseBarOffsetY) {
+                state.barTop = 0;
+            }
+
+            // if bar is moving between top and bottom
+            if (relativeMouseY > state.mouseBarOffsetY) {
+                state.barTop = relativeMouseY - state.mouseBarOffsetY;
+            }
+
+            // if bar is trying to go over bottom
+            if ( (state.barTop + state.barHeight ) >= state.el2.clientHeight ) {
+                state.barTop = state.el2.clientHeight - state.barHeight;
+            }
+
         }
 
 
@@ -199,7 +253,7 @@
             var state = getState(el);
 
             // setting dragger styles
-            state.dragger.style.height = parseInt( Math.round( state.barHeight)  ) + 'px';
+            state.dragger.style.height = parseInt( Math.round( state.barHeight )  ) + 'px';
             state.dragger.style.top = parseInt( Math.round( state.barTop ) ) + 'px';
             //state.dragger.style.height = Math.ceil( state.barHeight ) + 'px';
             //state.dragger.style.top = Math.ceil( state.barTop ) + 'px';
@@ -329,16 +383,16 @@
 
             if (options.immediate) {
                 computeVisibleArea(el);
-                computeBarTop(el);
                 computeBarHeight(el);
+                computeBarTop(el);
                 updateDragger(el);
             }
 
             Vue.nextTick(function(){
                 if ( !getState(el) ) { return false }
                 computeVisibleArea(el);
-                computeBarTop(el);
                 computeBarHeight(el);
+                computeBarTop(el);
                 updateDragger(el);
             }.bind(this));
         }
@@ -473,23 +527,16 @@
         \*------------------------------------*/
         function initScrollbar(el, kwargs){
 
-            // validate on directive bind if the markup is OK
-            if ( !markupValidation.call(this, el) ) { return false }
-
-            // safeguard to not initialize vuebar when it's already initialized
-            if (el._vuebarState) {
-                // and I'm actually curious if that can happen
-                Vue.util.warn('(Vuebar) Tried to initialize second time. If you see this please create an issue on https://github.com/DominikSerafin/vuebar with all relevent debug information. Thank you!');
-                return false;
-            }
-
-            // create state
-            var state = createState(el);
-
             // get options object
             // - it will come from directive binding (there is a 'value' property)
             // - or it will come from public method direct options object
             var options = kwargs.value ? kwargs.value : (kwargs ? kwargs : {});
+
+            // validate on directive bind
+            if ( !validation.call(this, el, options) ) { return false }
+
+            // create state
+            var state = createState(el);
 
             // overwrite defaults with provided options
             for (var key in options){
@@ -852,6 +899,9 @@
 
             return barWidth;
         }
+
+
+
 
 
 
