@@ -290,6 +290,9 @@
 
 
         function preventParentScroll(el, event){
+            if (state.visibleArea >= 1) {
+				return false;
+			}
             var state = getState(el);
 
             var scrollDist = state.el2.scrollHeight - state.el2.clientHeight;
