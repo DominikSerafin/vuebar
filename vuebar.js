@@ -1,23 +1,23 @@
 /*----------------------------------------*\
-    Vuebar
-\*----------------------------------------*/
+ Vuebar
+ \*----------------------------------------*/
 ;(function(){
     'use strict';
 
 
 
     /*------------------------------------*\
-        Vuebar
-    \*------------------------------------*/
+     Vuebar
+     \*------------------------------------*/
     var Vuebar = {};
     Vuebar.install = function(Vue, options){
 
 
 
         /*------------------------------------*\
-            Create State
-            - contains default values
-        \*------------------------------------*/
+         Create State
+         - contains default values
+         \*------------------------------------*/
         function createState(el){
             el._vuebarState = {
 
@@ -93,8 +93,8 @@
 
 
         /*------------------------------------*\
-            Get State
-        \*------------------------------------*/
+         Get State
+         \*------------------------------------*/
         function getState(el){
             return el._vuebarState;
         }
@@ -103,8 +103,8 @@
 
 
         /*------------------------------------*\
-            Mount Validation
-        \*------------------------------------*/
+         Mount Validation
+         \*------------------------------------*/
         function markupValidation(el){
             if (!el.firstChild) {
                 Vue.util.warn('(Vuebar) Element 1 with v-bar directive doesn\'t have required child element 2.');
@@ -118,8 +118,8 @@
 
 
         /*------------------------------------*\
-            Computing Properties
-        \*------------------------------------*/
+         Computing Properties
+         \*------------------------------------*/
         function computeVisibleArea(el){
             var state = getState(el);
             state.visibleArea = (state.el2.clientHeight / state.el2.scrollHeight);
@@ -169,8 +169,8 @@
 
 
         /*------------------------------------*\
-            Styles & DOM
-        \*------------------------------------*/
+         Styles & DOM
+         \*------------------------------------*/
         function createDragger(el){
             var state = getState(el);
 
@@ -317,12 +317,42 @@
             state.el2.scrollTop = state.scrollTop;
         }
 
+        /*------------------------------------*\
+         Scroll to
+         \*------------------------------------*/
+
+
+        function scrollTo(el, distance){
+            // check whether distance is predefined
+            let calculate =  distance === 'top' || distance === 'bottom'; // boolean
+
+            // get state of scrollbar
+            let state = getState(el);
+
+            Vue.nextTick(function(){
+                if ( !state ) { return false }
+
+                // object with predefined distances, easy to extend
+                let positions = {
+                    'top' : 0,
+                    'bottom': state.el2.scrollHeight
+                };
+
+                // changes the scroll position of scrollbar depending if it's predefined or not. If not, it accepts number or function input
+                calculate ? state.el2.scrollTop = positions[distance] : state.el2.scrollTop = distance
+
+            }.bind(this));
+        }
+
+
+
+
 
 
 
         /*------------------------------------*\
-            Refresh
-        \*------------------------------------*/
+         Refresh
+         \*------------------------------------*/
 
         function refreshScrollbar(el, options){
             var options = options ? options : {};
@@ -347,8 +377,8 @@
 
 
         /*------------------------------------*\
-            Events & Handlers
-        \*------------------------------------*/
+         Events & Handlers
+         \*------------------------------------*/
 
         function scrollHandler(el){
             var state = getState(el);
@@ -469,8 +499,8 @@
 
 
         /*------------------------------------*\
-            Initialize Scrollbar
-        \*------------------------------------*/
+         Initialize Scrollbar
+         \*------------------------------------*/
         function initScrollbar(el, kwargs){
 
             // validate on directive bind if the markup is OK
@@ -545,7 +575,7 @@
                 // hide original browser overlay scrollbar and add padding to compensate for that
                 else if (overlayScrollbar) {
                     /* state.el2.style.width = 'calc(100% + ' + 20 + 'px)';
-                    compatStyle(state.el2, 'BoxSizing', 'border-box'); */
+                     compatStyle(state.el2, 'BoxSizing', 'border-box'); */
                     state.el2.style.width = '100%';
                     compatStyle(state.el2, 'BoxSizing', 'content-box');
                     state.el2.style.paddingRight = '20px';
@@ -575,8 +605,8 @@
 
 
         /*------------------------------------*\
-            Destroy Scrollbar
-        \*------------------------------------*/
+         Destroy Scrollbar
+         \*------------------------------------*/
         function destroyScrollbar(el, options){
             var options = options ? options : {};
             var state = getState(el);
@@ -638,14 +668,15 @@
 
 
         /*------------------------------------*\
-            Public Methods Install
-        \*------------------------------------*/
+         Public Methods Install
+         \*------------------------------------*/
         function publicMethods(){
             return {
                 getState: getState,
                 initScrollbar: initScrollbar,
                 destroyScrollbar: destroyScrollbar,
                 refreshScrollbar: refreshScrollbar,
+                scrollTo: scrollTo
             };
         }
         Vue.vuebar = publicMethods();
@@ -656,8 +687,8 @@
 
 
         /*------------------------------------*\
-            Directive Install
-        \*------------------------------------*/
+         Directive Install
+         \*------------------------------------*/
         Vue.directive('bar', {
 
             inserted: function(el, binding, vnode){
@@ -684,9 +715,9 @@
 
 
         /*------------------------------------*\
-            Debounce Helper
-            https://remysharp.com/2010/07/21/throttling-function-calls
-        \*------------------------------------*/
+         Debounce Helper
+         https://remysharp.com/2010/07/21/throttling-function-calls
+         \*------------------------------------*/
         function debounce(fn, delay) {
             var timer = null;
             return function () {
@@ -702,9 +733,9 @@
 
 
         /*------------------------------------*\
-            Throttle Helper
-            https://remysharp.com/2010/07/21/throttling-function-calls
-        \*------------------------------------*/
+         Throttle Helper
+         https://remysharp.com/2010/07/21/throttling-function-calls
+         \*------------------------------------*/
         function throttle(fn, threshhold, scope) {
             threshhold || (threshhold = 250);
             var last,
@@ -731,8 +762,8 @@
 
 
         /*------------------------------------*\
-            Style Vendor Prefixes Helper
-        \*------------------------------------*/
+         Style Vendor Prefixes Helper
+         \*------------------------------------*/
         function compatStyle(element, property, value) {
             element.style['webkit' + property] = value;
             element.style['moz' + property] = value;
@@ -744,9 +775,9 @@
 
 
         /*------------------------------------*\
-            Class Manipulation Helpers
-            https://plainjs.com/javascript/attributes/adding-removing-and-testing-for-classes-9/
-        \*------------------------------------*/
+         Class Manipulation Helpers
+         https://plainjs.com/javascript/attributes/adding-removing-and-testing-for-classes-9/
+         \*------------------------------------*/
         function hasClass(el, className) {
             return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className);
         }
@@ -766,8 +797,8 @@
 
 
         /*------------------------------------*\
-            Browser Detection Helper
-        \*------------------------------------*/
+         Browser Detection Helper
+         \*------------------------------------*/
         function detectBrowser(){
 
             // get ie version helper
@@ -820,11 +851,11 @@
 
 
         /*------------------------------------*\
-            Calculate scrollbar width in element
-            - if the width is 0 it means the scrollbar is floated/overlayed
-            - accepts "container" paremeter because ie & edge can have different
-              scrollbar behaviors for different elements using '-ms-overflow-style'
-        \*------------------------------------*/
+         Calculate scrollbar width in element
+         - if the width is 0 it means the scrollbar is floated/overlayed
+         - accepts "container" paremeter because ie & edge can have different
+         scrollbar behaviors for different elements using '-ms-overflow-style'
+         \*------------------------------------*/
         function getNativeScrollbarWidth(container) {
             var container = container ? container : document.body;
 
@@ -861,8 +892,8 @@
 
 
     /*------------------------------------*\
-        Expose / Autoinstall
-    \*------------------------------------*/
+     Expose / Autoinstall
+     \*------------------------------------*/
     if (typeof exports === 'object' && typeof module === 'object') {
         module.exports = Vuebar;
     } else if (typeof define === 'function' && define.amd) {
