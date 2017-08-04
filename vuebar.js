@@ -356,11 +356,11 @@
                 // object with predefined distances, easy to extend
                 let positions = {
                     'top' : 0,
-                    'bottom': state.el2.scrollHeight
+                    'bottom': state.el2.scrollHeight,
                 };
 
                 // changes the scroll position of scrollbar depending if it's predefined or not. If not, it accepts number or function input
-                calculate ? state.el2.scrollTop = positions[distance] : state.el2.scrollTop = distance
+                calculate ? state.el2.scrollTop = positions[distance] : state.el2.scrollTop = distance;
 
             }.bind(this));
         }
