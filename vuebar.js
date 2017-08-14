@@ -180,12 +180,14 @@
             dragger.className = state.config.draggerClass;
 
             dragger.style.position = 'absolute';
+            dragger.style.userSelect = 'none';
 
             if (!state.draggerEnabled) {
                 dragger.style.display = 'none';
             }
 
             draggerStyler.className = state.config.draggerStylerClass;
+            draggerStyler.style.userSelect = 'none';
 
             dragger.appendChild(draggerStyler);
             state.el1.appendChild(dragger);
