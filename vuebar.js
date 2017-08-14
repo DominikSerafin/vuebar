@@ -651,7 +651,6 @@
 
 
 
-
       /*------------------------------------*\
           Public Methods Install
       \*------------------------------------*/
@@ -692,6 +691,18 @@
 
       });
 
+
+
+        /*------------------------------------*\
+            Style Vendor Prefixes Helper
+        \*------------------------------------*/
+        function compatStyle(element, property, value) {
+            element.style['webkit' + property] = value;
+            element.style['moz' + property] = value;
+            element.style['ms' + property] = value;
+            element.style['o' + property] = value;
+            element.style[ property.slice(0,1).toLowerCase() + property.substring(1) ] = value;
+        }
 
 
 
@@ -833,6 +844,12 @@
 
       }
 
+            wrapper.style.position = 'absolute';
+            wrapper.style.pointerEvents = 'none';
+            wrapper.style.bottom = '0';
+            wrapper.style.right = '0';
+            wrapper.style.width = '100px';
+            wrapper.style.overflow = 'hidden';
 
       /*------------------------------------*\
           Calculate scrollbar width in element

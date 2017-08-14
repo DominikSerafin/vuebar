@@ -43,6 +43,7 @@
             overflow: hidden;
             padding: 0;
             background-color: #3079f4;
+            -webkit-overflow-scrolling: touch;
         }
 
 
@@ -108,6 +109,10 @@
             max-width: 600px;
             padding-top: 10px;
             padding-bottom: 50px;
+        }
+
+        .mod-ms-autohiding {
+            -ms-overflow-style: -ms-autohiding-scrollbar;
         }
 
         .pkg-link {
@@ -443,7 +448,12 @@
 
 
 
-
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0
+}
 
         .main-content-container {
             max-width: 600px;
@@ -635,7 +645,7 @@
         <div class="navigation-inner">
 
             <ol>
-                <li><a href="#start">Vuebar</li>
+                <li><a href="#start">Vuebar</a></li>
                 <li>
                     <a target="_blank" href="https://github.com/DominikSerafin/vuebar" title="Pull requests, stars and forks welcome!">GitHub</a>
                     / <a target="_blank" href="https://www.npmjs.com/package/vuebar">NPM</a>
@@ -643,9 +653,9 @@
                 <li><a href="#about">About <span>01</span> </a></li>
                 <li><a href="#installation">Installation <span>02</span> </a></li>
                 <li><a href="#usage">Usage <span>03</span> </a></li>
-                <li><a href="#options">Customization Options <span>04</span> </a></li>
-                <li><a href="#options-classes">Customization Options  <span>05</span><br>  (custom classes) &nbsp;&nbsp;&nbsp;&nbsp; </a></li>
-                <li><a href="#styling">Styling <span>06</span> </a></li>
+                <li><a href="#styling">Styling <span>04</span> </a></li>
+                <li><a href="#options">Customization Options <span>05</span> </a></li>
+                <li><a href="#options-classes">Customization Options  <span>06</span><br>  (custom classes) &nbsp;&nbsp;&nbsp;&nbsp; </a></li>
                 <li><a href="#examples">Examples <span>07</span> </a></li>
                 <li><a href="#credits">Contributing &amp; Credits <span>08</span> </a></li>
 
@@ -680,7 +690,7 @@
 
 
 
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="usercap" x="0px" y="0px" viewBox="0 0 64 64" style="enable-background:new 0 0 64 64;" xml:space="preserve" width="16" height="16">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="usercap" x="0px" y="0px" viewbox="0 0 64 64" style="enable-background:new 0 0 64 64;" xml:space="preserve" width="16" height="16">
             <linearGradient id="SVGID_1__43964" gradientUnits="userSpaceOnUse" x1="37" y1="30.5" x2="37" y2="35.6992" spreadMethod="reflect">
                 <stop offset="0" style="stop-color:#6DC7FF"/>
                 <stop offset="1" style="stop-color:#E6ABFF"/>
@@ -726,7 +736,7 @@
             <a class="pkg-link" href="https://github.com/DominikSerafin/vuebar" title="Pull requests, stars and forks welcome!">
 
 
-                <svg version="1.1" id="GitHub_Logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="438.549px" height="438.549px" viewBox="0 0 438.549 438.549" style="enable-background:new 0 0 438.549 438.549;" xml:space="preserve"> <g> <path d="M409.132,114.573c-19.608-33.596-46.205-60.194-79.798-79.8C295.736,15.166,259.057,5.365,219.271,5.365
+                <svg version="1.1" id="GitHub_Logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="438.549px" height="438.549px" viewbox="0 0 438.549 438.549" style="enable-background:new 0 0 438.549 438.549;" xml:space="preserve"> <g> <path d="M409.132,114.573c-19.608-33.596-46.205-60.194-79.798-79.8C295.736,15.166,259.057,5.365,219.271,5.365
                         c-39.781,0-76.472,9.804-110.063,29.408c-33.596,19.605-60.192,46.204-79.8,79.8C9.803,148.168,0,184.854,0,224.63
                         c0,47.78,13.94,90.745,41.827,128.906c27.884,38.164,63.906,64.572,108.063,79.227c5.14,0.954,8.945,0.283,11.419-1.996
                         c2.475-2.282,3.711-5.14,3.711-8.562c0-0.571-0.049-5.708-0.144-15.417c-0.098-9.709-0.144-18.179-0.144-25.406l-6.567,1.136
@@ -755,7 +765,7 @@
 
             <a class="pkg-link" href="https://www.npmjs.com/package/vuebar">
 
-                <svg version="1.1" id="npm_logo" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="540px" height="210px" viewBox="0 0 18 7">
+                <svg version="1.1" id="npm_logo" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="540px" height="210px" viewbox="0 0 18 7">
                 <path fill="#CB3837" d="M0,0h18v6H9v1H5V6H0V0z M1,5h2V2h1v3h1V1H1V5z M6,1v5h2V5h2V1H6z M8,2h1v2H8V2z M11,1v4h2V2h1v3h1V2h1v3h1V1H11z"/>
                 <polygon fill="#FFFFFF" points="1,5 3,5 3,2 4,2 4,5 5,5 5,1 1,1 "/>
                 <path fill="#FFFFFF" d="M6,1v5h2V5h2V1H6z M9,4H8V2h1V4z"/>
@@ -781,7 +791,7 @@
                     Used successfully in production on
 
 
-                    <svg id="GGather_Logo_Small" data-name="GGather Logo Small" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 438 668"><title>GGather Logo Small</title><path fill="#ffffff" class="cls-1" d="M376.29,0h-33a60.31,60.31,0,0,0-54.49,34.46l-35,73.69a14.65,14.65,0,0,0,13.23,20.92h71.62c19.15,0,29.42,22.53,16.85,37-69.92,80.39-190.26,216-251.8,287-5.68,6.56-16.18-.2-12.36-8C120.5,385.68,180.81,268,209.8,208.45a7.42,7.42,0,0,0-6.68-10.67H115c-17.16,0-26.44-20.1-15.32-33.16l99-116.32C214.94,29.28,201.42,0,176.42,0H61.71A61.31,61.31,0,0,0,.4,61.31V636.42c0,29.36,36.28,43.16,55.79,21.23L173.86,525.41a60.42,60.42,0,0,1,90.28,0L381.81,657.65c19.52,21.93,55.79,8.13,55.79-21.23V61.31A61.31,61.31,0,0,0,376.29,0Z"/></svg>
+                    <svg id="GGather_Logo_Small" data-name="GGather Logo Small" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 438 668"><title>GGather Logo Small</title><path fill="#ffffff" class="cls-1" d="M376.29,0h-33a60.31,60.31,0,0,0-54.49,34.46l-35,73.69a14.65,14.65,0,0,0,13.23,20.92h71.62c19.15,0,29.42,22.53,16.85,37-69.92,80.39-190.26,216-251.8,287-5.68,6.56-16.18-.2-12.36-8C120.5,385.68,180.81,268,209.8,208.45a7.42,7.42,0,0,0-6.68-10.67H115c-17.16,0-26.44-20.1-15.32-33.16l99-116.32C214.94,29.28,201.42,0,176.42,0H61.71A61.31,61.31,0,0,0,.4,61.31V636.42c0,29.36,36.28,43.16,55.79,21.23L173.86,525.41a60.42,60.42,0,0,1,90.28,0L381.81,657.65c19.52,21.93,55.79,8.13,55.79-21.23V61.31A61.31,61.31,0,0,0,376.29,0Z"/></svg>
 
 
                     <strong> GGather</strong>
@@ -814,46 +824,46 @@
             <ul>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     Directive instead of a custom component, which saves a lot of headaches.
                 </li>
 
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     Native scroll events, no jankiness, no hijacking.
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     Simple to use, lightweight &amp; performant.
                 </li>
 
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     Works in browser and also build (webpack, etc.) environments.
                 </li>
 
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     Compatible with all major browsers including IE9 and above.
                 </li>
 
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     Useful customization options.
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     No 3rd party dependencies.
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     Tested in production.
                 </li>
 
@@ -894,8 +904,8 @@
 
             <h3>Alternative #2: Include in your build</h3>
 
-<code class="full"><pre>import VueBar from 'vuebar';
-Vue.use(VueBar);</pre></code>
+<code class="full"><pre>import Vuebar from 'vuebar';
+Vue.use(Vuebar);</pre></code>
 
         </div>
 
@@ -911,7 +921,7 @@ Vue.use(VueBar);</pre></code>
 <code class="full"><pre>
 <strong>&#x3C;div v-bar&#x3E;</strong> <span class="comment">&#x3C;!-- el1 --&#x3E;</span>
   <strong>&#x3C;div&#x3E;</strong> <span class="comment">&#x3C;!-- el2 --&#x3E;</span>
-     <span class="comment">&#x3C;!-- your scrollable content --&#x3E;</span>
+    <span class="comment">&#x3C;!-- your scrollable content --&#x3E;</span>
   <strong>&#x3C;/div&#x3E;</strong>
   <span class="comment">&#x3C;!-- dragger will be automatically added here --&#x3E;</span>
 <strong>&#x3C;/div&#x3E;</strong>
@@ -939,7 +949,7 @@ Vue.use(VueBar);</pre></code>
 
             <p>Every Vuebar scrollable content needs to be wrapped in parent element <code>el1</code> that hides the native browser scrollbar of the second parent element <code>el2</code> and it also contains the custom scrollbar element (referenced further as <code>dragger</code>) which gets appended automatically on the Vuebar initialization. </p>
 
-            <p><strong>New in 0.0.6:</strong> Instead of hiding the scrollbar using <code>el1</code> Vuebar now has a <code>useScrollbarPseudo</code> feature that hides the scrollbar using pseudo element selector <code>::-webkit-scrollbar</code>. Due to browsers limitations it works only in Chrome &amp; Safari at the moment.</p>
+            <p><strong>New in 0.0.6:</strong> Instead of hiding the scrollbar using <code>el1</code> Vuebar now has a <code>useScrollbarPseudo</code> feature that hides the scrollbar using pseudo element selector <code>::-webkit-scrollbar</code>. Due to browsers limitations for now it works only on desktop Chrome &amp; desktop Safari at the moment.</p>
 
             <p>The Vuebar internals listen to <code>el2</code> scroll event and synchronize <code>dragger</code> position when you scroll. And vice versa - when you directly use <code>dragger</code> it listens to mouse events to detect the position of dragger and sets scroll position of <code>el2</code>.</p>
 
@@ -953,27 +963,27 @@ Vue.use(VueBar);</pre></code>
 
             <p>You can access them from your component context: <code>this.$vuebar</code>. Alternatively you can access them from your main Vue instance: <code>Vue.vuebar</code>. </p>
 
-            <p>Every method needs to have passed Vuebar scroll container element as the first argument. You can do that easily using `$refs`.</p>
+            <p>Every method needs to have passed Vuebar scroll container element as the first argument. You can do that easily using <code>$refs</code>.</p>
 
             <ul>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     <code>initScrollbar(DOM Element, options)</code>
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     <code>getState(DOM Element)</code>
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     <code>refreshScrollbar(DOM Element, options)</code>
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     <code>destroyScrollbar(DOM Element)</code>
                 </li>
 
@@ -991,22 +1001,27 @@ Vue.use(VueBar);</pre></code>
 
             <ul>
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     If you want to access internal Vuebar state (like scrollbar height, scrollbar top or even <code>dragger</code> element reference) then you can access <code>_vuebarState</code> property of element 1 with v-bar directive. Or you can use <code>getState</code> method.
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     Element <code>el1</code> has programmatically added styles <code>position: relative</code> and <code>overflow: hidden</code> so you can't change them without using <code>!important</code>. But you shouldn't do it anyway - your scrollbar will break.
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     Element <code>el2</code> has programmatically added styles <code>overflow-x: hidden</code>, <code>overflow-y: scroll</code>, <code>height: 100%</code>, <code>-ms-overflow-style: scrollbar</code>  and <code>width</code> which value depends on browser.
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    If the original browser scrollbar is floated/overlayed (<code>-ms-autohiding-scrollbar</code>, touch devices, etc.) then <code>el2</code> also has <code>padding-right</code> changed.
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
                     Similar thing with <code>dragger</code> - it has programmatically added styles <code>position: absolute</code> and <code>height</code> with <code>top</code> that have values in pixels relative to scroll position.
                 </li>
 
@@ -1016,6 +1031,76 @@ Vue.use(VueBar);</pre></code>
 
 
         </div>
+
+
+
+
+
+
+        <h2 class="container-title"  id="styling">Styling</h2>
+        <div class="container">
+
+        Every Vuebar element has a child <code>dragger</code> element. That element also has its own child - a <code>dragger-styler</code> element that's purely there for you to style it any way you want. You can also style the original <code>dragger</code> element - just remember it has <code>position: absolute</code> style always applied and <code>height</code> and <code>top</code> styles dynamically added &amp; changed when scrolling.
+
+
+        <h3>Default Style</h3>
+
+        <p>If you were looking for this library it means you want to style your scrollbars as you want - so Vuebar doesn't include default styles internally. But if you e.g. want to quickly try or understand how you should style Vuebar scrollbars then below are prepared default styles that you can copy-paste into your project.  </p>
+
+<code class="full"><pre>
+.vb &#x3E; .vb-dragger {
+    z-index: 5;
+    width: 12px;
+    right: 0;
+}
+
+.vb &#x3E; .vb-dragger &#x3E; .vb-dragger-styler {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: rotate3d(0,0,0,0);
+    transform: rotate3d(0,0,0,0);
+    -webkit-transition:
+        background-color 100ms ease-out,
+        margin 100ms ease-out,
+        height 100ms ease-out;
+    transition:
+        background-color 100ms ease-out,
+        margin 100ms ease-out,
+        height 100ms ease-out;
+    background-color: rgba(48, 121, 244,.1);
+    margin: 5px 5px 5px 0;
+    border-radius: 20px;
+    height: calc(100% - 10px);
+    display: block;
+}
+
+.vb.vb-scrolling-phantom &#x3E; .vb-dragger &#x3E; .vb-dragger-styler {
+    background-color: rgba(48, 121, 244,.3);
+}
+
+.vb &#x3E; .vb-dragger:hover &#x3E; .vb-dragger-styler {
+    background-color: rgba(48, 121, 244,.5);
+    margin: 0px;
+    height: 100%;
+}
+
+.vb.vb-dragging &#x3E; .vb-dragger &#x3E; .vb-dragger-styler {
+    background-color: rgba(48, 121, 244,.5);
+    margin: 0px;
+    height: 100%;
+}
+
+.vb.vb-dragging-phantom &#x3E; .vb-dragger &#x3E; .vb-dragger-styler {
+    background-color: rgba(48, 121, 244,.5);
+}
+</pre></code>
+
+        </div>
+
+
+
+
+
 
 
 
@@ -1056,9 +1141,15 @@ Vue.use(VueBar);</pre></code>
                         <td>useScrollbarPseudo</td>
                         <td>Boolean</td>
                         <td>false</td>
-                        <td><strong>This is an experimental feature that works only in Google Chrome and Apple Safari.</strong> Instead of hiding scrollbars by using hidden overflow this feature will hide them using <code>::-webkit-scrollbar</code> pseudo element selectors.</td>
+                        <td><strong>This is an experimental feature that works only in desktop Google Chrome and  desktop Apple Safari.</strong> Instead of hiding scrollbars by using hidden overflow this feature will hide them using <code>::-webkit-scrollbar</code> pseudo element selectors.</td>
                     </tr>
 
+                    <tr>
+                        <td>overrideFloatingScrollbar</td>
+                        <td>Boolean</td>
+                        <td>true</td>
+                        <td>Show dragger if the element has a floating/overlaying scrollbar. It happens on touch devices and on IE &amp; Edge with <code>-ms-autohiding-scrollbar</code>.</td>
+                    </tr>
 
                     <tr>
                         <td>scrollThrottle</td>
@@ -1079,7 +1170,7 @@ Vue.use(VueBar);</pre></code>
                         <td>observerThrottle</td>
                         <td>Integer</td>
                         <td>100</td>
-                        <td>How frequently in ms should scroll position update when there's a DOM change detected from <a href="https://developer.mozilla.org/en/docs/Web/API/MutationObserver" target="_blank">MutationObserver</a>. It fires in 3 scenarios; `subtree` change, `childList` change and `characterData` change.</td>
+                        <td>How frequently in ms should scroll position update when there's a DOM change detected from <a href="https://developer.mozilla.org/en/docs/Web/API/MutationObserver" target="_blank">MutationObserver</a>. It fires in 3 scenarios; <code>subtree</code> change, <code>childList</code> change and <code>characterData</code> change.</td>
                     </tr>
 
 
@@ -1157,7 +1248,7 @@ Vue.use(VueBar);</pre></code>
                         <td class="small">el1ScrollInvisibleClass</td>
                         <td>String</td>
                         <td>'vb-invisible'</td>
-                        <td>Added dynamically when the scrollbar is invisible - there's nothing to scroll.</td>
+                        <td>Added dynamically when the scrollbar is invisible.</td>
                     </tr>
 
                     <tr>
@@ -1182,18 +1273,17 @@ Vue.use(VueBar);</pre></code>
                     </tr>
 
                     <tr>
-                        <td class="small">el2Class</td>
-                        <td>String</td>
-                        <td>'vb-content'</td>
-                        <td>Element 2 class.</td>
-                    </tr>
-
-
-                    <tr>
                         <td class="small">el1DraggingPhantomClass</td>
                         <td>String</td>
                         <td>'vb-dragging-phantom'</td>
                         <td>Added dynamically when the dragger is dragged or pressed and removed after value of draggingPhantomDelay.</td>
+                    </tr>
+
+                    <tr>
+                        <td class="small">el2Class</td>
+                        <td>String</td>
+                        <td>'vb-content'</td>
+                        <td>Element 2 class.</td>
                     </tr>
 
                     <tr>
@@ -1222,68 +1312,6 @@ Vue.use(VueBar);</pre></code>
 
 
 
-        <h2 class="container-title"  id="styling">Styling</h2>
-        <div class="container">
-
-        Every Vuebar element has a child <code>dragger</code> element. That element also has its own child - a <code>dragger-styler</code> element that's purely there for you to style it any way you want. You can also style the original <code>dragger</code> element - just remember it has <code>position: absolute</code> style always applied and <code>height</code> and <code>top</code> styles dynamically added &amp; changed when scrolling.
-
-
-        <h3>Default Style</h3>
-
-        <p>If you were looking for this library it means you want to style your scrollbars as you want - so Vuebar doesn't include default styles internally. But if you e.g. want to quickly try or understand how you should style Vuebar scrollbars then below are prepared default styles that you can copy-paste into your project.  </p>
-
-<code class="full"><pre>
-.vb > .vb-dragger {
-    z-index: 5;
-    width: 12px;
-    right: 0;
-}
-
-.vb > .vb-dragger > .vb-dragger-styler {
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    -webkit-transform: rotate3d(0,0,0,0);
-    transform: rotate3d(0,0,0,0);
-    -webkit-transition:
-        background-color 100ms ease-out,
-        margin 100ms ease-out,
-        height 100ms ease-out;
-    transition:
-        background-color 100ms ease-out,
-        margin 100ms ease-out,
-        height 100ms ease-out;
-    background-color: rgba(48, 121, 244,.1);
-    margin: 5px 5px 5px 0;
-    border-radius: 20px;
-    height: calc(100% - 10px);
-    display: block;
-}
-
-.vb.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler {
-    background-color: rgba(48, 121, 244,.3);
-}
-
-.vb > .vb-dragger:hover > .vb-dragger-styler {
-    background-color: rgba(48, 121, 244,.5);
-    margin: 0px;
-    height: 100%;
-}
-
-.vb.vb-dragging > .vb-dragger > .vb-dragger-styler {
-    background-color: rgba(48, 121, 244,.5);
-    margin: 0px;
-    height: 100%;
-}
-
-.vb.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler {
-    background-color: rgba(48, 121, 244,.5);
-}
-</pre></code>
-
-        </div>
-
-
-
 
 
 
@@ -1297,8 +1325,7 @@ Vue.use(VueBar);</pre></code>
         <p>Other than examples below - this site itself is an example of Vuebar usage. If you look to the right it has a custom white scrollbar that showcases itself pretty nicely.</p>
 
 
-
-        <h3>Default without options
+        <h3>1. Default without options
             <button class="pure-button button-xsmall" type="button" @click="example1Content=!example1Content">
                 <span v-if="!example1Content">Update with additional content</span>
                 <span v-if="example1Content">Hide additional content</span>
@@ -1326,9 +1353,7 @@ Vue.use(VueBar);</pre></code>
         </div>
 
 
-
-
-        <h3>Enabled <code>preventParentScroll</code>
+        <h3>2. Option <code>preventParentScroll</code> set to <code>true</code>.
             <button class="pure-button button-xsmall" type="button" @click="example2Content=!example2Content">
                 <span v-if="!example2Content">Update with additional content</span>
                 <span v-if="example2Content">Hide additional content</span>
@@ -1348,8 +1373,18 @@ Vue.use(VueBar);</pre></code>
 
 
 
+        <h3>3. Option <code>overrideFloatingScrollbar</code> set to <code>false</code>. Difference visible only on touch devices and on IE &amp; Edge with <code>-ms-autohiding-scrollbar</code> style.</h3>
 
-        <h3>Enabled <code>useScrollbarPseudo</code> (it works only on Chrome &amp; Safari; inspect <code>el2</code> to see the difference)</h3>
+        <div class="el1  mod-ms-autohiding" v-bar="{overrideFloatingScrollbar: false}">
+            <div class="el2">
+            Giant larvaceans are one important group we need to learn more about.” In the past, other scientists have tried studying giant larvaceans in the laboratory. But these efforts always failed because the animals’ houses were too fragile to be harvested and collected specimens were never able to build houses outside the ocean.To study the zooplankton in their natural habitat, Dr. Katija and her collaborators developed a new deep-sea imaging instrument, called DeepPIV, which they paired with a remotely operated vehicle. DeepPIV projects a sheet of laser light that cuts straight through a larvacean’s mucus house. A high-definition camera on the remotely operated vehicle can then capture the inner pumping mechanisms illuminated by the laser.Swimming hundreds of feet beneath the ocean’s surface in many parts of the world are prolific architects called giant larvaceans. These zooplankton are not particularly giant themselves (they resemble tadpoles and are about the size of a pinkie finger), but every day, they construct one or more spacious "houses” that can exceed three feet in length. The houses are transparent mucus structures that encase the creatures inside. Giant larvaceans beat their tails to pump seawater through these structures, which filter tiny bits of dead or drifting organic matter for the animals to eat. When their filters get clogged, the larvaceans abandon ship and construct a new house. Laden with debris from the water column, old houses rapidly sink to the seafloor. In a study published in Science Advances on Wednesday, scientists near California’s Monterey Bay have found that, through this process, giant larvaceans can filter all of the bay’s water from about 300 to 1,000 feet deep in less than two weeks, making them the fastest known zooplankton filter feeders. In doing so, the creatures help transfer carbon that has been removed from the atmosphere by photosynthesizing organisms to the deep sea, where it can be buried and stored long term. And given their abundance in other parts of the world, these organisms likely play a crucial role in the global carbon cycle. When it comes to the flow of carbon in the ocean, "we don’t know nearly as much as we should,” said Kakani Katija, a principal engineer at the Monterey Bay Aquarium Research Institute and the study’s lead author. "If we really want to understand how the system works, we have to look at all the players involved.
+            </div>
+        </div>
+
+
+
+
+        <h3>4. Option <code>useScrollbarPseudo</code> set to <code>true</code> It works only on Chrome &amp; Safari. Inspect <code>el2</code> to see the difference.</h3>
 
         <div class="el1" v-bar="{el2Class: 'vb-content-scrollbar-pseudo', useScrollbarPseudo: true}">
             <div class="el2">
@@ -1358,9 +1393,9 @@ Vue.use(VueBar);</pre></code>
         </div>
 
 
-        <h3>Choppy - <code>scrollThrottle</code> and <code>draggerThrottle</code> set to 100</h3>
+        <h3>5. Choppy but performant. Options <code>scrollThrottle</code> and <code>draggerThrottle</code> set to <code>100</code>.</h3>
 
-        <div class="el1" v-bar="{scrollThrottle: 100, draggerThrottle: 100, }">
+        <div class="el1  mod-ms-autohiding" v-bar="{scrollThrottle: 100, draggerThrottle: 100, }">
 
             <div class="el2">
 
@@ -1371,8 +1406,32 @@ Vue.use(VueBar);</pre></code>
 
 
 
+        <h3>6. Dynamic Container</h3>
 
-        <h3>Scrollbar invisible</h3>
+        <button class="pure-button" type="button" @click="example6Show=!example6Show">
+            Show/hide container with Vuebar element
+        </button>
+
+        <br><br>
+
+        <div>
+
+            <transition name="fade">
+            <div class="el1" v-bar v-if="example6Show">
+                <div class="el2">
+
+                These volcanoes, which have beguiled millions of tourists visiting the Hawaiian islands, have also plagued scientists with a long-running mystery: If they are so close together, how did they develop in two parallel tracks along the Hawaiian-Emperor chain formed over the same hot spot in the Pacific Ocean — and why are their chemical compositions so different? "We knew this was related to something much deeper, but we couldn’t see what,” said Tim Jones, an earth science Ph.D. student at Australian National University and the lead author of a paper published in Nature on Wednesday that may hold the answer. Mr. Jones and his colleagues developed a model that simulates what’s happening in our planet’s mantle, beneath the crust that we live on, offering a window to the center of the Earth — or close to it. Their study may one day allow a reconstruction of the history of the movement of Earth’s plates — and the processes linked to these movements over billions of years, like mass extinction events, diamond and oil deposits, and changes in climate. If you were to drill nearly 4,000 miles into the Earth, you’d reach its core, a ball of solid iron surrounded by liquid that scientists estimate is hotter than the sun. Before making it there, you’d hit the mantle — an 1,800-mile-thick layer of solid rock that can flow like a liquid, just substantially slower. This mantle is the reason plates move across the surface. It’s why we have continents, earthquakes and volcanoes. The closest anyone ever got to the mantle was a seven-mile-deep hole drilled into the crust on a peninsula in western Russia. But now we can better understand what’s happening below by looking at Mauna Kea and Mauna Loa, said Mr. Jones. The prevailing hypothesis has been that volcanoes like these two in Hawaii are chemical fingerprints of the Earth’s composition at the deep mantle, just at the border of its core. Scientists have seismic evidence that the deep part of the mantle is a graveyard where long ago slabs of earth were subducted, or thrust underneath one another, creating separate regions with different chemical compositions that eventually made their way to the surface in a hot mantle plume, or upwelling, as the core heated the rock into magma.But that didn’t explain the separate tracks along which the volcanoes formed. By examining data from the two volcanoes, Mr. Jones and his team suggested an alternative: The chemical signature, along with this double-track volcanism as it’s called, occurred three million years ago when the plates above the hot spot shifted direction, moving north. This shimmy rearranged zones of magma that are heated under different pressures in the shallower part of the mantle — when they cool, the volcanic rock that results reflects this difference. Previously stacked on top of one another, the movement of the plates exposed now geographically separates magma zones that fed the volcanoes individually.
+
+
+                </div>
+            </div>
+            </transition>
+
+        </div>
+
+
+
+        <h3>7. Scrollbar invisible. Content is not tall enough.</h3>
 
         <div class="el1" v-bar>
             <div class="el2">
@@ -1399,53 +1458,54 @@ Vue.use(VueBar);</pre></code>
 
             <h3 class="first">Contributing</h3>
 
-            <p>There's still a lot that can be introduced to Vuebar. If you have willingness you can help out on <a href="https://github.com/DominikSerafin/vuebar">GitHub</a> with the issues below.</p>
+            <p>There's still a lot that can be introduced to Vuebar. If you're willing you can help out with the issues below.</p>
 
             <ul>
 
 
-
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Vue 1.x support.
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    [High priority] Support for horizontal scrolling.
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Support for horizontal scrolling.
-                </li>
-
-
-                <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Support for compatibility of Vuebar element classes with component scoped selectors. (Is it even possible?).
-                </li>
-
-
-                <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Support for scrollbar refresh on orientationchange event.
-                </li>
-
-
-                <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Support for dragging dragger using touch events.
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    [Medium priority] Support for Vue 1.x.
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    Way to hide native floating and auto-hiding mobile browser scrollbar in most of touch-only devices. Right now, on some devices there are two scrollbars visible - Vuebar scrollbar and original browser scrollbar.
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    [Medium priority] Automated tests for pull requests &amp; general development.
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    <code>preventParentScroll</code> detecting scrolling with touch and also keyboard keys (space, shift+space, arrows, page up, pagedown). Maybe with options which ones to prevent and which ones to leave out.
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    [Medium priority] Support for compatibility of Vuebar element classes with component scoped CSS selectors. (Is it even possible?).
                 </li>
 
                 <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
-                    <code>useScrollbarPseudo</code> styles added with custom class instead of <code>el1Class</code>.
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    [Medium priority] <code>preventParentScroll</code> supporting scrolling with scrolling while dragging cursor, touch scrolling and also keyboard keys (space, shift+space, arrows, page up, pagedown). Maybe with options which ones to prevent and which ones to leave out.
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    [Low priority] Support for scrollbar refresh on orientationchange event.
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    [Low priority] Support for dragging dragger using touch events.
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    [Low priority] Utility methods like; scroll to top/bottom/element/etc., force disable scrolling, dragger active class flash. And (disableable) events emit for e.g. when content was scrolled to top/bottom/element/etc.
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    [Low priority] <code>useScrollbarPseudo</code> styles added with custom class instead of <code>el1Class</code>.
                 </li>
 
             </ul>
@@ -1492,12 +1552,27 @@ Vue.use(VueBar);</pre></code>
                 example2Content: false,
                 example3Content: false,
                 example4Content: false,
+
+                example6Show: false,
             }
         })
 
         //console.dir( app.$vuebar.getState(app.$refs.example1El) );
 
     </script>
+
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-46688343-14', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
 
 </body>
 </html>
