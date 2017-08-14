@@ -6,7 +6,7 @@ Vue 2 directive for custom scrollbar that uses native scroll behavior. Lightweig
 
 ## Official Website With Docs & Demos
 
-[serafin.io/vuebar/](http://serafin.io/vuebar/)
+[github.serafin.io/vuebar/](http://github.serafin.io/vuebar/)
 
 
 
