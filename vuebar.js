@@ -34,6 +34,7 @@
                     draggingPhantomDelay: 1000,
                     preventParentScroll: false,
                     useScrollbarPseudo: false, // experimental
+                    useScrollTrack: false,
 
                     el1Class: 'vb',
                     el1ScrollVisibleClass: 'vb-visible',
@@ -47,6 +48,7 @@
 
                     draggerClass: 'vb-dragger',
                     draggerStylerClass: 'vb-dragger-styler',
+                    scrollTrackClass: 'vb-scroll-track',
                 },
 
                 // reference to binding
@@ -173,7 +175,7 @@
         \*------------------------------------*/
         function createDragger(el){
             var state = getState(el);
-
+            var scrollTrack;
             var dragger = document.createElement('div');
             var draggerStyler = document.createElement('div');
 
@@ -188,7 +190,16 @@
             draggerStyler.className = state.config.draggerStylerClass;
 
             dragger.appendChild(draggerStyler);
-            state.el1.appendChild(dragger);
+
+            if (state.config.useScrollTrack) {
+                scrollTrack = document.createElement('div');
+                scrollTrack.className = state.config.scrollTrackClass;
+                scrollTrack.style.position = 'absolute';
+                scrollTrack.appendChild(dragger);
+                state.el1.appendChild(scrollTrack);
+            } else {
+                state.el1.appendChild(dragger);
+            }
 
             return dragger;
         }
