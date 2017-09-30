@@ -194,7 +194,7 @@
             margin-bottom: 40px;
         }
 
-        .main-ggather {
+        .main-header-btn {
             color: #3079f4;
             font-size: 15px;
             vertical-align: middle;
@@ -206,11 +206,36 @@
             padding-top: 6px;
             color: white;
             transition: background-color 100ms ease-out;
+            margin-top: 5px;
+            width: 100%;
+            max-width: 330px;
         }
 
 
-        .main-ggather:hover {
+        .main-header-btn:hover {
             background-color: #3079f4;
+        }
+
+
+        .main-header-btn.mod-browserstack {
+            padding: 4px 20px;
+            padding-bottom: 5px;
+        }
+
+        .main-header-btn.mod-browserstack img {
+            margin-left: 5px;
+            vertical-align: bottom;
+            display: inline-block;
+            width: auto;
+            height: 24px;
+            position: relative;
+            top: -0px;
+        }
+
+
+        .main-header-btn.mod-browserstack .bs-tested {
+            position: relative;
+            top: -2px;
         }
 
 
@@ -786,7 +811,8 @@
             <!-- <img src="https://unsplash.it/4900/4900"> -->
 
             <div>
-                <a class="main-ggather" href="https://ggather.com/" >
+
+                <a class="main-header-btn mod-ggather" href="https://ggather.com/" >
 
                     Used successfully in production on
 
@@ -796,7 +822,19 @@
 
                     <strong> GGather</strong>
 
-            </a>
+                </a>
+            </div>
+
+            <div>
+                <a class="main-header-btn  mod-browserstack" href="https://www.browserstack.com/" target="_blank" >
+
+                    <span class="bs-tested">Tested with the help of</span>
+
+                    <img src="./site/img/browserstack-header-logo.svg" alt="BrowserStack Logo">
+
+
+
+                </a>
 
             </div>
 
