@@ -33,7 +33,6 @@
                     scrollingPhantomDelay: 1000,
                     draggingPhantomDelay: 1000,
                     preventParentScroll: false,
-                    useScrollbarPseudo: false, // experimental
 
                     el1Class: 'vb',
                     el1ScrollVisibleClass: 'vb-visible',
@@ -239,49 +238,6 @@
                     removeClass(state.el1, state.config.el1ScrollingPhantomClass);
                 }, state.config.scrollThrottle + state.config.scrollingPhantomDelay);
 
-            }
-
-        }
-
-
-
-        // this is an experimental feature
-        // - it works only on chrome and safari
-        // - instead of hiding scrollbar by overflowing it with its parent set to overflow:hidden
-        //   we hide scrollbar using pseudo-element selector ::-webkit-scrollbar
-        function hideScrollbarUsingPseudoElement(el){
-            var state = getState(el);
-            var idName = 'vuebar-pseudo-element-styles';
-            var selector = '.' + state.config.el2Class + '::-webkit-scrollbar';
-            var styleElm = document.getElementById(idName);
-            var sheet = null;
-
-            if (styleElm) {
-                sheet = styleElm.sheet;
-            } else {
-                styleElm = document.createElement('style');
-                styleElm.id = idName;
-                document.head.appendChild(styleElm);
-                sheet = styleElm.sheet;
-            }
-
-            // detect if there is a rule already added to the selector
-            var ruleExists = false;
-            for(var i=0, l=sheet.rules.length; i<l; i++){
-                var rule = sheet.rules[i];
-                if (rule.selectorText == selector) {
-                    ruleExists = true;
-                }
-            }
-
-            // if there is rule added already then don't continue
-            if ( ruleExists ) { return false }
-
-            // insert rule
-            // - we only need to use insertRule and don't need to use addRule at all
-            //   because we're only targeting chrome & safari browsers
-            if (sheet.insertRule) {
-                sheet.insertRule(selector + '{display:none}', 0);
             }
 
         }
@@ -539,12 +495,6 @@
 
             // do the magic
             if (state.draggerEnabled) {
-
-                // hide original browser scrollbar using pseudo css selectors (only chrome & safari)
-                if ( state.config.useScrollbarPseudo && (browser.chrome || browser.safari) ) {
-                    state.el2.style.width = '100%';
-                    hideScrollbarUsingPseudoElement(el);
-                }
 
                 // hide original browser overlay scrollbar and add padding to compensate for that
                 else if (overlayScrollbar) {
