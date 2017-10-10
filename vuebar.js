@@ -1,3 +1,11 @@
+/*
+  TODO: Validate el1/el2 attributes (prevent custom inline styles)
+  TODO: Check again if all references (this.ins/this.state/this.config) were refactored properly
+  TODO: Check of events are removed properly on destroy method
+*/
+
+
+
 ;(function(){
   'use strict';
 
@@ -8,46 +16,52 @@
   function VB(Vue, el, binding, vnode, oldVnode){
 
 
+
     /*------------------------------------*\
-      Warning
+      Config
+      - Default values that may be overwritten
+        on directive intialization
     \*------------------------------------*/
-    this.warn = function(message){
-      return Vue.util.warn(message);
-      //return window.console.warn(message);
+    this.config = {
+
+      scrollThrottle: 10,
+      draggerThrottle: 10,
+      resizeRefresh: true,
+      observerThrottle: 100,
+      resizeDebounce: 100,
+      unselectableBody: true,
+      overrideFloatingScrollbar: true,
+      scrollingPhantomDelay: 1000,
+      draggingPhantomDelay: 1000,
+      preventParentScroll: false,
+
+      el1Class: 'vb',
+      el1ScrollVisibleClass: 'vb-visible',
+      el1ScrollInvisibleClass: 'vb-invisible',
+      el1ScrollingClass: 'vb-scrolling',
+      el1ScrollingPhantomClass: 'vb-scrolling-phantom',
+      el1DraggingClass: 'vb-dragging',
+      el1DraggingPhantomClass: 'vb-dragging-phantom',
+
+      el2Class: 'vb-content',
+
+      draggerClass: 'vb-dragger',
+      draggerStylerClass: 'vb-dragger-styler',
+
     }
 
 
+
     /*------------------------------------*\
-      State
+      Instances
+      - This hold references to elements
+        and as well to events & other stuff
+      - More fitting name would probably
+        be "refs", but I don't want for
+        people to confuse it with Vue
+        $refs property
     \*------------------------------------*/
-    this.state = {
-
-      // config with default values that may be overwritten on directive intialization
-      config: {
-        scrollThrottle: 10,
-        draggerThrottle: 10,
-        resizeRefresh: true,
-        observerThrottle: 100,
-        resizeDebounce: 100,
-        unselectableBody: true,
-        overrideFloatingScrollbar: true,
-        scrollingPhantomDelay: 1000,
-        draggingPhantomDelay: 1000,
-        preventParentScroll: false,
-
-        el1Class: 'vb',
-        el1ScrollVisibleClass: 'vb-visible',
-        el1ScrollInvisibleClass: 'vb-invisible',
-        el1ScrollingClass: 'vb-scrolling',
-        el1ScrollingPhantomClass: 'vb-scrolling-phantom',
-        el1DraggingClass: 'vb-dragging',
-        el1DraggingPhantomClass: 'vb-dragging-phantom',
-
-        el2Class: 'vb-content',
-
-        draggerClass: 'vb-dragger',
-        draggerStylerClass: 'vb-dragger-styler',
-      },
+    this.ins = {
 
       // reference to binding
       binding: null,
@@ -56,17 +70,6 @@
       el1: null,
       el2: null,
       dragger: null,
-
-      // show dragger
-      draggerEnabled: null,
-
-      // properties computed for internal directive logic & DOM manipulations
-      visibleArea: 0, // ratio between container height and scrollable content height
-      scrollTop: 0, // position of content scrollTop in px
-      barTop: 0, // position of dragger in px
-      barHeight: 0, // height of dragger in px
-      mouseBarOffsetY: 0, // relative position of mouse at the time of clicking on dragger
-      barDragging: false, // when the dragger is used
 
       // reference to MutationObserver
       mutationObserver: null,
@@ -90,11 +93,37 @@
 
 
     /*------------------------------------*\
-      Markup Validate
+      State
+      - Don't confuse with Vue state!
+      - This hold internal Vuebar state
+        for computing positions of
+        elements and scrollbar
+    \*------------------------------------*/
+    this.state = {
+
+      // show dragger
+      draggerEnabled: null,
+
+      // properties computed for internal directive logic & DOM manipulations
+      visibleArea: 0, // ratio between container height and scrollable content height
+      scrollTop: 0, // position of content scrollTop in px
+      barTop: 0, // position of dragger in px
+      barHeight: 0, // height of dragger in px
+      mouseBarOffsetY: 0, // relative position of mouse at the time of clicking on dragger
+      barDragging: false, // when the dragger is used
+
+    }
+
+
+
+
+
+    /*------------------------------------*\
+      Validate Markup
     \*------------------------------------*/
     this.validateMarkup = function(){
       if (!el.firstChild) {
-        return this.warn('(Vuebar) Element 1 with v-bar directive doesn\'t have required child element 2.');
+        return this.util.warn('Element 1 with v-bar directive doesn\'t have required child element 2.');
       }
       return true;
     }
@@ -104,87 +133,79 @@
 
 
     /*------------------------------------*\
-      TODO:
       Initialize Scrollbar
     \*------------------------------------*/
     this.initializeScrollbar = function(){
-      var state = this.state;
 
       // validate on directive bind if the markup is OK
-      if (!this.validateMarkup()) { return }
+      if (!this.validateMarkup()) return;
 
       // safeguard to not initialize vuebar when it's already initialized
       if (el._vuebar) {
         // and I'm actually curious if that can happen by some bad miracle
-        return this.warn('(Vuebar) Tried to initialize second time. If you see this please create an issue on https://github.com/DominikSerafin/vuebar with all relevent debug information. Thank you!');
-      }
-
-      // get options object
-      // - it will come from directive binding (there is a 'value' property)
-      // - or it will come from public method direct options object
-      var options = binding.value ? binding.value : (binding ? binding : {});
-
-      // overwrite defaults with provided options
-      for (var key in options){
-        this.state.config[key] = options[key];
+        return this.util.warn('Tried to initialize second time. If you see this please create an issue on https://github.com/DominikSerafin/vuebar with all relevent debug information. Thank you!');
       }
 
       // detect browser
       var browser = this.util.detectBrowser();
 
-
-      // TODO EVERYRYTHIN BELOW!!!
-
+      // get options object & overwrite defaults with provided options
+      // - it will come from directive binding (there is a 'value' property)
+      // - or it will come from public method direct options object
+      var options = binding.value ? binding.value : (binding ? binding : {});
+      for (var key in options){
+        this.config[key] = options[key];
+      }
 
       // dragger enabled?
       var elNativeScrollbarWidth = this.util.getNativeScrollbarWidth(el.firstElementChild);
       var overlayScrollbar = elNativeScrollbarWidth == 0;
-      state.draggerEnabled = ( (!overlayScrollbar) || state.config.overrideFloatingScrollbar ) ? 1 : 0;
+      this.state.draggerEnabled = (!overlayScrollbar) || this.config.overrideFloatingScrollbar ? 1 : 0;
 
       // setup scrollbar "state"
-      state.binding = binding.value ? binding : null;
-      state.el1 = el;
-      state.el2 = el.firstElementChild;
-      state.dragger = this.createDragger();
+      this.ins.binding = binding.value ? binding : null;
+      this.ins.el1 = el;
+      this.ins.el2 = el.firstElementChild;
+      this.ins.dragger = this.createDragger();
 
       // create and reference event listeners
-      state.barMousedown = this.barMousedown();
-      state.documentMousemove = this.documentMousemove();
-      state.documentMouseup = this.documentMouseup();
-      state.windowResize = this.windowResize();
-      state.scrollHandler = this.scrollHandler();
-      state.wheelHandler = this.wheelHandler();
+      this.ins.barMousedown = this.barMousedown();
+      this.ins.documentMousemove = this.documentMousemove();
+      this.ins.documentMouseup = this.documentMouseup();
+      this.ins.windowResize = this.windowResize();
+      this.ins.scrollHandler = this.scrollHandler();
+      this.ins.wheelHandler = this.wheelHandler();
 
       // initialize and reference mutation observer
-      state.mutationObserver = this.initMutationObserver();
+      this.ins.mutationObserver = this.initMutationObserver();
 
       // el1 styles and class
-      this.util.addClass(state.el1, state.config.el1Class);
-      state.el1.style.position = 'relative';
-      state.el1.style.overflow = 'hidden';
+      this.util.aC(this.ins.el1, this.config.el1Class);
+      this.ins.el1.style.position = 'relative';
+      this.ins.el1.style.overflow = 'hidden';
 
       // el2 styles and class
-      this.util.addClass(state.el2, state.config.el2Class);
-      state.el2.style.display = 'block';
-      state.el2.style.overflowX = 'hidden';
-      state.el2.style.overflowY = 'scroll';
-      state.el2.style.height = '100%';
+      this.util.aC(this.ins.el2, this.config.el2Class);
+      this.ins.el2.style.display = 'block';
+      this.ins.el2.style.overflowX = 'hidden';
+      this.ins.el2.style.overflowY = 'scroll';
+      this.ins.el2.style.height = '100%';
 
       // do the magic
-      if (state.draggerEnabled) {
+      if (this.state.draggerEnabled) {
 
         // hide original browser overlay scrollbar and add padding to compensate for that
         if (overlayScrollbar) {
           /* state.el2.style.width = 'calc(100% + ' + 20 + 'px)';
-          compatStyle(state.el2, 'BoxSizing', 'border-box'); */
-          state.el2.style.width = '100%';
-          this.util.compatStyle(state.el2, 'BoxSizing', 'content-box');
-          state.el2.style.paddingRight = '20px';
+          cS(state.el2, 'BoxSizing', 'border-box'); */
+          this.ins.el2.style.width = '100%';
+          this.util.cS(state.el2, 'BoxSizing', 'content-box');
+          this.ins.el2.style.paddingRight = '20px';
         }
 
         // hide original browser scrollbar behind element edges and hidden overflow
         else {
-          state.el2.style.width = 'calc(100% + ' + elNativeScrollbarWidth + 'px)';
+          this.ins.el2.style.width = 'calc(100% + ' + elNativeScrollbarWidth + 'px)';
         }
 
       }
@@ -192,14 +213,13 @@
       // add events
       // - wheel event is only needed when preventParentScroll option is enabled
       // - resize event is only needed when resizeRefresh option is enabled
-      state.el2.addEventListener('scroll', state.scrollHandler, 0);
-      state.dragger.addEventListener('mousedown', state.barMousedown, 0);
-      state.config.preventParentScroll ? state.el2.addEventListener('wheel', state.wheelHandler, 0) : null;
-      state.config.resizeRefresh ? window.addEventListener('resize', state.windowResize, 0) : null;
+      this.ins.el2.addEventListener('scroll', this.ins.scrollHandler, 0);
+      this.ins.dragger.addEventListener('mousedown', this.ins.barMousedown, 0);
+      this.config.preventParentScroll ? this.ins.el2.addEventListener('wheel', this.ins.wheelHandler, 0) : null;
+      this.config.resizeRefresh ? window.addEventListener('resize', this.ins.windowResize, 0) : null;
 
       // initial calculations using refresh scrollbar
       this.refreshScrollbar({immediate: true});
-
 
     }
 
@@ -207,28 +227,23 @@
 
 
     /*------------------------------------*\
-      TODO:
       Refresh Scrollbar
     \*------------------------------------*/
     this.refreshScrollbar = function(options){
-      var state = this.state;
       var options = options ? options : {};
-
       if (options.immediate) {
         this.computeVisibleArea();
         this.computeBarTop();
         this.computeBarHeight();
         this.updateDragger();
       }
-
       Vue.nextTick(function(){
-        if (!el._vuebar) { return }
+        if (!el._vuebar) return;
         this.computeVisibleArea();
         this.computeBarTop();
         this.computeBarHeight();
         this.updateDragger();
       }.bind(this));
-
     }
 
 
@@ -237,58 +252,56 @@
 
 
     /*------------------------------------*\
-      TODO:
       Destroy Scrollbar
     \*------------------------------------*/
     this.destroy = function(options){
-      var state = this.state;
       var options = options ? options : {};
 
       // clear events
-      state.dragger.removeEventListener('mousedown', state.barMousedown, 0);
-      state.el2.removeEventListener('scroll', state.scrollHandler, 0);
-      state.el2.removeEventListener('wheel', state.scrollHandler, 0);
-      window.removeEventListener('resize', state.windowResize, 0);
+      this.ins.dragger.removeEventListener('mousedown', this.ins.barMousedown, 0);
+      this.ins.el2.removeEventListener('scroll', this.ins.scrollHandler, 0);
+      this.ins.el2.removeEventListener('wheel', this.ins.scrollHandler, 0);
+      window.removeEventListener('resize', this.ins.windowResize, 0);
 
       // disconnect mutation observer
-      state.mutationObserver ? state.mutationObserver.disconnect() : null;
+      this.ins.mutationObserver ? this.ins.mutationObserver.disconnect() : null;
 
       // clear el1 classes
-      this.util.removeClass(state.el1, state.config.el1Class);
-      this.util.removeClass(state.el1, state.config.el1ScrollVisibleClass);
-      this.util.removeClass(state.el1, state.config.el1ScrollInvisibleClass);
-      this.util.removeClass(state.el1, state.config.el1ScrollingClass);
-      this.util.removeClass(state.el1, state.config.el1ScrollingPhantomClass);
-      this.util.removeClass(state.el1, state.config.el1DraggingClass);
+      this.util.rC(this.ins.el1, this.config.el1Class);
+      this.util.rC(this.ins.el1, this.config.el1ScrollVisibleClass);
+      this.util.rC(this.ins.el1, this.config.el1ScrollInvisibleClass);
+      this.util.rC(this.ins.el1, this.config.el1ScrollingClass);
+      this.util.rC(this.ins.el1, this.config.el1ScrollingPhantomClass);
+      this.util.rC(this.ins.el1, this.config.el1DraggingClass);
 
       // clear el1 styles
       if (options.clearStyles) {
-        state.el1.style.position = '';
-        state.el1.style.overflow = '';
+        this.ins.el1.style.position = '';
+        this.ins.el1.style.overflow = '';
       }
 
       // clear el2 classes
-      this.util.removeClass(state.el2, state.config.el2Class);
+      this.util.rC(this.ins.el2, this.config.el2Class);
 
       // clear el2 styles
       if (options.clearStyles) {
-        state.el2.style.display = '';
-        state.el2.style.overflowX = '';
-        state.el2.style.overflowY = '';
-        state.el2.style.msOverflowStyle = '';
-        state.el2.style.height = '';
-        state.el2.style.width = '';
+        this.ins.el2.style.display = '';
+        this.ins.el2.style.overflowX = '';
+        this.ins.el2.style.overflowY = '';
+        this.ins.el2.style.msOverflowStyle = '';
+        this.ins.el2.style.height = '';
+        this.ins.el2.style.width = '';
       }
 
       // clear dragger
-      state.dragger.removeChild(state.dragger.firstChild);
-      state.el1.removeChild(state.dragger);
+      this.ins.dragger.removeChild(this.ins.dragger.firstChild);
+      this.ins.el1.removeChild(this.ins.dragger);
 
       // clear timeouts that may be still running
-      state.scrollingPhantomClassTimeout ?
-      clearTimeout(state.scrollingPhantomClassTimeout) : null;
-      state.draggingPhantomClassTimeout ?
-      clearTimeout(state.draggingPhantomClassTimeout) : null;
+      this.ins.scrollingPhantomClassTimeout ?
+      clearTimeout(this.ins.scrollingPhantomClassTimeout) : null;
+      this.ins.draggingPhantomClassTimeout ?
+      clearTimeout(this.ins.draggingPhantomClassTimeout) : null;
 
       // delete state object from element
       delete el._vuebarState;
@@ -311,61 +324,52 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
     /*------------------------------------*\
       Computing Properties
     \*------------------------------------*/
     this.computeVisibleArea = function(){
-      var state = this.state;
-      state.visibleArea = (state.el2.clientHeight / state.el2.scrollHeight);
+      this.state.visibleArea = (this.ins.el2.clientHeight / this.ins.el2.scrollHeight);
     }
 
     this.computeScrollTop = function(){
-      var state = this.state;
-      state.scrollTop = state.barTop * (state.el2.scrollHeight / state.el2.clientHeight);
+      this.state.scrollTop = this.state.barTop * (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
     }
 
     this.computeBarTop = function(event){
-      var state = this.state;
 
       // if the function gets called on scroll event
       if (!event) {
-        state.barTop = state.el2.scrollTop * state.visibleArea;
+        this.state.barTop = this.ins.el2.scrollTop * this.state.visibleArea;
         return false;
-      } // else the function gets called when moving dragger with mouse
-
-
-      var relativeMouseY = (event.clientY - state.el1.getBoundingClientRect().top);
-      if (relativeMouseY <= state.mouseBarOffsetY) { // if bar is trying to go over top
-        state.barTop = 0;
       }
 
-      if (relativeMouseY > state.mouseBarOffsetY) { // if bar is moving between top and bottom
-        state.barTop = relativeMouseY - state.mouseBarOffsetY;
+      // else the function gets called when moving dragger with mouse
+
+      //
+      var relativeMouseY = (event.clientY - this.ins.el1.getBoundingClientRect().top);
+
+      // if bar is trying to go over top
+      if (relativeMouseY <= this.state.mouseBarOffsetY) {
+        this.state.barTop = 0;
       }
 
+      // if bar is moving between top and bottom
+      if (relativeMouseY > this.state.mouseBarOffsetY) {
+        this.state.barTop = relativeMouseY - this.state.mouseBarOffsetY;
+      }
 
-      if ( (state.barTop + state.barHeight ) >= state.el2.clientHeight ) { // if bar is trying to go over bottom
-        state.barTop = state.el2.clientHeight - state.barHeight;
+      // if bar is trying to go over bottom
+      if ( (this.state.barTop + this.state.barHeight ) >= this.ins.el2.clientHeight ) {
+        this.state.barTop = this.ins.el2.clientHeight - this.state.barHeight;
       }
 
     }
 
     this.computeBarHeight = function(){
-      var state = this.state;
-      if (state.visibleArea >= 1) {
-        state.barHeight = 0;
+      if (this.state.visibleArea >= 1) {
+        this.state.barHeight = 0;
       } else {
-        state.barHeight = state.el2.clientHeight * state.visibleArea;
+        this.state.barHeight = this.ins.el2.clientHeight * this.state.visibleArea;
       }
     }
 
@@ -376,45 +380,43 @@
       Styles & DOM
     \*------------------------------------*/
     this.createDragger = function(){
-      var state = this.state;
 
       var dragger = document.createElement('div');
       var draggerStyler = document.createElement('div');
 
-      dragger.className = state.config.draggerClass;
+      dragger.className = this.config.draggerClass;
 
       dragger.style.position = 'absolute';
 
-      if (!state.draggerEnabled) {
+      if (!this.state.draggerEnabled) {
         dragger.style.display = 'none';
       }
 
-      draggerStyler.className = state.config.draggerStylerClass;
+      draggerStyler.className = this.config.draggerStylerClass;
 
       dragger.appendChild(draggerStyler);
-      state.el1.appendChild(dragger);
+      this.ins.el1.appendChild(dragger);
 
       return dragger;
     }
 
 
     this.updateDragger = function(options){
-      var state = this.state;
       var options = options ? options : {};
 
       // setting dragger styles
-      state.dragger.style.height = parseInt( Math.round( state.barHeight)  ) + 'px';
-      state.dragger.style.top = parseInt( Math.round( state.barTop ) ) + 'px';
-      //state.dragger.style.height = Math.ceil( state.barHeight ) + 'px';
-      //state.dragger.style.top = Math.ceil( state.barTop ) + 'px';
+      this.ins.dragger.style.height = parseInt(Math.round(this.state.barHeight)) + 'px';
+      this.ins.dragger.style.top = parseInt(Math.round(this.state.barTop)) + 'px';
+      //this.ins.dragger.style.height = Math.ceil( this.state.barHeight ) + 'px';
+      //this.ins.dragger.style.top = Math.ceil( this.state.barTop ) + 'px';
 
       // scrollbar visible / invisible classes
-      if (state.draggerEnabled && (state.visibleArea<1)) {
-        this.util.removeClass(state.el1, state.config.el1ScrollInvisibleClass);
-        this.util.addClass(state.el1, state.config.el1ScrollVisibleClass);
+      if (this.state.draggerEnabled && (this.state.visibleArea<1)) {
+        this.util.rC(this.ins.el1, this.config.el1ScrollInvisibleClass);
+        this.util.aC(this.ins.el1, this.config.el1ScrollVisibleClass);
       } else {
-        this.util.removeClass(state.el1, state.config.el1ScrollVisibleClass);
-        this.util.addClass(state.el1, state.config.el1ScrollInvisibleClass);
+        this.util.rC(this.ins.el1, this.config.el1ScrollVisibleClass);
+        this.util.aC(this.ins.el1, this.config.el1ScrollInvisibleClass);
       }
 
 
@@ -422,26 +424,27 @@
       if (options.withScrollingClasses) {
 
         // add scrolling class
-        this.util.addClass(state.el1, state.config.el1ScrollingClass);
+        this.util.aC(this.ins.el1, this.config.el1ScrollingClass);
 
         // remove scrolling class
-        state.scrollingClassTimeout ?
-        clearTimeout(state.scrollingClassTimeout) : null;
-        state.scrollingClassTimeout = setTimeout(function() {
-          this.util.removeClass(state.el1, state.config.el1ScrollingClass);
-        }.bind(this), state.config.scrollThrottle + 5);
+        this.ins.scrollingClassTimeout ?
+        clearTimeout(this.ins.scrollingClassTimeout) : null;
+
+        this.ins.scrollingClassTimeout = setTimeout(function() {
+          this.util.rC(this.ins.el1, this.config.el1ScrollingClass);
+        }.bind(this), this.config.scrollThrottle + 5);
 
 
 
         // add phantom scrolling class
-        this.util.addClass(state.el1, state.config.el1ScrollingPhantomClass);
+        this.util.aC(this.ins.el1, this.config.el1ScrollingPhantomClass);
 
         // remove phantom scrolling class
-        state.scrollingPhantomClassTimeout ?
-        clearTimeout(state.scrollingPhantomClassTimeout) : null;
-        state.scrollingPhantomClassTimeout = setTimeout(function() {
-          this.util.removeClass(state.el1, state.config.el1ScrollingPhantomClass);
-        }.bind(this), state.config.scrollThrottle + state.config.scrollingPhantomDelay);
+        this.ins.scrollingPhantomClassTimeout ?
+        clearTimeout(this.ins.scrollingPhantomClassTimeout) : null;
+        this.ins.scrollingPhantomClassTimeout = setTimeout(function() {
+          this.util.rC(this.ins.el1, this.config.el1ScrollingPhantomClass);
+        }.bind(this), this.config.scrollThrottle + this.config.scrollingPhantomDelay);
 
       }
 
@@ -451,14 +454,13 @@
 
 
     this.preventParentScroll = function(event){
-      var state = this.state;
 
-      if (state.visibleArea >= 1) {
+      if (this.state.visibleArea >= 1) {
         return false;
       }
 
-      var scrollDist = state.el2.scrollHeight - state.el2.clientHeight;
-      var scrollTop = state.el2.scrollTop;
+      var scrollDist = this.ins.el2.scrollHeight - this.ins.el2.clientHeight;
+      var scrollTop = this.ins.el2.scrollTop;
 
       var wheelingUp = event.deltaY < 0;
       var wheelingDown = event.deltaY > 0;
@@ -478,8 +480,7 @@
 
 
     this.updateScroll = function(){
-      var state = this.state;
-      state.el2.scrollTop = state.scrollTop;
+      this.ins.el2.scrollTop = this.state.scrollTop;
     }
 
 
@@ -493,20 +494,18 @@
     \*------------------------------------*/
 
     this.scrollHandler = function(){
-      var state = this.state;
       return this.util.throttle(function(event){
         this.computeVisibleArea();
         this.computeBarHeight(); // fallback for an undetected content change
-        if (!state.barDragging) {
+        if (!this.state.barDragging) {
           this.computeBarTop();
           this.updateDragger({withScrollingClasses: true});
         }
-      }.bind(this), state.config.scrollThrottle);
+      }.bind(this), this.config.scrollThrottle);
     }
 
 
     this.wheelHandler = function(){
-      var state = this.state;
       return function(event){
         this.preventParentScroll(event);
       }.bind(this);
@@ -514,37 +513,35 @@
 
 
     this.documentMousemove = function(){
-      var state = this.state;
       return this.util.throttle(function(event){
         this.computeBarTop(event);
         this.updateDragger();
         this.computeScrollTop();
         this.updateScroll();
-      }.bind(this), state.config.draggerThrottle);
+      }.bind(this), this.config.draggerThrottle);
     }
 
 
     this.documentMouseup = function(){
-      var state = this.state;
       return function(event){
 
         //
-        state.barDragging = false;
+        this.state.barDragging = false;
 
         // enable user select
-        state.el1.style.userSelect = '';
-        state.config.unselectableBody ? this.util.compatStyle(document.body, 'UserSelect', '') : null;
+        this.ins.el1.style.userSelect = '';
+        this.config.unselectableBody ? this.util.cS(document.body, 'UserSelect', '') : null;
 
         // remove dragging class
-        this.util.removeClass(state.el1, state.config.el1DraggingClass);
-        state.draggingPhantomClassTimeout = setTimeout(function() {
-          this.util.removeClass(state.el1, state.config.el1DraggingPhantomClass);
-        }.bind(this), state.config.draggingPhantomDelay);
+        this.util.rC(this.ins.el1, this.config.el1DraggingClass);
+        this.ins.draggingPhantomClassTimeout = setTimeout(function() {
+          this.util.rC(this.ins.el1, this.config.el1DraggingPhantomClass);
+        }.bind(this), this.config.draggingPhantomDelay);
 
 
         // remove events
-        document.removeEventListener('mousemove', state.documentMousemove, 0);
-        document.removeEventListener('mouseup', state.documentMouseup, 0);
+        document.removeEventListener('mousemove', this.ins.documentMousemove, 0);
+        document.removeEventListener('mouseup', this.ins.documentMouseup, 0);
 
       }.bind(this);
 
@@ -552,53 +549,49 @@
 
 
     this.barMousedown = function(){
-      var state = this.state;
       return function(event){
 
         // don't do nothing if it's not left mouse button
         if ( event.which!==1 ) { return false }
 
-        state.barDragging = true;
-        state.mouseBarOffsetY = event.offsetY;
+        this.state.barDragging = true;
+        this.state.mouseBarOffsetY = event.offsetY;
 
         // disable user select
-        state.el1.style.userSelect = 'none';
-        state.config.unselectableBody ? this.util.compatStyle(document.body, 'UserSelect', 'none') : null;
+        this.ins.el1.style.userSelect = 'none';
+        this.config.unselectableBody ? this.util.cS(document.body, 'UserSelect', 'none') : null;
 
         // add dragging class
-        this.util.addClass(state.el1, state.config.el1DraggingClass);
-        state.draggingPhantomClassTimeout ?
-        clearTimeout(state.draggingPhantomClassTimeout) : null;
-        this.util.addClass(state.el1, state.config.el1DraggingPhantomClass);
+        this.util.aC(this.ins.el1, this.config.el1DraggingClass);
+        this.ins.draggingPhantomClassTimeout ?
+        clearTimeout(this.ins.draggingPhantomClassTimeout) : null;
+        this.util.aC(this.ins.el1, this.config.el1DraggingPhantomClass);
 
         // add events
-        document.addEventListener('mousemove', state.documentMousemove, 0);
-        document.addEventListener('mouseup', state.documentMouseup, 0);
-
+        document.addEventListener('mousemove', this.ins.documentMousemove, 0);
+        document.addEventListener('mouseup', this.ins.documentMouseup, 0);
 
       }.bind(this);
     }
 
 
     this.windowResize = function(){
-      var state = this.state;
       return this.util.debounce(function(event){
         this.refreshScrollbar();
-      }.bind(this), state.config.resizeDebounce);
+      }.bind(this), this.config.resizeDebounce);
     }
 
 
 
 
     this.initMutationObserver = function(){
-      var state = this.state;
       if (typeof MutationObserver === typeof void 0) { return null }
 
       var observer = new MutationObserver(this.util.throttle(function(mutations) {
         this.refreshScrollbar();
-      }.bind(this), state.config.observerThrottle));
+      }.bind(this), this.config.observerThrottle));
 
-      observer.observe(state.el2, {
+      observer.observe(this.ins.el2, {
         childList: true,
         characterData: true,
         subtree: true,
@@ -628,6 +621,17 @@
     \*------------------------------------*/
     this.util = {
 
+
+      /*------------------------------------*\
+        Warning
+      \*------------------------------------*/
+      warn: function(message){
+        var message = '(Vuebar) ' + message;
+        return Vue.util && Vue.util.warn ? Vue.util.warn(message) : window.console.warn(message);
+      },
+
+
+
       /*------------------------------------*\
         Debounce Helper
         https://remysharp.com/2010/07/21/throttling-function-calls
@@ -642,6 +646,8 @@
           }, delay);
         };
       },
+
+
 
       /*------------------------------------*\
         Throttle Helper
@@ -672,10 +678,12 @@
 
 
 
+
       /*------------------------------------*\
+        [C]ompat [S]tyle
         Style Vendor Prefixes Helper
       \*------------------------------------*/
-      compatStyle: function(element, property, value) {
+      cS: function(element, property, value) {
         element.style['webkit' + property] = value;
         element.style['moz' + property] = value;
         element.style['ms' + property] = value;
@@ -689,16 +697,20 @@
         Class Manipulation Helpers
         https://plainjs.com/javascript/attributes/adding-removing-and-testing-for-classes-9/
       \*------------------------------------*/
-      hasClass: function(el, className) {
+
+      // hasClass
+      hC: function(el, className) {
         return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className);
       },
 
-      addClass: function(el, className) {
+      // addClass
+      aC: function(el, className) {
         if (el.classList) el.classList.add(className);
-        else if (!hasClass(el, className)) el.className += ' ' + className;
+        else if (!this.util.hC(el, className)) el.className += ' ' + className;
       },
 
-      removeClass: function(el, className) {
+      // removeClass
+      rC: function(el, className) {
         if (el.classList) el.classList.remove(className);
         else el.className = el.className.replace(new RegExp('\\b'+ className+'\\b', 'g'), '');
       },
@@ -802,11 +814,6 @@
 
 
 
-
-
-
-
-
   }
 
 
@@ -819,11 +826,13 @@
   \*------------------------------------*/
   function Vuebar(Vue, options){
 
+
     /*------------------------------------*\
       Public Methods Install
     \*------------------------------------*/
-    Vue.$_VB = VB;
-    //Vue.prototype.$vuebar = VB;
+    //Vue._VB = VB;
+    //Vue.prototype.$_VB = VB;
+
 
     /*------------------------------------*\
       Directive Install
@@ -849,6 +858,7 @@
 
   }
 
+
   /*------------------------------------*\
     Expose / Autoinstall
   \*------------------------------------*/
@@ -863,5 +873,6 @@
   if (typeof Vue !== typeof void 0) {
     Vue.use(Vuebar);
   }
+
 
 })();
