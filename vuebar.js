@@ -307,7 +307,7 @@
 
 
     /*------------------------------------*\
-    Events & Handlers
+      Events & Handlers
     \*------------------------------------*/
 
     function scrollHandler(el){
@@ -429,7 +429,7 @@
 
 
     /*------------------------------------*\
-    Initialize Scrollbar
+      Initialize Scrollbar
     \*------------------------------------*/
     function initScrollbar(el, kwargs){
 
@@ -824,7 +824,7 @@
   } else if (typeof window !== typeof void 0) {
     window.Vuebar = Vuebar;
   }
-  
+
   if (typeof Vue !== typeof void 0) {
     Vue.use(Vuebar);
   }
