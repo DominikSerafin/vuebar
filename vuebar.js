@@ -1,16 +1,15 @@
 /*----------------------------------------*\
     Vuebar
 \*----------------------------------------*/
-;(function(){
+;(function () {
     'use strict';
-
 
 
     /*------------------------------------*\
         Vuebar
     \*------------------------------------*/
     var Vuebar = {};
-    Vuebar.install = function(Vue, options){
+    Vuebar.install = function (Vue, options) {
 
 
 
@@ -18,7 +17,8 @@
             Create State
             - contains default values
         \*------------------------------------*/
-        function createState(el){
+        function createState(el)
+        {
             el._vuebarState = {
 
                 // config with default values that may be overwritten on directive intialization
@@ -90,23 +90,22 @@
         }
 
 
-
-
         /*------------------------------------*\
             Get State
         \*------------------------------------*/
-        function getState(el){
+        function getState(el)
+        {
             return el._vuebarState;
         }
-
-
 
 
         /*------------------------------------*\
             Mount Validation
         \*------------------------------------*/
-        function markupValidation(el){
-            if (!el.firstChild) {
+        function markupValidation(el)
+        {
+            if (!el.firstChild)
+            {
                 Vue.util.warn('(Vuebar) Element 1 with v-bar directive doesn\'t have required child element 2.');
                 return false;
             }
@@ -114,64 +113,71 @@
         }
 
 
-
-
-
         /*------------------------------------*\
             Computing Properties
         \*------------------------------------*/
-        function computeVisibleArea(el){
+        function computeVisibleArea(el)
+        {
             var state = getState(el);
             state.visibleArea = (state.el2.clientHeight / state.el2.scrollHeight);
         }
 
-        function computeScrollTop(el){
+        function computeScrollTop(el)
+        {
             var state = getState(el);
             state.scrollTop = state.barTop * (state.el2.scrollHeight / state.el2.clientHeight);
         }
 
-        function computeBarTop(el, event){
+        function computeBarTop(el, event)
+        {
             var state = getState(el);
 
             // if the function gets called on scroll event
-            if (!event) {
+            if (!event)
+            {
                 state.barTop = state.el2.scrollTop * state.visibleArea;
                 return false;
             } // else the function gets called when moving dragger with mouse
 
 
             var relativeMouseY = (event.clientY - state.el1.getBoundingClientRect().top);
-            if (relativeMouseY <= state.mouseBarOffsetY) { // if bar is trying to go over top
+            if (relativeMouseY <= state.mouseBarOffsetY)
+            { // if bar is trying to go over top
                 state.barTop = 0;
             }
 
-            if (relativeMouseY > state.mouseBarOffsetY) { // if bar is moving between top and bottom
+            if (relativeMouseY > state.mouseBarOffsetY)
+            { // if bar is moving between top and bottom
                 state.barTop = relativeMouseY - state.mouseBarOffsetY;
             }
 
 
-            if ( (state.barTop + state.barHeight ) >= state.el2.clientHeight ) { // if bar is trying to go over bottom
+            if ((state.barTop + state.barHeight ) >= state.el2.clientHeight)
+            { // if bar is trying to go over bottom
                 state.barTop = state.el2.clientHeight - state.barHeight;
             }
 
         }
 
-        function computeBarHeight(el){
+        function computeBarHeight(el)
+        {
             var state = getState(el);
-            if (state.visibleArea >= 1) {
+            if (state.visibleArea >= 1)
+            {
                 state.barHeight = 0;
-            } else {
+            }
+            else
+            {
                 state.barHeight = state.el2.clientHeight * state.visibleArea;
             }
         }
 
 
-
-
         /*------------------------------------*\
             Styles & DOM
         \*------------------------------------*/
-        function createDragger(el){
+        function createDragger(el)
+        {
             var state = getState(el);
 
             var dragger = document.createElement('div');
@@ -181,7 +187,8 @@
 
             dragger.style.position = 'absolute';
 
-            if (!state.draggerEnabled) {
+            if (!state.draggerEnabled)
+            {
                 dragger.style.display = 'none';
             }
 
@@ -194,28 +201,32 @@
         }
 
 
-        function updateDragger(el, options){
+        function updateDragger(el, options)
+        {
             var options = options ? options : {};
             var state = getState(el);
 
             // setting dragger styles
-            state.dragger.style.height = parseInt( Math.round( state.barHeight)  ) + 'px';
-            state.dragger.style.top = parseInt( Math.round( state.barTop ) ) + 'px';
+            state.dragger.style.height = parseInt(Math.round(state.barHeight)) + 'px';
+            state.dragger.style.top = parseInt(Math.round(state.barTop)) + 'px';
             //state.dragger.style.height = Math.ceil( state.barHeight ) + 'px';
             //state.dragger.style.top = Math.ceil( state.barTop ) + 'px';
 
             // scrollbar visible / invisible classes
-            if (state.draggerEnabled && (state.visibleArea<1)) {
+            if (state.draggerEnabled && (state.visibleArea < 1))
+            {
                 removeClass(state.el1, state.config.el1ScrollInvisibleClass);
                 addClass(state.el1, state.config.el1ScrollVisibleClass);
-            } else {
+            }
+            else
+            {
                 removeClass(state.el1, state.config.el1ScrollVisibleClass);
                 addClass(state.el1, state.config.el1ScrollInvisibleClass);
             }
 
 
-
-            if (options.withScrollingClasses) {
+            if (options.withScrollingClasses)
+            {
 
                 // add scrolling class
                 addClass(state.el1, state.config.el1ScrollingClass);
@@ -223,10 +234,9 @@
                 // remove scrolling class
                 state.scrollingClassTimeout ?
                     clearTimeout(state.scrollingClassTimeout) : null;
-                state.scrollingClassTimeout = setTimeout(function() {
+                state.scrollingClassTimeout = setTimeout(function () {
                     removeClass(state.el1, state.config.el1ScrollingClass);
                 }, state.config.scrollThrottle + 5);
-
 
 
                 // add phantom scrolling class
@@ -235,7 +245,7 @@
                 // remove phantom scrolling class
                 state.scrollingPhantomClassTimeout ?
                     clearTimeout(state.scrollingPhantomClassTimeout) : null;
-                state.scrollingPhantomClassTimeout = setTimeout(function() {
+                state.scrollingPhantomClassTimeout = setTimeout(function () {
                     removeClass(state.el1, state.config.el1ScrollingPhantomClass);
                 }, state.config.scrollThrottle + state.config.scrollingPhantomDelay);
 
@@ -244,21 +254,24 @@
         }
 
 
-
         // this is an experimental feature
         // - it works only on chrome and safari
         // - instead of hiding scrollbar by overflowing it with its parent set to overflow:hidden
         //   we hide scrollbar using pseudo-element selector ::-webkit-scrollbar
-        function hideScrollbarUsingPseudoElement(el){
+        function hideScrollbarUsingPseudoElement(el)
+        {
             var state = getState(el);
             var idName = 'vuebar-pseudo-element-styles';
             var selector = '.' + state.config.el2Class + '::-webkit-scrollbar';
             var styleElm = document.getElementById(idName);
             var sheet = null;
 
-            if (styleElm) {
+            if (styleElm)
+            {
                 sheet = styleElm.sheet;
-            } else {
+            }
+            else
+            {
                 styleElm = document.createElement('style');
                 styleElm.id = idName;
                 document.head.appendChild(styleElm);
@@ -267,32 +280,38 @@
 
             // detect if there is a rule already added to the selector
             var ruleExists = false;
-            for(var i=0, l=sheet.rules.length; i<l; i++){
+            for (var i = 0, l = sheet.rules.length; i < l; i++)
+            {
                 var rule = sheet.rules[i];
-                if (rule.selectorText == selector) {
+                if (rule.selectorText == selector)
+                {
                     ruleExists = true;
                 }
             }
 
             // if there is rule added already then don't continue
-            if ( ruleExists ) { return false }
+            if (ruleExists)
+            {
+                return false
+            }
 
             // insert rule
             // - we only need to use insertRule and don't need to use addRule at all
             //   because we're only targeting chrome & safari browsers
-            if (sheet.insertRule) {
+            if (sheet.insertRule)
+            {
                 sheet.insertRule(selector + '{display:none}', 0);
             }
 
         }
 
 
-
-
-        function preventParentScroll(el, event){
+        function preventParentScroll(el, event)
+        {
             var state = getState(el);
 
-            if (state.visibleArea >= 1) {
+            if (state.visibleArea >= 1)
+            {
                 return false;
             }
 
@@ -302,12 +321,14 @@
             var wheelingUp = event.deltaY < 0;
             var wheelingDown = event.deltaY > 0;
 
-            if ( (scrollTop <= 0) && wheelingUp) {
+            if ((scrollTop <= 0) && wheelingUp)
+            {
                 event.preventDefault();
                 return false;
             }
 
-            if ( (scrollTop >= scrollDist) && wheelingDown) {
+            if ((scrollTop >= scrollDist) && wheelingDown)
+            {
                 event.preventDefault();
                 return false;
             }
@@ -315,31 +336,46 @@
         }
 
 
-
-        function updateScroll(el){
+        function updateScroll(el)
+        {
             var state = getState(el);
             state.el2.scrollTop = state.scrollTop;
         }
 
+        function scrollToTop(el)
+        {
+            var state = getState(el);
+            state.el2.scrollTop = 0;
+        }
 
+        function scrollToBottom(el)
+        {
+            var state = getState(el);
+            state.el2.scrollTop = state.el2.scrollHeight;
+        }
 
 
         /*------------------------------------*\
             Refresh
         \*------------------------------------*/
 
-        function refreshScrollbar(el, options){
+        function refreshScrollbar(el, options)
+        {
             var options = options ? options : {};
 
-            if (options.immediate) {
+            if (options.immediate)
+            {
                 computeVisibleArea(el);
                 computeBarTop(el);
                 computeBarHeight(el);
                 updateDragger(el);
             }
 
-            Vue.nextTick(function(){
-                if ( !getState(el) ) { return false }
+            Vue.nextTick(function () {
+                if (!getState(el))
+                {
+                    return false
+                }
                 computeVisibleArea(el);
                 computeBarTop(el);
                 computeBarHeight(el);
@@ -348,18 +384,18 @@
         }
 
 
-
-
         /*------------------------------------*\
             Events & Handlers
         \*------------------------------------*/
 
-        function scrollHandler(el){
+        function scrollHandler(el)
+        {
             var state = getState(el);
-            return throttle(function(event){
+            return throttle(function (event) {
                 computeVisibleArea(el);
                 computeBarHeight(el); // fallback for an undetected content change
-                if (!state.barDragging) {
+                if (!state.barDragging)
+                {
                     computeBarTop(el);
                     updateDragger(el, {withScrollingClasses: true});
                 }
@@ -367,16 +403,18 @@
         }
 
 
-        function wheelHandler(el){
-            return function(event){
+        function wheelHandler(el)
+        {
+            return function (event) {
                 preventParentScroll(el, event);
             }.bind(this);
         }
 
 
-        function documentMousemove(el){
+        function documentMousemove(el)
+        {
             var state = getState(el);
-            return throttle(function(event){
+            return throttle(function (event) {
                 computeBarTop(el, event);
                 updateDragger(el);
                 computeScrollTop(el);
@@ -385,9 +423,10 @@
         }
 
 
-        function documentMouseup(el){
+        function documentMouseup(el)
+        {
             var state = getState(el);
-            return function(event){
+            return function (event) {
 
                 //
                 state.barDragging = false;
@@ -398,7 +437,7 @@
 
                 // remove dragging class
                 removeClass(state.el1, state.config.el1DraggingClass);
-                state.draggingPhantomClassTimeout = setTimeout(function() {
+                state.draggingPhantomClassTimeout = setTimeout(function () {
                     removeClass(state.el1, state.config.el1DraggingPhantomClass);
                 }, state.config.draggingPhantomDelay);
 
@@ -412,12 +451,16 @@
         }
 
 
-        function barMousedown(el){
+        function barMousedown(el)
+        {
             var state = getState(el);
-            return function(event){
+            return function (event) {
 
                 // don't do nothing if it's not left mouse button
-                if ( event.which!==1 ) { return false }
+                if (event.which !== 1)
+                {
+                    return false
+                }
 
                 state.barDragging = true;
                 state.mouseBarOffsetY = event.offsetY;
@@ -441,22 +484,25 @@
         }
 
 
-        function windowResize(el){
+        function windowResize(el)
+        {
             var state = getState(el);
-            return debounce(function(event){
+            return debounce(function (event) {
                 refreshScrollbar(el);
             }.bind(this), state.config.resizeDebounce);
         }
 
 
-
-
-        function initMutationObserver(el){
-            if (typeof MutationObserver === typeof void 0) { return null }
+        function initMutationObserver(el)
+        {
+            if (typeof MutationObserver === typeof void 0)
+            {
+                return null
+            }
 
             var state = getState(el);
 
-            var observer = new MutationObserver(throttle(function(mutations) {
+            var observer = new MutationObserver(throttle(function (mutations) {
                 refreshScrollbar(el);
             }, state.config.observerThrottle));
 
@@ -470,18 +516,21 @@
         }
 
 
-
-
         /*------------------------------------*\
             Initialize Scrollbar
         \*------------------------------------*/
-        function initScrollbar(el, kwargs){
+        function initScrollbar(el, kwargs)
+        {
 
             // validate on directive bind if the markup is OK
-            if ( !markupValidation.call(this, el) ) { return false }
+            if (!markupValidation.call(this, el))
+            {
+                return false
+            }
 
             // safeguard to not initialize vuebar when it's already initialized
-            if (el._vuebarState) {
+            if (el._vuebarState)
+            {
                 // and I'm actually curious if that can happen
                 Vue.util.warn('(Vuebar) Tried to initialize second time. If you see this please create an issue on https://github.com/DominikSerafin/vuebar with all relevent debug information. Thank you!');
                 return false;
@@ -496,7 +545,8 @@
             var options = kwargs.value ? kwargs.value : (kwargs ? kwargs : {});
 
             // overwrite defaults with provided options
-            for (var key in options){
+            for (var key in options)
+            {
                 state.config[key] = options[key];
             }
 
@@ -538,16 +588,19 @@
             state.el2.style.height = '100%';
 
             // do the magic
-            if (state.draggerEnabled) {
+            if (state.draggerEnabled)
+            {
 
                 // hide original browser scrollbar using pseudo css selectors (only chrome & safari)
-                if ( state.config.useScrollbarPseudo && (browser.chrome || browser.safari) ) {
+                if (state.config.useScrollbarPseudo && (browser.chrome || browser.safari))
+                {
                     state.el2.style.width = '100%';
                     hideScrollbarUsingPseudoElement(el);
                 }
 
                 // hide original browser overlay scrollbar and add padding to compensate for that
-                else if (overlayScrollbar) {
+                else if (overlayScrollbar)
+                {
                     /* state.el2.style.width = 'calc(100% + ' + 20 + 'px)';
                     compatStyle(state.el2, 'BoxSizing', 'border-box'); */
                     state.el2.style.width = '100%';
@@ -556,7 +609,8 @@
                 }
 
                 // hide original browser scrollbar behind element edges and hidden overflow
-                else {
+                else
+                {
                     state.el2.style.width = 'calc(100% + ' + elNativeScrollbarWidth + 'px)';
                 }
 
@@ -576,12 +630,11 @@
         }
 
 
-
-
         /*------------------------------------*\
             Destroy Scrollbar
         \*------------------------------------*/
-        function destroyScrollbar(el, options){
+        function destroyScrollbar(el, options)
+        {
             var options = options ? options : {};
             var state = getState(el);
 
@@ -603,7 +656,8 @@
             removeClass(state.el1, state.config.el1DraggingClass);
 
             // clear el1 styles
-            if (options.clearStyles) {
+            if (options.clearStyles)
+            {
                 state.el1.style.position = '';
                 state.el1.style.overflow = '';
             }
@@ -612,7 +666,8 @@
             removeClass(state.el2, state.config.el2Class);
 
             // clear el2 styles
-            if (options.clearStyles) {
+            if (options.clearStyles)
+            {
                 state.el2.style.display = '';
                 state.el2.style.overflowX = '';
                 state.el2.style.overflowY = '';
@@ -637,26 +692,23 @@
         }
 
 
-
-
-
-
         /*------------------------------------*\
             Public Methods Install
         \*------------------------------------*/
-        function publicMethods(){
+        function publicMethods()
+        {
             return {
                 getState: getState,
                 initScrollbar: initScrollbar,
                 destroyScrollbar: destroyScrollbar,
                 refreshScrollbar: refreshScrollbar,
+                scrollToTop: scrollToTop,
+                scrollToBottom: scrollToBottom,
             };
         }
+
         Vue.vuebar = publicMethods();
         Vue.prototype.$vuebar = publicMethods();
-
-
-
 
 
         /*------------------------------------*\
@@ -664,15 +716,15 @@
         \*------------------------------------*/
         Vue.directive('bar', {
 
-            inserted: function(el, binding, vnode){
+            inserted: function (el, binding, vnode) {
                 initScrollbar.call(this, el, binding);
             },
 
-            componentUpdated: function(el, binding, vnode, oldVnode){
+            componentUpdated: function (el, binding, vnode, oldVnode) {
                 refreshScrollbar.call(this, el);
             },
 
-            unbind: function(el, binding, vnode, oldVnode){
+            unbind: function (el, binding, vnode, oldVnode) {
                 // we shouldn't clearStyles because it actually doesn't matter that much
                 // the element will be always deleted on unbind and its styles also
                 // and if we do clear styles then it looks bad on transitions
@@ -682,16 +734,12 @@
         });
 
 
-
-
-
-
-
         /*------------------------------------*\
             Debounce Helper
             https://remysharp.com/2010/07/21/throttling-function-calls
         \*------------------------------------*/
-        function debounce(fn, delay) {
+        function debounce(fn, delay)
+        {
             var timer = null;
             return function () {
                 var context = this, args = arguments;
@@ -703,13 +751,12 @@
         };
 
 
-
-
         /*------------------------------------*\
             Throttle Helper
             https://remysharp.com/2010/07/21/throttling-function-calls
         \*------------------------------------*/
-        function throttle(fn, threshhold, scope) {
+        function throttle(fn, threshhold, scope)
+        {
             threshhold || (threshhold = 250);
             var last,
                 deferTimer;
@@ -718,14 +765,17 @@
 
                 var now = +new Date,
                     args = arguments;
-                if (last && now < last + threshhold) {
+                if (last && now < last + threshhold)
+                {
                     // hold on to it
                     clearTimeout(deferTimer);
                     deferTimer = setTimeout(function () {
                         last = now;
                         fn.apply(context, args);
                     }, threshhold);
-                } else {
+                }
+                else
+                {
                     last = now;
                     fn.apply(context, args);
                 }
@@ -733,49 +783,62 @@
         }
 
 
-
         /*------------------------------------*\
             Style Vendor Prefixes Helper
         \*------------------------------------*/
-        function compatStyle(element, property, value) {
+        function compatStyle(element, property, value)
+        {
             element.style['webkit' + property] = value;
             element.style['moz' + property] = value;
             element.style['ms' + property] = value;
             element.style['o' + property] = value;
-            element.style[ property.slice(0,1).toLowerCase() + property.substring(1) ] = value;
+            element.style[property.slice(0, 1).toLowerCase() + property.substring(1)] = value;
         }
-
 
 
         /*------------------------------------*\
             Class Manipulation Helpers
             https://plainjs.com/javascript/attributes/adding-removing-and-testing-for-classes-9/
         \*------------------------------------*/
-        function hasClass(el, className) {
-            return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className);
+        function hasClass(el, className)
+        {
+            return el.classList ? el.classList.contains(className) : new RegExp('\\b' + className + '\\b').test(el.className);
         }
 
-        function addClass(el, className) {
-            if (el.classList) el.classList.add(className);
-            else if (!hasClass(el, className)) el.className += ' ' + className;
+        function addClass(el, className)
+        {
+            if (el.classList)
+            {
+                el.classList.add(className);
+            }
+            else if (!hasClass(el, className))
+            {
+                el.className += ' ' + className;
+            }
         }
 
-        function removeClass(el, className) {
-            if (el.classList) el.classList.remove(className);
-            else el.className = el.className.replace(new RegExp('\\b'+ className+'\\b', 'g'), '');
+        function removeClass(el, className)
+        {
+            if (el.classList)
+            {
+                el.classList.remove(className);
+            }
+            else
+            {
+                el.className = el.className.replace(new RegExp('\\b' + className + '\\b', 'g'), '');
+            }
         }
-
-
-
 
 
         /*------------------------------------*\
             Browser Detection Helper
         \*------------------------------------*/
-        function detectBrowser(){
+        function detectBrowser()
+        {
 
             // get ie version helper
-            function getIEVersion() {
+            function getIEVersion()
+            {
                 var match = window.navigator.userAgent.match(/(?:MSIE |Trident\/.*; rv:)(\d+)/);
                 return match ? parseInt(match[1]) : void 0;
             }
@@ -805,7 +868,7 @@
             // is it mobile browser?
             // regex below thanks to http://detectmobilebrowsers.com/
             var uaOrVendor = ua || vendor || window.opera;
-            var mobile = (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(uaOrVendor)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(uaOrVendor.substr(0,4)));
+            var mobile = (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(uaOrVendor) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(uaOrVendor.substr(0, 4)));
 
             // construct return object
             return {
@@ -829,7 +892,8 @@
             - accepts "container" paremeter because ie & edge can have different
               scrollbar behaviors for different elements using '-ms-overflow-style'
         \*------------------------------------*/
-        function getNativeScrollbarWidth(container) {
+        function getNativeScrollbarWidth(container)
+        {
             var container = container ? container : document.body;
 
             var fullWidth = 0;
@@ -858,28 +922,31 @@
         }
 
 
-
-
     };
-
 
 
     /*------------------------------------*\
         Expose / Autoinstall
     \*------------------------------------*/
-    if (typeof exports === 'object' && typeof module === 'object') {
+    if (typeof exports === 'object' && typeof module === 'object')
+    {
         module.exports = Vuebar;
-    } else if (typeof define === 'function' && define.amd) {
-        define(function () { return Vuebar });
-    } else if (typeof window !== typeof void 0) {
+    }
+    else if (typeof define === 'function' && define.amd)
+    {
+        define(function () {
+            return Vuebar
+        });
+    }
+    else if (typeof window !== typeof void 0)
+    {
         window.Vuebar = Vuebar;
     }
 
-    if (typeof Vue !== typeof void 0) {
+    if (typeof Vue !== typeof void 0)
+    {
         Vue.use(Vuebar);
     }
-
-
 
 
 })();
