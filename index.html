@@ -1363,7 +1363,16 @@ Vue.use(Vuebar);</pre></code>
         <p>Other than examples below - this site itself is an example of Vuebar usage. If you look to the right it has a custom white scrollbar that showcases itself pretty nicely.</p>
 
 
-        <h3>1. Default without options
+
+
+        <h3>1. JSFiddle</h3>
+
+        <div>
+            <iframe width="100%" height="450" src="//jsfiddle.net/u94ns8jc/1/embedded/result/?menuColor=f0f6ff&bodyColor=f0f6ff&fontColor=3079f4&accentColor=3079f4" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        </div>
+
+
+        <h3>2. Default without options
             <button class="pure-button button-xsmall" type="button" @click="example1Content=!example1Content">
                 <span v-if="!example1Content">Update with additional content</span>
                 <span v-if="example1Content">Hide additional content</span>
@@ -1391,7 +1400,7 @@ Vue.use(Vuebar);</pre></code>
         </div>
 
 
-        <h3>2. Option <code>preventParentScroll</code> set to <code>true</code>.
+        <h3>3. Option <code>preventParentScroll</code> set to <code>true</code>.
             <button class="pure-button button-xsmall" type="button" @click="example2Content=!example2Content">
                 <span v-if="!example2Content">Update with additional content</span>
                 <span v-if="example2Content">Hide additional content</span>
@@ -1411,7 +1420,7 @@ Vue.use(Vuebar);</pre></code>
 
 
 
-        <h3>3. Option <code>overrideFloatingScrollbar</code> set to <code>false</code>. Difference visible only on touch devices and on IE &amp; Edge with <code>-ms-autohiding-scrollbar</code> style.</h3>
+        <h3>4. Option <code>overrideFloatingScrollbar</code> set to <code>false</code>. Difference visible only on touch devices and on IE &amp; Edge with <code>-ms-autohiding-scrollbar</code> style.</h3>
 
         <div class="el1  mod-ms-autohiding" v-bar="{overrideFloatingScrollbar: false}">
             <div class="el2">
@@ -1422,7 +1431,7 @@ Vue.use(Vuebar);</pre></code>
 
 
 
-        <h3>4. Option <code>useScrollbarPseudo</code> set to <code>true</code> It works only on Chrome &amp; Safari. Inspect <code>el2</code> to see the difference.</h3>
+        <h3>5. Option <code>useScrollbarPseudo</code> set to <code>true</code> It works only on Chrome &amp; Safari. Inspect <code>el2</code> to see the difference.</h3>
 
         <div class="el1" v-bar="{el2Class: 'vb-content-scrollbar-pseudo', useScrollbarPseudo: true}">
             <div class="el2">
@@ -1431,7 +1440,7 @@ Vue.use(Vuebar);</pre></code>
         </div>
 
 
-        <h3>5. Choppy but performant. Options <code>scrollThrottle</code> and <code>draggerThrottle</code> set to <code>100</code>.</h3>
+        <h3>6. Choppy but performant. Options <code>scrollThrottle</code> and <code>draggerThrottle</code> set to <code>100</code>.</h3>
 
         <div class="el1  mod-ms-autohiding" v-bar="{scrollThrottle: 100, draggerThrottle: 100, }">
 
@@ -1444,7 +1453,7 @@ Vue.use(Vuebar);</pre></code>
 
 
 
-        <h3>6. Dynamic Container</h3>
+        <h3>7. Dynamic Container</h3>
 
         <button class="pure-button" type="button" @click="example6Show=!example6Show">
             Show/hide container with Vuebar element
@@ -1469,7 +1478,7 @@ Vue.use(Vuebar);</pre></code>
 
 
 
-        <h3>7. Scrollbar invisible. Content is not tall enough.</h3>
+        <h3>8. Scrollbar invisible. Content is not tall enough.</h3>
 
         <div class="el1" v-bar>
             <div class="el2">
@@ -1592,7 +1601,7 @@ Vue.use(Vuebar);</pre></code>
                 example4Content: false,
 
                 example6Show: false,
-            }
+            },
         })
 
         //console.dir( app.$vuebar.getState(app.$refs.example1El) );
