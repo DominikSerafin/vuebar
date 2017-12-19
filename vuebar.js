@@ -849,6 +849,7 @@
             container.appendChild(wrapper);
 
             fullWidth = child.offsetWidth;
+            child.style.width = '100%';
             wrapper.style.overflowY = 'scroll';
             barWidth = fullWidth - child.offsetWidth;
 
