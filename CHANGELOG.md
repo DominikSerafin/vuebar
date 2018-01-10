@@ -23,6 +23,6 @@ Each version should group changes to describe their impact on the project, as fo
 - getNativeScrollbarSize Safari bug https://github.com/DominikSerafin/vuebar/pull/45
 
 
-## [0.17.0] - 2017-05-17
+## [0.0.17] - 2017-05-17
 ### Info
 - Some stuff...
