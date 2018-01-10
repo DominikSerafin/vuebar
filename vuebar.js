@@ -1,7 +1,8 @@
 /*
-  TODO: Validate el1/el2 attributes (prevent custom inline styles)
+  TODO: Validate el1/el2 style attributes (prevent or warn about custom inline styles)
   TODO: Check again if all references (this.ins/this.state/this.config) were refactored properly
   TODO: Check of events are removed properly on destroy method
+  TODO: IE9 "hC" error fix / Maybe disable vuebar completely on IE9 (and below) and fall back to native scrollbars?
 */
 
 
@@ -157,10 +158,16 @@
         this.config[key] = options[key];
       }
 
+      // get scrollbar width
+      var elNativeScrollbarWidth = this.util.getNativeScrollbarSize(el.firstElementChild);
+
+      // how much of el2 to hide... if native scrollbar width is 0 it's either overlay scrollbar or hidden
+      // ... so let's use constant of 20px because it's impossible (?) to calculate scrollbar width in this case
+      // and 20px is a safe value that should cover 99% of cases (PRs welcome!)
+      var widthToHide = elNativeScrollbarWidth ? elNativeScrollbarWidth : 20;
+
       // dragger enabled?
-      var elNativeScrollbarWidth = this.util.getNativeScrollbarWidth(el.firstElementChild);
-      var overlayScrollbar = elNativeScrollbarWidth == 0;
-      this.state.draggerEnabled = (!overlayScrollbar) || this.config.overrideFloatingScrollbar ? 1 : 0;
+      this.state.draggerEnabled = (elNativeScrollbarWidth) || this.config.overrideFloatingScrollbar ? 1 : 0;
 
       // setup scrollbar "state"
       this.ins.binding = binding.value ? binding : null;
@@ -186,29 +193,53 @@
 
       // el2 styles and class
       this.util.aC(this.ins.el2, this.config.el2Class);
+      this.util.cS(this.ins.el2, 'BoxSizing', 'content-box');
       this.ins.el2.style.display = 'block';
       this.ins.el2.style.overflowX = 'hidden';
       this.ins.el2.style.overflowY = 'scroll';
       this.ins.el2.style.height = '100%';
 
       // do the magic
-      if (this.state.draggerEnabled) {
-
-        // hide original browser overlay scrollbar and add padding to compensate for that
-        if (overlayScrollbar) {
-          /* state.el2.style.width = 'calc(100% + ' + 20 + 'px)';
-          cS(state.el2, 'BoxSizing', 'border-box'); */
-          this.ins.el2.style.width = '100%';
-          this.util.cS(state.el2, 'BoxSizing', 'content-box');
-          this.ins.el2.style.paddingRight = '20px';
-        }
-
-        // hide original browser scrollbar behind element edges and hidden overflow
-        else {
-          this.ins.el2.style.width = 'calc(100% + ' + elNativeScrollbarWidth + 'px)';
-        }
-
+      // hide el2 scrollbar by making it larger than el1 overflow boundaries
+      if (this.state.draggerEnabled){
+        this.ins.el2.style.marginRight = '-' + widthToHide + 'px';
       }
+
+      // add padding to overlayed/0 scrollbars, so the proper el2 content won't get cut off
+      if (this.state.draggerEnabled && (elNativeScrollbarWidth===0)) {
+        this.ins.el2.style.paddingRight = '20px';
+      }
+
+
+      // DEPRECATED START
+
+      // hide original browser overlay scrollbar and add padding to compensate for that
+      //if (this.state.draggerEnabled && overlayScrollbar) {
+      //  /* state.el2.style.width = 'calc(100% + ' + 20 + 'px)';
+      //  cS(state.el2, 'BoxSizing', 'border-box'); */
+      //  this.ins.el2.style.width = '100%';
+      //  this.util.cS(this.ins.el2, 'BoxSizing', 'content-box');
+      //  this.ins.el2.style.paddingRight = '20px';
+      //}
+
+      /*
+      // hide original browser scrollbar behind element edges and hidden overflow
+      if (this.state.draggerEnabled && elNativeScrollbarWidth>0) {
+        this.ins.el2.style.width = 'calc(100% + ' + widthToHide + 'px)';
+      }
+
+      if (this.state.draggerEnabled && (elNativeScrollbarWidth===0)) {
+        this.util.cS(this.ins.el2, 'BoxSizing', 'content-box');
+        this.ins.el2.style.width = '100%';
+        this.ins.el2.style.paddingRight = '20px';
+      }
+      */
+
+      // DEPRECATED END
+
+
+
+
 
       // add events
       // - wheel event is only needed when preventParentScroll option is enabled
@@ -774,12 +805,13 @@
 
 
       /*------------------------------------*\
-        Calculate scrollbar width in element
-        - if the width is 0 it means the scrollbar is floated/overlayed
+        Calculate scrollbar size (width) in element
+        - if the size is 0 it means the scrollbar is floated/overlayed
         - accepts "container" paremeter because ie & edge can have different
         scrollbar behaviors for different elements using '-ms-overflow-style'
+        - useful: https://gist.github.com/paulirish/5d52fb081b3570c81e3a
       \*------------------------------------*/
-      getNativeScrollbarWidth: function(container) {
+      getNativeScrollbarSize: function(container) {
         var container = container ? container : document.body;
 
         var fullWidth = 0;
@@ -788,18 +820,28 @@
         var wrapper = document.createElement('div');
         var child = document.createElement('div');
 
+        wrapper.style.display = 'block';
+        wrapper.style.boxSizing = 'content-box';
         wrapper.style.position = 'absolute';
         wrapper.style.pointerEvents = 'none';
+        wrapper.style.opacity = '0';
         wrapper.style.bottom = '0';
         wrapper.style.right = '0';
         wrapper.style.width = '100px';
+        wrapper.style.height = '10px';
         wrapper.style.overflow = 'hidden';
 
         wrapper.appendChild(child);
         container.appendChild(wrapper);
 
         fullWidth = child.offsetWidth;
+
         wrapper.style.overflowY = 'scroll';
+
+        // fix for safari https://github.com/DominikSerafin/vuebar/pull/45
+        // (although in PR it's fixed using width, I think height is more logical solution)
+        child.style.height = '20px';
+
         barWidth = fullWidth - child.offsetWidth;
 
         container.removeChild(wrapper);

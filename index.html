@@ -13,59 +13,87 @@
   <!-- Style -->
   <style>
 
-    .example {
-      width: 200px;
-      height: 200px;
-      background-color: #f0f6ff;
-      color: #3079f4;
-      margin: 0 auto;
-      overflow: hidden;
-      margin-bottom: 10px;
+    #app {
+      padding-bottom: 700px;
     }
 
-    .example-inner {
-    }
+    h1,h2,code {font-family: sans-serif;margin: 0;padding: 0;}
+    h2{font-size:18px;min-height:50px;}
+    code {font-family: monospace,monospace;color:#777;font-size:12px;word-break: break-all;min-height:33px;display:block;}
 
 
-    .example.vb > .vb-dragger {
-      z-index: 2;
-      width: 12px;
-      right: 0;
-    }
 
-    .example.vb > .vb-dragger > .vb-dragger-styler {
-      backface-visibility: hidden;
-      transform: rotate3d(0,0,0,0);
-      transition:
-      background-color 100ms ease-out,
-      margin 100ms ease-out,
-      height 100ms ease-out;
-      background-color: rgba(48, 121, 244,.1);
-      margin: 5px 5px 5px 0;
-      border-radius: 20px;
-      height: calc(100% - 10px);
+    .examples {
       display: block;
     }
 
-    .example.vb.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler {
-      background-color: rgba(48, 121, 244,.3);
-    }
+      .example-wrapper {
+        display: inline-block;
+        vertical-align: top;
+        width: 300px;
+        margin: 50px 30px;
+      }
 
-    .example.vb > .vb-dragger:hover > .vb-dragger-styler {
-      background-color: rgba(48, 121, 244,.5);
-      margin: 0px;
-      height: 100%;
-    }
 
-    .example.vb.vb-dragging > .vb-dragger > .vb-dragger-styler {
-      background-color: rgba(48, 121, 244,.5);
-      margin: 0px;
-      height: 100%;
-    }
+        .example {
+          margin-top: 10px;
+          width: 300px;
+          height: 300px;
+          background-color: #f0f6ff;
+          color: #3079f4;
+          overflow: hidden;
+        }
 
-    .example.vb.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler {
-      background-color: rgba(48, 121, 244,.5);
-    }
+        .example-wrapper.mod-without-vuebar .example { overflow: auto; }
+        .example-wrapper.mod-ie-autohiding-scrollbar .example { -ms-overflow-style: -ms-autohiding-scrollbar; }
+        .example-wrapper.mod-ie-none-scrollbar .example { -ms-overflow-style: none; }
+        .example-wrapper.mod-ie-scrollbar-scrollbar .example { -ms-overflow-style: scrollbar;}
+
+
+        .example-inner {
+        }
+
+
+
+        .example.vb > .vb-dragger {
+          z-index: 2;
+          width: 12px;
+          right: 0;
+        }
+
+        .example.vb > .vb-dragger > .vb-dragger-styler {
+          backface-visibility: hidden;
+          transform: rotate3d(0,0,0,0);
+          transition:
+          background-color 100ms ease-out,
+          margin 100ms ease-out,
+          height 100ms ease-out;
+          background-color: rgba(48, 121, 244,.1);
+          margin: 5px 5px 5px 0;
+          border-radius: 20px;
+          height: calc(100% - 10px);
+          display: block;
+        }
+
+        .example.vb.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler {
+          background-color: rgba(48, 121, 244,.3);
+        }
+
+        .example.vb > .vb-dragger:hover > .vb-dragger-styler {
+          background-color: rgba(48, 121, 244,.5);
+          margin: 0px;
+          height: 100%;
+        }
+
+        .example.vb.vb-dragging > .vb-dragger > .vb-dragger-styler {
+          background-color: rgba(48, 121, 244,.5);
+          margin: 0px;
+          height: 100%;
+        }
+
+        .example.vb.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler {
+          background-color: rgba(48, 121, 244,.5);
+        }
 
 
   </style>
@@ -75,26 +103,121 @@
 
   <!-- All The Magic Happens Here -->
   <div id="app">
+    <div class="examples">
 
-    <div class="example" v-bar>
 
-      <div class="example-inner">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+      <div class="example-wrapper mod-without-vuebar">
+        <h2>Without Vuebar</h2>
+        <code>Vertical Only</code>
+        <div class="example">
+          <div class="example-inner">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="example" v-bar>
-      <div class="example-inner">
-        Lorem ipsum dolor sit amet.
+
+      <div class="example-wrapper mod-without-vuebar">
+        <h2>Without Vuebar</h2>
+        <code>Vertical + Horizontal</code>
+        <div class="example">
+          <div class="example-inner">
+            <div style="width:600px;">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="example" v-bar>
-      <div class="example-inner">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+
+      <div class="example-wrapper">
+        <h2>Standard</h2>
+        <code>v-bar</code>
+        <div class="example" v-bar>
+          <div class="example-inner">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+          </div>
+        </div>
       </div>
-    </div>
 
+
+
+      <div class="example-wrapper">
+        <h2>Scrollbar Not Visible</h2>
+        <code>Content smaller than container...</code>
+        <div class="example" v-bar>
+          <div class="example-inner">
+            Lorem ipsum dolor sit amet.
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="example-wrapper">
+        <h2>Standard with Inner Inner Margin</h2>
+        <code>margin:50px;</code>
+        <div class="example" v-bar>
+          <div class="example-inner">
+            <div style="margin:50px;">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <div class="example-wrapper mod-ie-autohiding-scrollbar">
+        <h2>Standard (with IE/Edge Autohiding Scrollbar)</h2>
+        <code>{ -ms-overflow-style: -ms-autohiding-scrollbar; }</code>
+        <div class="example" v-bar>
+          <div class="example-inner">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+          </div>
+        </div>
+      </div>
+
+
+      <div class="example-wrapper mod-ie-none-scrollbar">
+        <h2>Standard (with IE/Edge None Scrollbar)</h2>
+        <code>{ -ms-overflow-style: none; }</code>
+        <div class="example" v-bar>
+          <div class="example-inner">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+          </div>
+        </div>
+      </div>
+
+      <div class="example-wrapper mod-ie-scrollbar-scrollbar">
+        <h2>Standard (with IE/Edge Scrollbar Scrollbar)</h2>
+        <code>{ -ms-overflow-style: scrollbar; }</code>
+        <div class="example" v-bar>
+          <div class="example-inner">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="example-wrapper">
+        <h2>Vertical + Horizontal</h2>
+        <code>v-bar</code>
+        <div class="example" v-bar>
+          <div class="example-inner">
+            <div style="width:600px;">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+    </div>
   </div>
 
 
