@@ -210,37 +210,6 @@
         this.ins.el2.style.paddingRight = '20px';
       }
 
-
-      // DEPRECATED START
-
-      // hide original browser overlay scrollbar and add padding to compensate for that
-      //if (this.state.draggerEnabled && overlayScrollbar) {
-      //  /* state.el2.style.width = 'calc(100% + ' + 20 + 'px)';
-      //  cS(state.el2, 'BoxSizing', 'border-box'); */
-      //  this.ins.el2.style.width = '100%';
-      //  this.util.cS(this.ins.el2, 'BoxSizing', 'content-box');
-      //  this.ins.el2.style.paddingRight = '20px';
-      //}
-
-      /*
-      // hide original browser scrollbar behind element edges and hidden overflow
-      if (this.state.draggerEnabled && elNativeScrollbarWidth>0) {
-        this.ins.el2.style.width = 'calc(100% + ' + widthToHide + 'px)';
-      }
-
-      if (this.state.draggerEnabled && (elNativeScrollbarWidth===0)) {
-        this.util.cS(this.ins.el2, 'BoxSizing', 'content-box');
-        this.ins.el2.style.width = '100%';
-        this.ins.el2.style.paddingRight = '20px';
-      }
-      */
-
-      // DEPRECATED END
-
-
-
-
-
       // add events
       // - wheel event is only needed when preventParentScroll option is enabled
       // - resize event is only needed when resizeRefresh option is enabled
@@ -248,6 +217,9 @@
       this.ins.dragger.addEventListener('mousedown', this.ins.barMousedown, 0);
       this.config.preventParentScroll ? this.ins.el2.addEventListener('wheel', this.ins.wheelHandler, 0) : null;
       this.config.resizeRefresh ? window.addEventListener('resize', this.ins.windowResize, 0) : null;
+
+      // expose instance on vuebar element (https://vuejs.org/v2/style-guide/#Private-property-names-essential)
+      this.ins.el1.$_vuebar = this;
 
       // initial calculations using refresh scrollbar
       this.refreshScrollbar({immediate: true});
@@ -872,8 +844,7 @@
     /*------------------------------------*\
       Public Methods Install
     \*------------------------------------*/
-    //Vue._VB = VB;
-    //Vue.prototype.$_VB = VB;
+    // TODO?
 
 
     /*------------------------------------*\
