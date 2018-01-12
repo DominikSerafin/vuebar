@@ -141,9 +141,12 @@
       </div>
 
       <div class="example-wrapper">
-        <h2>Standard, Destroyed After 3 Seconds After Mounted Hook</h2>
-        <code>Vuebar should be completely cleaned up, and standard scrollbars should be available.</code>
-        <div class="example" v-bar ref="exampleStandardToDestroy">
+        <h2>Standard + Methods</h2>
+        <code>
+          <button type="button" @click.prevent="initializeExample">Initialize</button>
+          <button type="button" @click.prevent="destroyExample">Destroy</button>
+        </code>
+        <div class="example" v-bar ref="exampleStandardMethods">
           <div class="example-inner">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
           </div>
@@ -248,17 +251,24 @@
       },
 
       mounted: function(){
-        this.destroyExample();
       },
 
       methods: {
-        destroyExample: function(){
 
-          setTimeout(function () {
-            this.$refs.exampleStandardToDestroy.$_vuebar.destroy();
-          }.bind(this), 3000);
-
+        initializeExample: function(){
+          var Vuebar = this.$_Vuebar;
+          var el = this.$refs.exampleStandardMethods;
+          var binding = {};
+          var vnode = null;
+          (new Vuebar(Vue, el, binding, vnode)).initialize();
+          this.$forceUpdate();
         },
+
+        destroyExample: function(){
+          var el = this.$refs.exampleStandardMethods;
+          el.$_vuebar ? el.$_vuebar.destroy() : null;
+        },
+
       },
 
     })

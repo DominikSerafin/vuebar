@@ -136,16 +136,13 @@
     /*------------------------------------*\
       Initialize Scrollbar
     \*------------------------------------*/
-    this.initializeScrollbar = function(){
+    this.initialize = function(){
 
       // validate on directive bind if the markup is OK
       if (!this.validateMarkup()) return;
 
       // safeguard to not initialize vuebar when it's already initialized
-      if (el._vuebar) {
-        // and I'm actually curious if that can happen by some bad miracle
-        return this.util.warn('Tried to initialize second time. If you see this please create an issue on https://github.com/DominikSerafin/vuebar with all relevent debug information. Thank you!');
-      }
+      if (el.$_vuebar) return this.util.warn('Can\'t initialize on already initialized element.');
 
       // detect browser
       var browser = this.util.detectBrowser();
@@ -224,6 +221,9 @@
       // initial calculations using refresh scrollbar
       this.refreshScrollbar({immediate: true});
 
+      // return instance
+      return this;
+
     }
 
 
@@ -286,6 +286,9 @@
       // delete instance from vuebar element
       delete this.ins.el1.$_vuebar;
 
+      // return el1 (not sure why, but why not)
+      return this.ins.el1;
+
     }
 
 
@@ -304,7 +307,7 @@
         this.updateDragger();
       }
       Vue.nextTick(function(){
-        if (!el._vuebar) return;
+        if (!el.$_vuebar) return;
         this.computeVisibleArea();
         this.computeBarTop();
         this.computeBarHeight();
@@ -628,7 +631,7 @@
         Warning
       \*------------------------------------*/
       warn: function(message){
-        var message = '(Vuebar) ' + message;
+        var message = '[Vuebar]: ' + message;
         return Vue.util && Vue.util.warn ? Vue.util.warn(message) : window.console.warn(message);
       },
 
@@ -843,7 +846,9 @@
     /*------------------------------------*\
       Public Methods Install
     \*------------------------------------*/
-    // TODO?
+    Vue.$_Vuebar = Vuebar;
+    Vue.prototype.$_Vuebar = Vuebar;
+
 
 
     /*------------------------------------*\
@@ -852,18 +857,18 @@
     Vue.directive('bar', {
 
       inserted: function(el, binding, vnode){
-        (new Vuebar(Vue, el, binding, vnode)).initializeScrollbar();
+        (new Vuebar(Vue, el, binding, vnode)).initialize();
       },
 
       componentUpdated: function(el, binding, vnode, oldVnode){
-        el._vuebar ? el._vuebar.refreshScrollbar() : null;
+        el.$_vuebar ? el.$_vuebar.refreshScrollbar() : null;
       },
 
       unbind: function(el, binding, vnode, oldVnode){
         // we shouldn't clear styles because it actually doesn't matter that much
         // the element will be always deleted on unbind and its styles also
         // and if we do clear styles then it looks bad on transitions
-        el._vuebar ? el._vuebar.destroyScrollbar({skipStyles: true}) : null;
+        el.$_vuebar ? el.$_vuebar.destroyScrollbar({skipStyles: true}) : null;
       },
 
     });
