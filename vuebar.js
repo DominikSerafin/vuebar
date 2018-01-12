@@ -113,7 +113,7 @@
       scrollTop: 0, // position of content scrollTop in px
       barTop: 0, // position of dragger in px
       barHeight: 0, // height of dragger in px
-      mouseBarOffsetY: 0, // relative position of mouse at the time of clicking on dragger
+      mouseClickOffsetY: 0, // relative position of mouse at the time of clicking on dragger
 
       barDragging: false, // when the dragger is used
 
@@ -344,7 +344,7 @@
     this.computeScrollTop = function(){
       // TODO: instead using bar top, use bar center
 
-      
+
 
 
       this.state.scrollTop = this.state.barTop * (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
@@ -366,13 +366,13 @@
       var relativeMouseY = (event.clientY - this.ins.el1.getBoundingClientRect().top);
 
       // if bar is trying to go over top
-      if (relativeMouseY <= this.state.mouseBarOffsetY) {
+      if (relativeMouseY <= this.state.mouseClickOffsetY) {
         this.state.barTop = 0;
       }
 
       // if bar is moving between top and bottom
-      if (relativeMouseY > this.state.mouseBarOffsetY) {
-        this.state.barTop = relativeMouseY - this.state.mouseBarOffsetY;
+      if (relativeMouseY > this.state.mouseClickOffsetY) {
+        this.state.barTop = relativeMouseY - this.state.mouseClickOffsetY;
       }
 
       // if bar is trying to go over bottom
@@ -580,7 +580,7 @@
         if ( event.which!==1 ) { return false }
 
         this.state.barDragging = true;
-        this.state.mouseBarOffsetY = event.offsetY;
+        this.state.mouseClickOffsetY = event.offsetY;
 
         // disable user select
         this.ins.el1.style.userSelect = 'none';
