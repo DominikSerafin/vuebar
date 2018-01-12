@@ -1,8 +1,11 @@
 /*
+
   TODO: Validate el1/el2 style attributes (prevent or warn about custom inline styles)
   TODO: Check again if all references (this.ins/this.state/this.config) were refactored properly
   TODO: Check of events are removed properly on destroy method
   TODO: IE9 "hC" error fix / Maybe disable vuebar completely on IE9 (and below) and fall back to native scrollbars?
+  TODO: min-height of scrollbar support
+
 */
 
 
@@ -106,11 +109,12 @@
       draggerEnabled: null,
 
       // properties computed for internal directive logic & DOM manipulations
-      visibleArea: 0, // ratio between container height and scrollable content height
+      visibleAreaY: 0, // ratio between container height and scrollable content height
       scrollTop: 0, // position of content scrollTop in px
       barTop: 0, // position of dragger in px
       barHeight: 0, // height of dragger in px
       mouseBarOffsetY: 0, // relative position of mouse at the time of clicking on dragger
+
       barDragging: false, // when the dragger is used
 
     }
@@ -301,14 +305,14 @@
     this.refreshScrollbar = function(options){
       var options = options ? options : {};
       if (options.immediate) {
-        this.computeVisibleArea();
+        this.computeVisibleAreaY();
         this.computeBarTop();
         this.computeBarHeight();
         this.updateDragger();
       }
       Vue.nextTick(function(){
         if (!el.$_vuebar) return;
-        this.computeVisibleArea();
+        this.computeVisibleAreaY();
         this.computeBarTop();
         this.computeBarHeight();
         this.updateDragger();
@@ -328,29 +332,34 @@
 
 
 
-
     /*------------------------------------*\
       Computing Properties
     \*------------------------------------*/
-    this.computeVisibleArea = function(){
-      this.state.visibleArea = (this.ins.el2.clientHeight / this.ins.el2.scrollHeight);
+
+    this.computeVisibleAreaY = function(){
+      this.state.visibleAreaY = (this.ins.el2.clientHeight / this.ins.el2.scrollHeight);
     }
 
+
     this.computeScrollTop = function(){
+      // TODO: instead using bar top, use bar center
       this.state.scrollTop = this.state.barTop * (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
     }
+
+
 
     this.computeBarTop = function(event){
 
       // if the function gets called on scroll event
       if (!event) {
-        this.state.barTop = this.ins.el2.scrollTop * this.state.visibleArea;
+        this.state.barTop = this.ins.el2.scrollTop * this.state.visibleAreaY;
         return false;
       }
 
       // else the function gets called when moving dragger with mouse
+      // TODO: instead using bar top, use bar center
 
-      //
+      // get relative mouse y position (mouse position - el1 offset from window)
       var relativeMouseY = (event.clientY - this.ins.el1.getBoundingClientRect().top);
 
       // if bar is trying to go over top
@@ -370,13 +379,21 @@
 
     }
 
+
+
+
+
+
+
     this.computeBarHeight = function(){
-      if (this.state.visibleArea >= 1) {
+      if (this.state.visibleAreaY >= 1) {
         this.state.barHeight = 0;
       } else {
-        this.state.barHeight = this.ins.el2.clientHeight * this.state.visibleArea;
+        this.state.barHeight = this.ins.el2.clientHeight * this.state.visibleAreaY;
       }
     }
+
+
 
 
 
@@ -416,7 +433,7 @@
       //this.ins.dragger.style.top = Math.ceil( this.state.barTop ) + 'px';
 
       // scrollbar visible / invisible classes
-      if (this.state.draggerEnabled && (this.state.visibleArea<1)) {
+      if (this.state.draggerEnabled && (this.state.visibleAreaY<1)) {
         this.util.rC(this.ins.el1, this.config.el1ScrollInvisibleClass);
         this.util.aC(this.ins.el1, this.config.el1ScrollVisibleClass);
       } else {
@@ -460,7 +477,7 @@
 
     this.preventParentScroll = function(event){
 
-      if (this.state.visibleArea >= 1) {
+      if (this.state.visibleAreaY >= 1) {
         return false;
       }
 
@@ -500,7 +517,7 @@
 
     this.scrollHandler = function(){
       return this.util.throttle(function(event){
-        this.computeVisibleArea();
+        this.computeVisibleAreaY();
         this.computeBarHeight(); // fallback for an undetected content change
         if (!this.state.barDragging) {
           this.computeBarTop();
