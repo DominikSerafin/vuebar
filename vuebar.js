@@ -341,15 +341,94 @@
     }
 
 
+//    this.computeScrollTop = function(){
+//      // TODO: instead using bar top, use bar center
+//
+//      var realBarHeight = this.ins.dragger.offsetHeight;
+//      var barCenter = this.state.barTop + (realBarHeight/2);
+//
+//      console.warn('barTop', this.state.barTop);
+//      console.warn('barHeight', this.state.barHeight);
+//      console.warn('realBarHeight', realBarHeight);
+//      console.warn('barCenter', barCenter);
+//      //this.state.barTop
+//      //this.state.barHeight
+//
+//      this.state.scrollTop = barCenter * (this.ins.el2.scrollHeight / this.ins.el2.clientHeight) + (barCenter/2);
+//    }
+
+
+//    this.computeScrollTop = function(event){
+//      var relativeMouseY = (event.clientY - this.ins.el1.getBoundingClientRect().top);
+//      var difference = relativeMouseY - this.state.mouseClickOffsetY;
+//      this.state.scrollTop = difference * (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
+//    }
+
+
+//    this.computeScrollTop = function(){
+//      var realBarHeight = this.ins.dragger.offsetHeight;
+//      var barCenter = realBarHeight/2;
+//      var realBarHalfHeight = realBarHeight/2;
+//      var barAbsoluteCenter = this.state.barTop + barCenter;
+//      var ratio =  (this.ins.el2.clientHeight / this.ins.el2.scrollHeight);
+//      var inverseRatio = (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
+//      var scrollContainerHeight = this.ins.el2.scrollHeight;
+//      var test =  realBarHalfHeight * inverseRatio ;
+//      console.warn(test);
+//      this.state.scrollTop = (this.state.barTop * inverseRatio) + test;
+//    }
+
+
+//    this.computeScrollTop = function(){
+//      var inverseRatio = (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
+//      var el2ClientRectTop = this.ins.el2.getBoundingClientRect().top;
+//      var draggerClientRectTop = this.ins.dragger.getBoundingClientRect().top;
+//
+//      var el2Bottom = el2ClientRectTop + this.ins.el2.offsetHeight;
+//      var draggerBottom = draggerClientRectTop + this.ins.dragger.offsetHeight;
+//
+//      var topSpace = draggerClientRectTop - el2ClientRectTop;
+//      var bottomSpace = el2Bottom - draggerBottom;
+//
+//
+//      console.warn(topSpace, bottomSpace);
+//
+//      this.state.scrollTop = topSpace * inverseRatio;
+//
+//    }
+
+
+//    this.computeScrollTop = function(){
+//      var inverseRatio = (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
+//      var scrollHeightModifier = this.ins.dragger.offsetHeight * inverseRatio;
+//
+//      var barRatio = this.ins.el2.clientHeight / this.ins.dragger.offsetHeight;
+//
+//      console.warn(barRatio);
+//
+//      var el2ClientHeight = this.ins.el2.clientHeight;
+//      var el2ScrollHeight = this.ins.el2.scrollHeight;
+//
+//      //console.warn(el2ClientHeight, el2ScrollHeight);
+//
+//      this.state.scrollTop = this.state.barTop * (el2ScrollHeight / el2ClientHeight)  + (barRatio * inverseRatio);
+//    }
+
+
+
+
     this.computeScrollTop = function(){
-      // TODO: instead using bar top, use bar center
-
-
-
-
       this.state.scrollTop = this.state.barTop * (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
     }
 
+
+    this.computeBarHeight = function(){
+      if (this.state.visibleAreaY >= 1) {
+        this.state.barHeight = 0;
+      } else {
+        this.state.barHeight = this.ins.el2.clientHeight * this.state.visibleAreaY;
+      }
+    }
 
 
     this.computeBarTop = function(event){
@@ -365,36 +444,30 @@
       // get relative mouse y position (mouse position - el1 offset from window)
       var relativeMouseY = (event.clientY - this.ins.el1.getBoundingClientRect().top);
 
+      this.state.barTop = relativeMouseY - this.state.mouseClickOffsetY;
+
       // if bar is trying to go over top
-      if (relativeMouseY <= this.state.mouseClickOffsetY) {
-        this.state.barTop = 0;
-      }
+      //if (relativeMouseY <= this.state.mouseClickOffsetY) {
+      //  this.state.barTop = 0;
+      //}
 
       // if bar is moving between top and bottom
-      if (relativeMouseY > this.state.mouseClickOffsetY) {
-        this.state.barTop = relativeMouseY - this.state.mouseClickOffsetY;
-      }
+      //if (relativeMouseY > this.state.mouseClickOffsetY) {
+      //  this.state.barTop = relativeMouseY - this.state.mouseClickOffsetY;
+      //}
 
       // if bar is trying to go over bottom
-      if ( (this.state.barTop + this.state.barHeight ) >= this.ins.el2.clientHeight ) {
-        this.state.barTop = this.ins.el2.clientHeight - this.state.barHeight;
-      }
+      //if ( (this.state.barTop + this.state.barHeight ) >= this.ins.el2.clientHeight ) {
+      //  this.state.barTop = this.ins.el2.clientHeight - this.state.barHeight;
+      //}
+
+
 
     }
 
 
 
 
-
-
-
-    this.computeBarHeight = function(){
-      if (this.state.visibleAreaY >= 1) {
-        this.state.barHeight = 0;
-      } else {
-        this.state.barHeight = this.ins.el2.clientHeight * this.state.visibleAreaY;
-      }
-    }
 
 
 
