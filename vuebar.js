@@ -343,6 +343,10 @@
 
     this.computeScrollTop = function(){
       // TODO: instead using bar top, use bar center
+
+      
+
+
       this.state.scrollTop = this.state.barTop * (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
     }
 
@@ -357,7 +361,6 @@
       }
 
       // else the function gets called when moving dragger with mouse
-      // TODO: instead using bar top, use bar center
 
       // get relative mouse y position (mouse position - el1 offset from window)
       var relativeMouseY = (event.clientY - this.ins.el1.getBoundingClientRect().top);
