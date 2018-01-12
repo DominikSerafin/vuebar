@@ -139,6 +139,22 @@
 
 
         <div class="example-wrapper">
+          <h2>Scrollbar Visible/Not Visible</h2>
+          <code>
+            <button type="button" @click.prevent="visibleNotVisibleContentToggle">Content Toggle</button>
+          </code>
+          <div class="example" v-bar>
+            <div class="example-inner">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel?
+
+              <span v-if="visibleNotVisibleContent"> Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.</span>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="example-wrapper">
           <h2>Scrollbar Not Visible</h2>
           <code>Content smaller than container...</code>
           <div class="example" v-bar>
@@ -352,6 +368,7 @@
       el: '#app',
 
       data: {
+        visibleNotVisibleContent: false,
       },
 
       mounted: function(){
@@ -384,6 +401,10 @@
         convenienceExample3: function(){
           var el = this.$refs.exampleConvenienceMethods;
           el.$_vuebar.scrollTo(100);
+        },
+
+        visibleNotVisibleContentToggle: function(){
+          this.visibleNotVisibleContent = !this.visibleNotVisibleContent;
         },
 
 
