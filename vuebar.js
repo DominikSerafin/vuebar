@@ -14,7 +14,7 @@
   /*------------------------------------*\
     Vuebar Constructor
   \*------------------------------------*/
-  function VB(Vue, el, binding, vnode, oldVnode){
+  function Vuebar(Vue, el, binding, vnode, oldVnode){
 
 
 
@@ -838,7 +838,7 @@
   /*------------------------------------*\
     Vuebar For Installation
   \*------------------------------------*/
-  function Vuebar(Vue, options){
+  function VuebarPlugin(Vue, options){
 
 
     /*------------------------------------*\
@@ -853,7 +853,7 @@
     Vue.directive('bar', {
 
       inserted: function(el, binding, vnode){
-        (new VB(Vue, el, binding, vnode)).initializeScrollbar();
+        (new Vuebar(Vue, el, binding, vnode)).initializeScrollbar();
       },
 
       componentUpdated: function(el, binding, vnode, oldVnode){
@@ -876,15 +876,15 @@
     Expose / Autoinstall
   \*------------------------------------*/
   if (typeof exports === 'object' && typeof module === 'object') {
-    module.exports = Vuebar;
+    module.exports = VuebarPlugin;
   } else if (typeof define === 'function' && define.amd) {
-    define(function () { return Vuebar });
+    define(function () { return VuebarPlugin });
   } else if (typeof window !== typeof void 0) {
-    window.Vuebar = Vuebar;
+    window.Vuebar = VuebarPlugin;
   }
 
   if (typeof Vue !== typeof void 0) {
-    Vue.use(Vuebar);
+    Vue.use(VuebarPlugin);
   }
 
 
