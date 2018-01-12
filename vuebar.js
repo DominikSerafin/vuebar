@@ -611,6 +611,26 @@
 
 
 
+    /*------------------------------------*\
+      Convenience Methods
+    \*------------------------------------*/
+
+    this.scrollTo = function(positionY, positionX){
+      // TODO: scroll to top
+      // TODO: scroll to bottom
+      // TODO: scroll to child element
+      // TODO: scroll to position
+      // TODO: scroll by specific amount of distance
+      // TODO: smoothly animated scroll
+      if (!positionY) return this.util.warn('[scrollTo]: You need to specify position to scroll.');
+      if (positionY === 'top') { this.ins.el2.scrollTop = 0; }
+      else if (positionY === 'bottom') { this.ins.el2.scrollTop = this.ins.el2.scrollHeight; }
+      else {
+        this.ins.el2.scrollTop = positionY;
+        this.ins.el2.scrollLeft = positionX;
+      }
+    }
+
 
 
 
