@@ -306,8 +306,8 @@
       this.ins.draggingPhantomClassTimeout ?
       clearTimeout(this.ins.draggingPhantomClassTimeout) : null;
 
-      // delete state object from element
-      delete el._vuebarState;
+      // delete instance from vuebar element
+      delete this.ins.el1.$_vuebar;
 
     }
 
