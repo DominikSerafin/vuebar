@@ -110,6 +110,7 @@
 
       // properties computed for internal directive logic & DOM manipulations
       visibleAreaY: 0, // ratio between container height and scrollable content height
+      scrollPercentageY: 0, // scroll percentage on y plane
       scrollTop: 0, // position of content scrollTop in px
       barTop: 0, // position of dragger in px
       barHeight: 0, // height of dragger in px
@@ -341,8 +342,31 @@
     }
 
 
+    //this.computeScrollTop = function(){
+    //  this.state.scrollTop = this.state.barTop * (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
+    //}
+
     this.computeScrollTop = function(){
-      this.state.scrollTop = this.state.barTop * (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
+
+      // calculate scroll percentage...
+      // I SPENT 5 HOURS on these 2 lines below - lets say I've suffered "writer's block" =) / Dom
+      var realBarHeight = this.ins.dragger.offsetHeight;
+      this.state.scrollPercentageY = this.state.barTop / (this.ins.el2.clientHeight - realBarHeight);
+
+      // convert scroll percentage to scrollTop pixels
+      var scrollablePixels = (this.ins.el2.scrollHeight - this.ins.el2.clientHeight);
+      var scrollTop = scrollablePixels * this.state.scrollPercentageY;
+
+      //console.table({
+      //  realBarHeight: realBarHeight,
+      //  scrollPercentage: (this.state.scrollPercentageY*100)+'%',
+      //  el2ScrollHeight: this.ins.el2.scrollHeight,
+      //  el2ClientHeight: this.ins.el2.clientHeight,
+      //  scrollablePixels: scrollablePixels,
+      //  scrollTop: scrollTop,
+      //});
+
+      this.state.scrollTop = scrollTop;
     }
 
 
@@ -368,22 +392,31 @@
       // get relative mouse y position (mouse position - el1 offset from window)
       var relativeMouseY = (event.clientY - this.ins.el1.getBoundingClientRect().top);
 
-      this.state.barTop = relativeMouseY - this.state.mouseClickOffsetY;
 
       // if bar is trying to go over top
-      //if (relativeMouseY <= this.state.mouseClickOffsetY) {
+      //if (this.state.scrollPercentageY <= 0.0) {
       //  this.state.barTop = 0;
       //}
 
+      // if bar is trying to go over top
+      if (relativeMouseY <= this.state.mouseClickOffsetY) {
+        this.state.barTop = 0;
+      }
+
       // if bar is moving between top and bottom
-      //if (relativeMouseY > this.state.mouseClickOffsetY) {
-      //  this.state.barTop = relativeMouseY - this.state.mouseClickOffsetY;
-      //}
+      if (relativeMouseY > this.state.mouseClickOffsetY) {
+        this.state.barTop = relativeMouseY - this.state.mouseClickOffsetY;
+      }
 
       // if bar is trying to go over bottom
-      //if ( (this.state.barTop + this.state.barHeight ) >= this.ins.el2.clientHeight ) {
-      //  this.state.barTop = this.ins.el2.clientHeight - this.state.barHeight;
-      //}
+      var realBarHeight = this.ins.dragger.offsetHeight;
+      if ( (this.state.barTop + realBarHeight ) >= this.ins.el2.clientHeight ) {
+        this.state.barTop = this.ins.el2.clientHeight - realBarHeight;
+      }
+
+
+      // debug
+      //this.state.barTop = relativeMouseY - this.state.mouseClickOffsetY;
 
 
 
