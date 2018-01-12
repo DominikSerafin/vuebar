@@ -9,6 +9,7 @@
   TODO: performance: cache in state all properties that make render/reflow of document (like el2.offsetTop, etc.)
   TODO: add dragger min-height to default styles
   TODO: change name of dragger to something more fitting
+  NOTE: take in consideration content height/width change between horizontal/vertical height/width calculations
 
 */
 
