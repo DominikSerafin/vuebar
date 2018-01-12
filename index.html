@@ -41,7 +41,7 @@
           height: 300px;
           background-color: #f0f6ff;
           color: #3079f4;
-          overflow: hidden;
+          overflow: auto;
         }
 
         .example-wrapper.mod-without-vuebar .example { overflow: auto; }
@@ -140,6 +140,15 @@
         </div>
       </div>
 
+      <div class="example-wrapper">
+        <h2>Standard, Destroyed After 3 Seconds After Mounted Hook</h2>
+        <code>Vuebar should be completely cleaned up, and standard scrollbars should be available.</code>
+        <div class="example" v-bar ref="exampleStandardToDestroy">
+          <div class="example-inner">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+          </div>
+        </div>
+      </div>
 
 
       <div class="example-wrapper">
@@ -232,12 +241,26 @@
     Vue.config.devtools = true;
     Vue.config.performance = true;
     var app = new Vue({
+
       el: '#app',
+
       data: {
       },
+
       mounted: function(){
-        console.dir(this.$refs.exampleStandard.$_vuebar.destroy());
+        this.destroyExample();
       },
+
+      methods: {
+        destroyExample: function(){
+
+          setTimeout(function () {
+            this.$refs.exampleStandardToDestroy.$_vuebar.destroy();
+          }.bind(this), 3000);
+
+        },
+      },
+
     })
   </script>
 

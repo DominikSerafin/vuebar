@@ -230,31 +230,6 @@
 
 
     /*------------------------------------*\
-      Refresh Scrollbar
-    \*------------------------------------*/
-    this.refreshScrollbar = function(options){
-      var options = options ? options : {};
-      if (options.immediate) {
-        this.computeVisibleArea();
-        this.computeBarTop();
-        this.computeBarHeight();
-        this.updateDragger();
-      }
-      Vue.nextTick(function(){
-        if (!el._vuebar) return;
-        this.computeVisibleArea();
-        this.computeBarTop();
-        this.computeBarHeight();
-        this.updateDragger();
-      }.bind(this));
-    }
-
-
-
-
-
-
-    /*------------------------------------*\
       Destroy Scrollbar
     \*------------------------------------*/
     this.destroy = function(options){
@@ -278,7 +253,7 @@
       this.util.rC(this.ins.el1, this.config.el1DraggingClass);
 
       // clear el1 styles
-      if (options.clearStyles) {
+      if (!options.skipStyles) {
         this.ins.el1.style.position = '';
         this.ins.el1.style.overflow = '';
       }
@@ -287,13 +262,15 @@
       this.util.rC(this.ins.el2, this.config.el2Class);
 
       // clear el2 styles
-      if (options.clearStyles) {
+      if (!options.skipStyles) {
+        this.ins.el2.style.boxSizing = '';
         this.ins.el2.style.display = '';
         this.ins.el2.style.overflowX = '';
         this.ins.el2.style.overflowY = '';
-        this.ins.el2.style.msOverflowStyle = '';
         this.ins.el2.style.height = '';
-        this.ins.el2.style.width = '';
+        //this.ins.el2.style.width = '';
+        this.ins.el2.style.marginRight = '';
+        this.ins.el2.style.paddingRight = '';
       }
 
       // clear dragger
@@ -312,6 +289,28 @@
     }
 
 
+
+
+
+    /*------------------------------------*\
+      Refresh Scrollbar
+    \*------------------------------------*/
+    this.refreshScrollbar = function(options){
+      var options = options ? options : {};
+      if (options.immediate) {
+        this.computeVisibleArea();
+        this.computeBarTop();
+        this.computeBarHeight();
+        this.updateDragger();
+      }
+      Vue.nextTick(function(){
+        if (!el._vuebar) return;
+        this.computeVisibleArea();
+        this.computeBarTop();
+        this.computeBarHeight();
+        this.updateDragger();
+      }.bind(this));
+    }
 
 
 
@@ -861,10 +860,10 @@
       },
 
       unbind: function(el, binding, vnode, oldVnode){
-        // we shouldn't clearStyles because it actually doesn't matter that much
+        // we shouldn't clear styles because it actually doesn't matter that much
         // the element will be always deleted on unbind and its styles also
         // and if we do clear styles then it looks bad on transitions
-        el._vuebar ? el._vuebar.destroyScrollbar({clearStyles: false}) : null;
+        el._vuebar ? el._vuebar.destroyScrollbar({skipStyles: true}) : null;
       },
 
     });
