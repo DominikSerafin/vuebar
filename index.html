@@ -67,7 +67,7 @@
           .example-wrapper.mod-overflow-scrolling-auto .example-inner {-webkit-overflow-scrolling: auto;}
           .example-wrapper.mod-overflow-scrolling-touch .example-inner {-webkit-overflow-scrolling: touch;}
           .example-wrapper.mod-dragger-min-height .example.vb > .vb-dragger {min-height: 50px;}
-          .example-wrapper.mod-dragger-max-height .example.vb > .vb-dragger {max-height: 200px;}
+          .example-wrapper.mod-dragger-max-height .example.vb > .vb-dragger {max-height: 100px;}
 
 
           .example-inner {
@@ -207,6 +207,7 @@
 
         <div class="example-wrapper">
           <h2>Debug Internal State</h2>
+          <code>Observing internal Vuebar state makes it behave differently from other instances. Weird.</code>
           <div class="example" v-bar ref="exampleDebugState">
             <div class="example-inner" >
               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
@@ -228,15 +229,22 @@
 
 
 
-
-
-
-      <h2 class="examples-section-title">Styled</h2>
+      <h2 class="examples-section-title">Min/Max Height</h2>
       <div class="examples-section">
+
+        <div class="example-wrapper">
+          <h2>Lots of Content</h2>
+          <code></code>
+          <div class="example" v-bar>
+            <div class="example-inner">
+              <span v-for="n in 15">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.</span>
+            </div>
+          </div>
+        </div>
 
 
         <div class="example-wrapper mod-dragger-min-height">
-          <h2>Standard with Dragger Min Height</h2>
+          <h2>Lots of Content w/ Dragger Min Height</h2>
           <code>min-height:50px</code>
           <div class="example" v-bar>
             <div class="example-inner">
@@ -246,15 +254,38 @@
         </div>
 
 
-        <div class="example-wrapper mod-dragger-max-height">
-          <h2>Standard with Dragger Max Height</h2>
-          <code>max-height:200px</code>
+        <div class="example-wrapper">
+          <h2>Little of Content</h2>
+          <code></code>
           <div class="example" v-bar>
             <div class="example-inner">
               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Lorem ipsum dolor sit amet. Accusantium ipsum explicabo velit.
             </div>
           </div>
         </div>
+
+
+
+        <div class="example-wrapper mod-dragger-max-height">
+          <h2>Little of Content with Dragger Max Height</h2>
+          <code>max-height:100px</code>
+          <div class="example" v-bar>
+            <div class="example-inner">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Lorem ipsum dolor sit amet. Accusantium ipsum explicabo velit.
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+      </div>
+
+
+      <h2 class="examples-section-title">Styled</h2>
+      <div class="examples-section">
 
 
         <div class="example-wrapper">

@@ -5,6 +5,10 @@
   TODO: Check of events are removed properly on destroy method
   TODO: IE9 "hC" error fix / Maybe disable vuebar completely on IE9 (and below) and fall back to native scrollbars?
   TODO: min-height of scrollbar support
+  TODO: revisit naming of state properties: especially scrollTop, barTop, barHeight
+  TODO: performance: cache in state all properties that make render/reflow of document (like el2.offsetTop, etc.)
+  TODO: add dragger min-height to default styles
+  TODO: change name of dragger to something more fitting
 
 */
 
@@ -307,14 +311,14 @@
       var options = options ? options : {};
       if (options.immediate) {
         this.computeVisibleAreaY();
-        this.computeBarTop();
+        this.computeBarTopOnScroll();
         this.computeBarHeight();
         this.updateDragger();
       }
       Vue.nextTick(function(){
         if (!el.$_vuebar) return;
         this.computeVisibleAreaY();
-        this.computeBarTop();
+        this.computeBarTopOnScroll();
         this.computeBarHeight();
         this.updateDragger();
       }.bind(this));
@@ -354,15 +358,15 @@
       this.state.scrollPercentageY = this.state.barTop / (this.ins.el2.clientHeight - realBarHeight);
 
       // convert scroll percentage to scrollTop pixels
-      var scrollablePixels = (this.ins.el2.scrollHeight - this.ins.el2.clientHeight);
-      var scrollTop = scrollablePixels * this.state.scrollPercentageY;
+      var availablePixels = (this.ins.el2.scrollHeight - this.ins.el2.clientHeight);
+      var scrollTop = availablePixels * this.state.scrollPercentageY;
 
       //console.table({
       //  realBarHeight: realBarHeight,
       //  scrollPercentage: (this.state.scrollPercentageY*100)+'%',
       //  el2ScrollHeight: this.ins.el2.scrollHeight,
       //  el2ClientHeight: this.ins.el2.clientHeight,
-      //  scrollablePixels: scrollablePixels,
+      //  availablePixels: availablePixels,
       //  scrollTop: scrollTop,
       //});
 
@@ -379,13 +383,15 @@
     }
 
 
-    this.computeBarTop = function(event){
+    this.computeBarTopOnScroll = function(){
+      var scrollPercentage = this.ins.el2.scrollTop / (this.ins.el2.scrollHeight - this.ins.el2.clientHeight);
+      var availablePixels = (this.ins.el2.clientHeight - this.ins.dragger.offsetHeight);
+      this.state.barTop = availablePixels * scrollPercentage;
+    }
 
-      // if the function gets called on scroll event
-      if (!event) {
-        this.state.barTop = this.ins.el2.scrollTop * this.state.visibleAreaY;
-        return false;
-      }
+
+    this.computeBarTopOnDrag = function(event){
+
 
       // else the function gets called when moving dragger with mouse
 
@@ -553,7 +559,7 @@
         this.computeVisibleAreaY();
         this.computeBarHeight(); // fallback for an undetected content change
         if (!this.state.barDragging) {
-          this.computeBarTop();
+          this.computeBarTopOnScroll();
           this.updateDragger({withScrollingClasses: true});
         }
       }.bind(this), this.config.scrollThrottle);
@@ -569,7 +575,7 @@
 
     this.documentMousemove = function(){
       return this.util.throttle(function(event){
-        this.computeBarTop(event);
+        this.computeBarTopOnDrag(event);
         this.updateDragger();
         this.computeScrollTop();
         this.updateScroll();
