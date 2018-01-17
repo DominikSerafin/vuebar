@@ -63,7 +63,7 @@
 
     /*------------------------------------*\
       Instances
-      - This hold references to elements
+      - This holds references to elements
         and as well to events & other stuff
       - More fitting name would probably
         be "refs", but I don't want for
@@ -104,24 +104,34 @@
     /*------------------------------------*\
       State
       - Don't confuse with Vue state!
-      - This hold internal Vuebar state
+      - This holds internal Vuebar state
         for computing positions of
         elements and scrollbar
+      - Properties computed for internal
+        directive logic & DOM manipulations
     \*------------------------------------*/
     this.state = {
 
       // show dragger
       draggerEnabled: null,
 
-      // properties computed for internal directive logic & DOM manipulations
-      visibleAreaY: 0, // ratio between container height and scrollable content height
-      scrollPercentageY: 0, // scroll percentage on y plane
-      scrollTop: 0, // position of content scrollTop in px
-      barTop: 0, // position of dragger in px
-      barHeight: 0, // height of dragger in px
-      mouseClickOffsetY: 0, // relative position of mouse at the time of clicking on dragger
+      // when the dragger is used
+      // can be 'y', 'x' or false
+      barDragging: false,
 
-      barDragging: false, // when the dragger is used
+      y: {
+        scrollPercent: 0, // scroll percentage on y plane
+        scrollTop: 0, // position of content scrollTop in px
+        barTop: 0, // position of dragger in px
+        barHeight: 0, // height of dragger in px
+        clickOffset: 0, // relative position of mouse at the time of clicking on dragger
+        visibleArea: 0, // ratio between container height and scrollable content height
+      },
+
+      x: {
+
+      },
+
 
     }
 
@@ -343,12 +353,12 @@
     \*------------------------------------*/
 
     this.computeVisibleAreaY = function(){
-      this.state.visibleAreaY = (this.ins.el2.clientHeight / this.ins.el2.scrollHeight);
+      this.state.y.visibleArea = (this.ins.el2.clientHeight / this.ins.el2.scrollHeight);
     }
 
 
     //this.computeScrollTop = function(){
-    //  this.state.scrollTop = this.state.barTop * (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
+    //  this.state.y.scrollTop = this.state.y.barTop * (this.ins.el2.scrollHeight / this.ins.el2.clientHeight);
     //}
 
     this.computeScrollTop = function(){
@@ -356,38 +366,38 @@
       // calculate scroll percentage...
       // I SPENT 5 HOURS on these 2 lines below - lets say I've suffered "writer's block" =) / Dom
       var realBarHeight = this.ins.dragger.offsetHeight;
-      this.state.scrollPercentageY = this.state.barTop / (this.ins.el2.clientHeight - realBarHeight);
+      this.state.y.scrollPercent = this.state.y.barTop / (this.ins.el2.clientHeight - realBarHeight);
 
       // convert scroll percentage to scrollTop pixels
       var availablePixels = (this.ins.el2.scrollHeight - this.ins.el2.clientHeight);
-      var scrollTop = availablePixels * this.state.scrollPercentageY;
+      var scrollTop = availablePixels * this.state.y.scrollPercent;
 
       //console.table({
       //  realBarHeight: realBarHeight,
-      //  scrollPercentage: (this.state.scrollPercentageY*100)+'%',
+      //  scrollPercent: (this.state.y.scrollPercent*100)+'%',
       //  el2ScrollHeight: this.ins.el2.scrollHeight,
       //  el2ClientHeight: this.ins.el2.clientHeight,
       //  availablePixels: availablePixels,
       //  scrollTop: scrollTop,
       //});
 
-      this.state.scrollTop = scrollTop;
+      this.state.y.scrollTop = scrollTop;
     }
 
 
     this.computeBarHeight = function(){
-      if (this.state.visibleAreaY >= 1) {
-        this.state.barHeight = 0;
+      if (this.state.y.visibleArea >= 1) {
+        this.state.y.barHeight = 0;
       } else {
-        this.state.barHeight = this.ins.el2.clientHeight * this.state.visibleAreaY;
+        this.state.y.barHeight = this.ins.el2.clientHeight * this.state.y.visibleArea;
       }
     }
 
 
     this.computeBarTopOnScroll = function(){
-      var scrollPercentage = this.ins.el2.scrollTop / (this.ins.el2.scrollHeight - this.ins.el2.clientHeight);
+      var scrollPercent = this.ins.el2.scrollTop / (this.ins.el2.scrollHeight - this.ins.el2.clientHeight);
       var availablePixels = (this.ins.el2.clientHeight - this.ins.dragger.offsetHeight);
-      this.state.barTop = availablePixels * scrollPercentage;
+      this.state.y.barTop = availablePixels * scrollPercent;
     }
 
 
@@ -401,29 +411,29 @@
 
 
       // if bar is trying to go over top
-      //if (this.state.scrollPercentageY <= 0.0) {
-      //  this.state.barTop = 0;
+      //if (this.state.y.scrollPercent <= 0.0) {
+      //  this.state.y.barTop = 0;
       //}
 
       // if bar is trying to go over top
-      if (relativeMouseY <= this.state.mouseClickOffsetY) {
-        this.state.barTop = 0;
+      if (relativeMouseY <= this.state.y.clickOffset) {
+        this.state.y.barTop = 0;
       }
 
       // if bar is moving between top and bottom
-      if (relativeMouseY > this.state.mouseClickOffsetY) {
-        this.state.barTop = relativeMouseY - this.state.mouseClickOffsetY;
+      if (relativeMouseY > this.state.y.clickOffset) {
+        this.state.y.barTop = relativeMouseY - this.state.y.clickOffset;
       }
 
       // if bar is trying to go over bottom
       var realBarHeight = this.ins.dragger.offsetHeight;
-      if ( (this.state.barTop + realBarHeight ) >= this.ins.el2.clientHeight ) {
-        this.state.barTop = this.ins.el2.clientHeight - realBarHeight;
+      if ( (this.state.y.barTop + realBarHeight ) >= this.ins.el2.clientHeight ) {
+        this.state.y.barTop = this.ins.el2.clientHeight - realBarHeight;
       }
 
 
       // debug
-      //this.state.barTop = relativeMouseY - this.state.mouseClickOffsetY;
+      //this.state.y.barTop = relativeMouseY - this.state.y.clickOffset;
 
 
 
@@ -467,13 +477,13 @@
       var options = options ? options : {};
 
       // setting dragger styles
-      this.ins.dragger.style.height = parseInt(Math.round(this.state.barHeight)) + 'px';
-      this.ins.dragger.style.top = parseInt(Math.round(this.state.barTop)) + 'px';
-      //this.ins.dragger.style.height = Math.ceil( this.state.barHeight ) + 'px';
-      //this.ins.dragger.style.top = Math.ceil( this.state.barTop ) + 'px';
+      this.ins.dragger.style.height = parseInt(Math.round(this.state.y.barHeight)) + 'px';
+      this.ins.dragger.style.top = parseInt(Math.round(this.state.y.barTop)) + 'px';
+      //this.ins.dragger.style.height = Math.ceil( this.state.y.barHeight ) + 'px';
+      //this.ins.dragger.style.top = Math.ceil( this.state.y.barTop ) + 'px';
 
       // scrollbar visible / invisible classes
-      if (this.state.draggerEnabled && (this.state.visibleAreaY<1)) {
+      if (this.state.draggerEnabled && (this.state.y.visibleArea<1)) {
         this.util.rC(this.ins.el1, this.config.el1ScrollInvisibleClass);
         this.util.aC(this.ins.el1, this.config.el1ScrollVisibleClass);
       } else {
@@ -517,7 +527,7 @@
 
     this.preventParentScroll = function(event){
 
-      if (this.state.visibleAreaY >= 1) {
+      if (this.state.y.visibleArea >= 1) {
         return false;
       }
 
@@ -542,7 +552,7 @@
 
 
     this.updateScroll = function(){
-      this.ins.el2.scrollTop = this.state.scrollTop;
+      this.ins.el2.scrollTop = this.state.y.scrollTop;
     }
 
 
@@ -617,7 +627,7 @@
         if ( event.which!==1 ) { return false }
 
         this.state.barDragging = true;
-        this.state.mouseClickOffsetY = event.offsetY;
+        this.state.y.clickOffset = event.offsetY;
 
         // disable user select
         this.ins.el1.style.userSelect = 'none';
