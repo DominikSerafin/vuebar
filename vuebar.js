@@ -194,11 +194,13 @@
       this.ins.wheelHandler = this.wheelHandler();
 
       // add events
-      // - wheel event is only needed when preventParentScroll option is enabled
-      // - resize event is only needed when resizeRefresh option is enabled
       this.ins.el2.addEventListener('scroll', this.ins.scrollHandler, 0);
       this.ins.dragger.addEventListener('mousedown', this.ins.barMousedown, 0);
+
+      // - wheel event is only needed when preventParentScroll option is enabled
       this.config.preventParentScroll ? this.ins.el2.addEventListener('wheel', this.ins.wheelHandler, 0) : null;
+
+      // - resize event is only needed when resizeRefresh option is enabled
       this.config.resizeRefresh ? window.addEventListener('resize', this.ins.windowResize, 0) : null;
 
     }
@@ -240,6 +242,24 @@
     }
 
 
+    // mutation observer for content changes outside Vue state
+    this.initializeMutationObserver = function(){
+      if (typeof MutationObserver === typeof void 0) { return null }
+
+      var observer = new MutationObserver(this.util.throttle(function(mutations) {
+        this.refresh();
+      }.bind(this), this.config.observerThrottle));
+
+      observer.observe(this.ins.el2, {
+        childList: true,
+        characterData: true,
+        subtree: true,
+      });
+
+      this.ins.mutationObserver = observer;
+
+      return observer;
+    }
 
 
 
@@ -269,11 +289,9 @@
       // create dragger
       this.ins.dragger = this.createDragger();
 
-      // initialize events...
+      // initialize events and observer...
       this.initializeEvents();
-
-      // initialize and reference mutation observer
-      this.ins.mutationObserver = this.createMutationObserver();
+      this.initializeMutationObserver();
 
       // initialize styles...
       this.initializeStyles();
@@ -282,7 +300,7 @@
       this.ins.el1.$_vuebar = this;
 
       // initial calculations using refresh scrollbar
-      this.refresh({immediate: true});
+      this.refresh({alsoImmediately: true});
 
       // return instance
       return this;
@@ -363,15 +381,15 @@
     \*------------------------------------*/
     this.refresh = function(options){
       var options = options ? options : {};
-      if (options.immediate) {
-        this.computeVisibleRatio();
+      if (options.alsoImmediately) {
+        this.computeVisibleRatios();
         this.computeBarTopOnScroll();
         this.computeBarBaseHeight();
         this.updateDragger();
       }
       Vue.nextTick(function(){
         if (!el.$_vuebar) return;
-        this.computeVisibleRatio();
+        this.computeVisibleRatios();
         this.computeBarTopOnScroll();
         this.computeBarBaseHeight();
         this.updateDragger();
@@ -395,8 +413,9 @@
       Computing Properties
     \*------------------------------------*/
 
-    this.computeVisibleRatio = function(){
+    this.computeVisibleRatios = function(){
       this.state.y.visibleRatio = (this.ins.el2.clientHeight / this.ins.el2.scrollHeight);
+      this.state.x.visibleRatio = (this.ins.el2.clientWidth / this.ins.el2.scrollWidth);
     }
 
 
@@ -562,10 +581,7 @@
 
 
     this.preventParentScroll = function(event){
-
-      if (this.state.y.visibleRatio >= 1) {
-        return false;
-      }
+      if (this.state.y.visibleRatio >= 1) return false;
 
       var scrollDist = this.ins.el2.scrollHeight - this.ins.el2.clientHeight;
       var scrollTop = this.ins.el2.scrollTop;
@@ -603,7 +619,7 @@
 
     this.scrollHandler = function(){
       return this.util.throttle(function(event){
-        this.computeVisibleRatio();
+        this.computeVisibleRatios();
         this.computeBarBaseHeight(); // fallback for an undetected content change
         if (!this.state.barDragging) {
           this.computeBarTopOnScroll();
@@ -659,7 +675,7 @@
     this.barMousedown = function(){
       return function(event){
 
-        // don't do nothing if it's not left mouse button
+        // do nothing if it's not left mouse button
         if ( event.which!==1 ) { return false }
 
         this.state.barDragging = true;
@@ -690,23 +706,6 @@
     }
 
 
-
-
-    this.createMutationObserver = function(){
-      if (typeof MutationObserver === typeof void 0) { return null }
-
-      var observer = new MutationObserver(this.util.throttle(function(mutations) {
-        this.refresh();
-      }.bind(this), this.config.observerThrottle));
-
-      observer.observe(this.ins.el2, {
-        childList: true,
-        characterData: true,
-        subtree: true,
-      });
-
-      return observer;
-    }
 
 
 

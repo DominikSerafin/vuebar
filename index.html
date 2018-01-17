@@ -386,7 +386,7 @@
           <code>Horizontal Only</code>
           <div class="example" v-bar>
             <div class="example-inner">
-              <div style="width:600px;">
+              <div style="width:700px;">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
               </div>
             </div>
@@ -401,7 +401,7 @@
           <code>Vertical + Horizontal</code>
           <div class="example" v-bar>
             <div class="example-inner">
-              <div style="width:600px;">
+              <div style="width:700px;">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
               </div>
             </div>
@@ -485,20 +485,45 @@
       <div class="examples-section">
 
         <div class="example-wrapper">
-          <h2>Debug Internal State</h2>
+          <h2>Horizontal | Debug Internal State</h2>
           <code>Observing internal Vuebar state makes it behave differently from other instances. Weird.</code>
-          <div class="example" v-bar ref="exampleDebugState">
+          <div class="example" v-bar ref="exampleDebugState1">
             <div class="example-inner" >
               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
             </div>
           </div>
           <br>
           <code>
-            <template v-for="(key, index) in Object.keys(exampleDebugStateData)">
-              {{key}}: {{exampleDebugStateData[key]}} <br>
+            <template v-for="(key, index) in Object.keys(exampleDebugStateData1)">
+              {{key}}: {{exampleDebugStateData1[key]}} <br>
             </template>
           </code>
         </div>
+
+
+        <div class="example-wrapper">
+          <h2>Vertical + Horizontal | Debug Internal State</h2>
+          <code>Observing internal Vuebar state makes it behave differently from other instances. Weird.</code>
+          <div class="example" v-bar ref="exampleDebugState2">
+            <div class="example-inner">
+
+              <div style="width:700px;">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+              </div>
+
+
+            </div>
+          </div>
+          <br>
+          <code>
+            <template v-for="(key, index) in Object.keys(exampleDebugStateData2)">
+              {{key}}: {{exampleDebugStateData2[key]}} <br>
+            </template>
+          </code>
+        </div>
+
+
+
 
 
       </div>
@@ -871,7 +896,7 @@
           <code>Horizontal Only</code>
           <div class="example">
             <div class="example-inner">
-              <div style="width:600px;">
+              <div style="width:700px;">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
               </div>
             </div>
@@ -886,7 +911,7 @@
           <code>Vertical + Horizontal</code>
           <div class="example">
             <div class="example-inner">
-              <div style="width:600px;">
+              <div style="width:700px;">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
               </div>
             </div>
@@ -920,11 +945,13 @@
 
       data: {
         visibleNotVisibleContent: false,
-        exampleDebugStateData: {},
+        exampleDebugStateData1: {},
+        exampleDebugStateData2: {},
       },
 
       mounted: function(){
-        this.observeExampleDebugState();
+        this.observeExampleDebugState1();
+        this.observeExampleDebugState2();
       },
 
       methods: {
@@ -960,10 +987,13 @@
           this.visibleNotVisibleContent = !this.visibleNotVisibleContent;
         },
 
-        observeExampleDebugState: function(){
-          this.exampleDebugStateData = this.$refs.exampleDebugState.$_vuebar.state;
+        observeExampleDebugState1: function(){
+          this.exampleDebugStateData1 = this.$refs.exampleDebugState1.$_vuebar.state;
         },
 
+        observeExampleDebugState2: function(){
+          this.exampleDebugStateData2 = this.$refs.exampleDebugState2.$_vuebar.state;
+        },
 
 
       },
