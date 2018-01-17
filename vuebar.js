@@ -127,8 +127,6 @@
 
       // constants + cached properties
       nativeScrollbarSize: null,
-      el2WidthToHide: null,
-
 
       // dynamic properties for y plane
       y: {
