@@ -11,6 +11,7 @@
   NOTE: take in consideration content height/width change between horizontal/vertical height/width calculations
   TODO: reimplement override floating scrollbar option
   TODO: don't overwrite vuebar element classess completely, use aC
+  TODO: fix "scroll then drag" problem of horizontal scrollbar
 
 */
 
