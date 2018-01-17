@@ -909,7 +909,7 @@
 
   <!-- Vue -->
   <!--<script src="https://unpkg.com/vue"></script>-->
-  <script src="./site/js/vue.2.5.13.min.js"></script>
+  <script src="./site/js/vue.2.5.13.js"></script>
   <script src="./vuebar.js"></script>
 
 
@@ -917,6 +917,7 @@
   <script>
     Vue.config.devtools = true;
     Vue.config.performance = true;
+    Vue.config.silent = false;
     var app = new Vue({
 
       el: '#app',

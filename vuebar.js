@@ -3,13 +3,13 @@
   TODO: Validate el1/el2 style attributes (prevent or warn about custom inline styles)
   TODO: Check again if all references (this.ins/this.state/this.config) were refactored properly
   TODO: Check of events are removed properly on destroy method
-  TODO: IE9 "hC" error fix / Maybe disable vuebar completely on IE9 (and below) and fall back to native scrollbars?
   TODO: min-height of scrollbar support
   TODO: revisit naming of state properties: especially scrollTop, barTop, barHeight
   TODO: performance: cache in state all properties that make render/reflow of document (like el2.offsetTop, etc.)
   TODO: add dragger min-height to default styles
   TODO: change name of dragger to something more fitting
   NOTE: take in consideration content height/width change between horizontal/vertical height/width calculations
+  TODO: reimplement override floating scrollbar option
 
 */
 
@@ -120,7 +120,6 @@
 
       // dynamic properties for y plane
       y: {
-        barWanted: null, // tells if scrollbar is needed at all
         barTop: 0, // position (top) of dragger in px
         barBaseHeight: 0, // base height of dragger in px
         barClickOffset: 0, // relative position of mouse at the time of clicking on dragger
@@ -132,7 +131,6 @@
 
       // dynamic properties for x plane
       x: {
-        barWanted: null, // tells if scrollbar is needed at all
         barLeft: 0, // position (left) of dragger in px
         barBaseWidth: 0, // base width of dragger in px
         barClickOffset: 0, // relative position of mouse at the time of clicking on dragger
@@ -208,14 +206,7 @@
 
 
 
-    this.initializeBarWanted = function(){
-
-      // dragger wanted?
-      this.state.y.barWanted = !!(this.state.nativeScrollbarSize || this.config.overrideFloatingScrollbar);
-
-    }
-
-
+    // setup element styles and classess
     this.initializeStyles = function(){
 
       // el1 styles and class
@@ -238,12 +229,12 @@
 
       // do the magic
       // hide el2 scrollbar by making it larger than el1 overflow boundaries
-      if (this.state.y.barWanted){
+      if (this.state.y.visibleRatio<1){
         this.ins.el2.style.marginRight = '-' + widthToHide + 'px';
       }
 
       // add padding to overlayed/0 scrollbars, so the proper el2 content won't get cut off
-      if (this.state.y.barWanted && (this.state.nativeScrollbarSize===0)) {
+      if ((this.state.y.visibleRatio<1) && (this.state.nativeScrollbarSize===0)) {
         this.ins.el2.style.paddingRight = '20px';
       }
 
@@ -273,9 +264,6 @@
 
       //  native scrollbar size
       this.state.nativeScrollbarSize = this.util.getNativeScrollbarSize(el.firstElementChild);
-
-      // check if we need bars, and which ones (x/y/none)
-      this.initializeBarWanted();
 
       // add binding and els to state
       this.ins.binding = binding.value ? binding : null;
@@ -516,9 +504,6 @@
 
       dragger.style.position = 'absolute';
 
-      console.warn(this.state.y.barWanted);
-      dragger.style.display = this.state.y.barWanted ? '' : 'none';
-
       draggerStyler.className = this.config.draggerStylerClass;
 
       dragger.appendChild(draggerStyler);
@@ -538,7 +523,7 @@
       //this.ins.dragger.style.top = Math.ceil( this.state.y.barTop ) + 'px';
 
       // scrollbar visible / invisible classes
-      if (this.state.y.barWanted && (this.state.y.visibleRatio<1)) {
+      if (this.state.y.visibleRatio<1) {
         this.util.rC(this.ins.el1, this.config.el1ScrollInvisibleClass);
         this.util.aC(this.ins.el1, this.config.el1ScrollVisibleClass);
       } else {
@@ -848,20 +833,22 @@
       \*------------------------------------*/
 
       // hasClass
-      hC: function(el, className) {
-        return el.classList ? el.classList.contains(className) : new RegExp('\\b'+ className+'\\b').test(el.className);
+      hC: function(el, classToCheck) {
+        if (el.classLists) { return el.classList.contains(classToCheck); }
+        else { return (new RegExp('\\b'+ classToCheck+'\\b')).test(el.className); }
       },
 
       // addClass
-      aC: function(el, className) {
-        if (el.classList) el.classList.add(className);
-        else if (!this.util.hC(el, className)) el.className += ' ' + className;
+      aC: function(el, classToAdd) {
+        var hC = this.util ? this.util.hC : this.hC; // fix for < ie9
+        if (el.classList) { el.classList.add(classToAdd); }
+        else if (!hC(el, classToAdd)) { el.className += ' ' + classToAdd };
       },
 
       // removeClass
-      rC: function(el, className) {
-        if (el.classList) el.classList.remove(className);
-        else el.className = el.className.replace(new RegExp('\\b'+ className+'\\b', 'g'), '');
+      rC: function(el, classToRemove) {
+        if (el.classList) el.classList.remove(classToRemove);
+        else el.className = el.className.replace(new RegExp('\\b'+ classToRemove+'\\b', 'g'), '');
       },
 
 
@@ -957,13 +944,14 @@
         wrapper.style.overflowY = 'scroll';
 
         // fix for safari https://github.com/DominikSerafin/vuebar/pull/45
-        // (although in PR it's fixed using width, I think height is more logical solution)
         child.style.height = '20px';
+        child.style.width = '100%';
 
         barWidth = fullWidth - child.offsetWidth;
 
         container.removeChild(wrapper);
 
+        console.dir(barWidth);
         return barWidth;
       },
 
