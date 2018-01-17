@@ -112,25 +112,38 @@
     \*------------------------------------*/
     this.state = {
 
-      // show dragger
-      draggerEnabled: null,
+      // constants + cached properties
+      browser: null,
+      nativeScrollbarSize: null,
+      el2WidthToHide: null,
 
-      // when the dragger is used
-      // can be 'y', 'x' or false
-      barDragging: false,
 
+      // dynamic properties for y plane
       y: {
+        barWanted: null, // tells if scrollbar is needed at all
+        barTop: 0, // position (top) of dragger in px
+        barBaseHeight: 0, // base height of dragger in px
+        barClickOffset: 0, // relative position of mouse at the time of clicking on dragger
         scrollPercent: 0, // scroll percentage on y plane
         scrollTop: 0, // position of content scrollTop in px
-        barTop: 0, // position of dragger in px
-        barHeight: 0, // height of dragger in px
-        clickOffset: 0, // relative position of mouse at the time of clicking on dragger
-        visibleArea: 0, // ratio between container height and scrollable content height
+        visibleRatio: 0, // ratio between container height and scrollable content height
       },
 
+
+      // dynamic properties for x plane
       x: {
-
+        barWanted: null, // tells if scrollbar is needed at all
+        barLeft: 0, // position (left) of dragger in px
+        barBaseWidth: 0, // base width of dragger in px
+        barClickOffset: 0, // relative position of mouse at the time of clicking on dragger
+        scrollPercent: 0, // scroll percentage on x plane
+        scrollTop: 0,
+        visibleRatio: 0, // ratio between container height and scrollable content height
       },
+
+
+      // when the dragger is used - can be 'y', 'x' or false
+      barDragging: false,
 
 
     }
@@ -153,20 +166,15 @@
 
 
 
+
     /*------------------------------------*\
-      Initialize Scrollbar
+      Initialize Sub Methods
+      - These methods gets called only once
+        on initialize()
     \*------------------------------------*/
-    this.initialize = function(){
 
-      // validate on directive bind if the markup is OK
-      if (!this.validateMarkup()) return;
-
-      // safeguard to not initialize vuebar when it's already initialized
-      if (el.$_vuebar) return this.util.warn('Can\'t initialize on already initialized element.');
-
-      // detect browser
-      var browser = this.util.detectBrowser();
-
+    // options
+    this.initializeOptions = function(){
       // get options object & overwrite defaults with provided options
       // - it will come from directive binding (there is a 'value' property)
       // - or it will come from public method direct options object
@@ -174,23 +182,11 @@
       for (var key in options){
         this.config[key] = options[key];
       }
+    }
 
-      // get scrollbar width
-      var elNativeScrollbarWidth = this.util.getNativeScrollbarSize(el.firstElementChild);
 
-      // how much of el2 to hide... if native scrollbar width is 0 it's either overlay scrollbar or hidden
-      // ... so let's use constant of 20px because it's impossible (?) to calculate scrollbar width in this case
-      // and 20px is a safe value that should cover 99% of cases (PRs welcome!)
-      var widthToHide = elNativeScrollbarWidth ? elNativeScrollbarWidth : 20;
-
-      // dragger enabled?
-      this.state.draggerEnabled = (elNativeScrollbarWidth) || this.config.overrideFloatingScrollbar ? 1 : 0;
-
-      // setup scrollbar "state"
-      this.ins.binding = binding.value ? binding : null;
-      this.ins.el1 = el;
-      this.ins.el2 = el.firstElementChild;
-      this.ins.dragger = this.createDragger();
+    // create and reference event listeners
+    this.initializeEvents = function(){
 
       // create and reference event listeners
       this.ins.barMousedown = this.barMousedown();
@@ -200,8 +196,27 @@
       this.ins.scrollHandler = this.scrollHandler();
       this.ins.wheelHandler = this.wheelHandler();
 
-      // initialize and reference mutation observer
-      this.ins.mutationObserver = this.initMutationObserver();
+      // add events
+      // - wheel event is only needed when preventParentScroll option is enabled
+      // - resize event is only needed when resizeRefresh option is enabled
+      this.ins.el2.addEventListener('scroll', this.ins.scrollHandler, 0);
+      this.ins.dragger.addEventListener('mousedown', this.ins.barMousedown, 0);
+      this.config.preventParentScroll ? this.ins.el2.addEventListener('wheel', this.ins.wheelHandler, 0) : null;
+      this.config.resizeRefresh ? window.addEventListener('resize', this.ins.windowResize, 0) : null;
+
+    }
+
+
+
+    this.initializeBarWanted = function(){
+
+      // dragger wanted?
+      this.state.y.barWanted = !!(this.state.nativeScrollbarSize || this.config.overrideFloatingScrollbar);
+
+    }
+
+
+    this.initializeStyles = function(){
 
       // el1 styles and class
       this.util.aC(this.ins.el1, this.config.el1Class);
@@ -216,30 +231,74 @@
       this.ins.el2.style.overflowY = 'scroll';
       this.ins.el2.style.height = '100%';
 
+      // how much of el2 to hide... if native scrollbar width is 0 it's either overlay scrollbar or hidden
+      // ... so let's use constant of 20px because it's impossible (?) to calculate scrollbar width in this case
+      // and 20px is a safe value that should cover 99% of cases (PRs welcome!)
+      var widthToHide = this.state.nativeScrollbarSize ? this.state.nativeScrollbarSize : 20;
+
       // do the magic
       // hide el2 scrollbar by making it larger than el1 overflow boundaries
-      if (this.state.draggerEnabled){
+      if (this.state.y.barWanted){
         this.ins.el2.style.marginRight = '-' + widthToHide + 'px';
       }
 
       // add padding to overlayed/0 scrollbars, so the proper el2 content won't get cut off
-      if (this.state.draggerEnabled && (elNativeScrollbarWidth===0)) {
+      if (this.state.y.barWanted && (this.state.nativeScrollbarSize===0)) {
         this.ins.el2.style.paddingRight = '20px';
       }
 
-      // add events
-      // - wheel event is only needed when preventParentScroll option is enabled
-      // - resize event is only needed when resizeRefresh option is enabled
-      this.ins.el2.addEventListener('scroll', this.ins.scrollHandler, 0);
-      this.ins.dragger.addEventListener('mousedown', this.ins.barMousedown, 0);
-      this.config.preventParentScroll ? this.ins.el2.addEventListener('wheel', this.ins.wheelHandler, 0) : null;
-      this.config.resizeRefresh ? window.addEventListener('resize', this.ins.windowResize, 0) : null;
+    }
+
+
+
+
+
+
+    /*------------------------------------*\
+      Initialize Scrollbar
+    \*------------------------------------*/
+    this.initialize = function(){
+
+      // safeguard to not initialize vuebar when it's already initialized
+      if (el.$_vuebar) return this.util.warn('Can\'t initialize on already initialized element.');
+
+      // validate on directive bind if the markup is OK
+      if (!this.validateMarkup()) return;
+
+      // initialize options...
+      this.initializeOptions();
+
+      // detect browser
+      this.state.browser = this.util.detectBrowser();
+
+      //  native scrollbar size
+      this.state.nativeScrollbarSize = this.util.getNativeScrollbarSize(el.firstElementChild);
+
+      // check if we need bars, and which ones (x/y/none)
+      this.initializeBarWanted();
+
+      // add binding and els to state
+      this.ins.binding = binding.value ? binding : null;
+      this.ins.el1 = el;
+      this.ins.el2 = el.firstElementChild;
+
+      // create dragger
+      this.ins.dragger = this.createDragger();
+
+      // initialize events...
+      this.initializeEvents();
+
+      // initialize and reference mutation observer
+      this.ins.mutationObserver = this.createMutationObserver();
+
+      // initialize styles...
+      this.initializeStyles();
 
       // expose instance on vuebar element (https://vuejs.org/v2/style-guide/#Private-property-names-essential)
       this.ins.el1.$_vuebar = this;
 
       // initial calculations using refresh scrollbar
-      this.refreshScrollbar({immediate: true});
+      this.refresh({immediate: true});
 
       // return instance
       return this;
@@ -318,19 +377,19 @@
     /*------------------------------------*\
       Refresh Scrollbar
     \*------------------------------------*/
-    this.refreshScrollbar = function(options){
+    this.refresh = function(options){
       var options = options ? options : {};
       if (options.immediate) {
-        this.computeVisibleAreaY();
+        this.computeVisibleRatio();
         this.computeBarTopOnScroll();
-        this.computeBarHeight();
+        this.computeBarBaseHeight();
         this.updateDragger();
       }
       Vue.nextTick(function(){
         if (!el.$_vuebar) return;
-        this.computeVisibleAreaY();
+        this.computeVisibleRatio();
         this.computeBarTopOnScroll();
-        this.computeBarHeight();
+        this.computeBarBaseHeight();
         this.updateDragger();
       }.bind(this));
     }
@@ -352,8 +411,8 @@
       Computing Properties
     \*------------------------------------*/
 
-    this.computeVisibleAreaY = function(){
-      this.state.y.visibleArea = (this.ins.el2.clientHeight / this.ins.el2.scrollHeight);
+    this.computeVisibleRatio = function(){
+      this.state.y.visibleRatio = (this.ins.el2.clientHeight / this.ins.el2.scrollHeight);
     }
 
 
@@ -364,16 +423,16 @@
     this.computeScrollTop = function(){
 
       // calculate scroll percentage...
-      // I SPENT 5 HOURS on these 2 lines below - lets say I've suffered "writer's block" =) / Dom
-      var realBarHeight = this.ins.dragger.offsetHeight;
-      this.state.y.scrollPercent = this.state.y.barTop / (this.ins.el2.clientHeight - realBarHeight);
+      // I SPENT 5 HOURS to come up with these 2 lines below - lets say I've suffered "writer's block" =) / Dom
+      var barHeight = this.ins.dragger.offsetHeight;
+      this.state.y.scrollPercent = this.state.y.barTop / (this.ins.el2.clientHeight - barHeight);
 
       // convert scroll percentage to scrollTop pixels
       var availablePixels = (this.ins.el2.scrollHeight - this.ins.el2.clientHeight);
       var scrollTop = availablePixels * this.state.y.scrollPercent;
 
       //console.table({
-      //  realBarHeight: realBarHeight,
+      //  barHeight: barHeight,
       //  scrollPercent: (this.state.y.scrollPercent*100)+'%',
       //  el2ScrollHeight: this.ins.el2.scrollHeight,
       //  el2ClientHeight: this.ins.el2.clientHeight,
@@ -385,13 +444,51 @@
     }
 
 
-    this.computeBarHeight = function(){
-      if (this.state.y.visibleArea >= 1) {
-        this.state.y.barHeight = 0;
+    this.computeBarBaseHeight = function(){
+      if (this.state.y.visibleRatio >= 1) {
+        this.state.y.barBaseHeight = 0;
       } else {
-        this.state.y.barHeight = this.ins.el2.clientHeight * this.state.y.visibleArea;
+        this.state.y.barBaseHeight = this.ins.el2.clientHeight * this.state.y.visibleRatio;
       }
     }
+
+
+
+
+    this.computeBarTopOnDrag = function(event){
+
+      // get bar height
+      var barHeight = this.ins.dragger.offsetHeight;
+
+      // get relative mouse y position (mouse position - el1 offset from window)
+      var relativeMouseY = (event.clientY - this.ins.el1.getBoundingClientRect().top);
+
+      // if bar is trying to go over top
+      if (relativeMouseY <= this.state.y.barClickOffset) {
+        this.state.y.barTop = 0;
+      }
+
+      // alternative: if bar is trying to go over top
+      //if (this.state.y.scrollPercent <= 0.0) {
+      //  this.state.y.barTop = 0;
+      //}
+
+      // if bar is moving between top and bottom
+      if (relativeMouseY > this.state.y.barClickOffset) {
+        this.state.y.barTop = relativeMouseY - this.state.y.barClickOffset;
+      }
+
+      // if bar is trying to go over bottom
+      if ( (this.state.y.barTop + barHeight ) >= this.ins.el2.clientHeight ) {
+        this.state.y.barTop = this.ins.el2.clientHeight - barHeight;
+      }
+
+      // debug
+      //this.state.y.barTop = relativeMouseY - this.state.y.barClickOffset;
+
+    }
+
+
 
 
     this.computeBarTopOnScroll = function(){
@@ -399,47 +496,6 @@
       var availablePixels = (this.ins.el2.clientHeight - this.ins.dragger.offsetHeight);
       this.state.y.barTop = availablePixels * scrollPercent;
     }
-
-
-    this.computeBarTopOnDrag = function(event){
-
-
-      // else the function gets called when moving dragger with mouse
-
-      // get relative mouse y position (mouse position - el1 offset from window)
-      var relativeMouseY = (event.clientY - this.ins.el1.getBoundingClientRect().top);
-
-
-      // if bar is trying to go over top
-      //if (this.state.y.scrollPercent <= 0.0) {
-      //  this.state.y.barTop = 0;
-      //}
-
-      // if bar is trying to go over top
-      if (relativeMouseY <= this.state.y.clickOffset) {
-        this.state.y.barTop = 0;
-      }
-
-      // if bar is moving between top and bottom
-      if (relativeMouseY > this.state.y.clickOffset) {
-        this.state.y.barTop = relativeMouseY - this.state.y.clickOffset;
-      }
-
-      // if bar is trying to go over bottom
-      var realBarHeight = this.ins.dragger.offsetHeight;
-      if ( (this.state.y.barTop + realBarHeight ) >= this.ins.el2.clientHeight ) {
-        this.state.y.barTop = this.ins.el2.clientHeight - realBarHeight;
-      }
-
-
-      // debug
-      //this.state.y.barTop = relativeMouseY - this.state.y.clickOffset;
-
-
-
-    }
-
-
 
 
 
@@ -460,9 +516,8 @@
 
       dragger.style.position = 'absolute';
 
-      if (!this.state.draggerEnabled) {
-        dragger.style.display = 'none';
-      }
+      console.warn(this.state.y.barWanted);
+      dragger.style.display = this.state.y.barWanted ? '' : 'none';
 
       draggerStyler.className = this.config.draggerStylerClass;
 
@@ -477,13 +532,13 @@
       var options = options ? options : {};
 
       // setting dragger styles
-      this.ins.dragger.style.height = parseInt(Math.round(this.state.y.barHeight)) + 'px';
+      this.ins.dragger.style.height = parseInt(Math.round(this.state.y.barBaseHeight)) + 'px';
       this.ins.dragger.style.top = parseInt(Math.round(this.state.y.barTop)) + 'px';
-      //this.ins.dragger.style.height = Math.ceil( this.state.y.barHeight ) + 'px';
+      //this.ins.dragger.style.height = Math.ceil( this.state.y.barBaseHeight ) + 'px';
       //this.ins.dragger.style.top = Math.ceil( this.state.y.barTop ) + 'px';
 
       // scrollbar visible / invisible classes
-      if (this.state.draggerEnabled && (this.state.y.visibleArea<1)) {
+      if (this.state.y.barWanted && (this.state.y.visibleRatio<1)) {
         this.util.rC(this.ins.el1, this.config.el1ScrollInvisibleClass);
         this.util.aC(this.ins.el1, this.config.el1ScrollVisibleClass);
       } else {
@@ -527,7 +582,7 @@
 
     this.preventParentScroll = function(event){
 
-      if (this.state.y.visibleArea >= 1) {
+      if (this.state.y.visibleRatio >= 1) {
         return false;
       }
 
@@ -567,8 +622,8 @@
 
     this.scrollHandler = function(){
       return this.util.throttle(function(event){
-        this.computeVisibleAreaY();
-        this.computeBarHeight(); // fallback for an undetected content change
+        this.computeVisibleRatio();
+        this.computeBarBaseHeight(); // fallback for an undetected content change
         if (!this.state.barDragging) {
           this.computeBarTopOnScroll();
           this.updateDragger({withScrollingClasses: true});
@@ -627,7 +682,7 @@
         if ( event.which!==1 ) { return false }
 
         this.state.barDragging = true;
-        this.state.y.clickOffset = event.offsetY;
+        this.state.y.barClickOffset = event.offsetY;
 
         // disable user select
         this.ins.el1.style.userSelect = 'none';
@@ -649,18 +704,18 @@
 
     this.windowResize = function(){
       return this.util.debounce(function(event){
-        this.refreshScrollbar();
+        this.refresh();
       }.bind(this), this.config.resizeDebounce);
     }
 
 
 
 
-    this.initMutationObserver = function(){
+    this.createMutationObserver = function(){
       if (typeof MutationObserver === typeof void 0) { return null }
 
       var observer = new MutationObserver(this.util.throttle(function(mutations) {
-        this.refreshScrollbar();
+        this.refresh();
       }.bind(this), this.config.observerThrottle));
 
       observer.observe(this.ins.el2, {
@@ -678,10 +733,12 @@
 
 
 
+
     /*------------------------------------*\
       Convenience Methods
+      - Warning! Don't use yet.
+      - This method API will change.
     \*------------------------------------*/
-
     this.scrollTo = function(positionY, positionX){
       // TODO: scroll to top
       // TODO: scroll to bottom
@@ -948,7 +1005,7 @@
       },
 
       componentUpdated: function(el, binding, vnode, oldVnode){
-        el.$_vuebar ? el.$_vuebar.refreshScrollbar() : null;
+        el.$_vuebar ? el.$_vuebar.refresh() : null;
       },
 
       unbind: function(el, binding, vnode, oldVnode){
