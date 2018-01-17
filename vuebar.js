@@ -10,6 +10,7 @@
   TODO: change name of dragger to something more fitting
   NOTE: take in consideration content height/width change between horizontal/vertical height/width calculations
   TODO: reimplement override floating scrollbar option
+  TODO: don't overwrite vuebar element classess completely, use aC
 
 */
 
@@ -54,8 +55,11 @@
 
       el2Class: 'vb-content',
 
-      draggerClass: 'vb-dragger',
-      draggerStylerClass: 'vb-dragger-styler',
+      draggerCommonClass: 'vb-dragger',
+      draggerCommonStylerClass: 'vb-dragger-styler',
+
+      draggerYClass: 'vb-dragger-y',
+      draggerXClass: 'vb-dragger-x',
 
     }
 
@@ -90,12 +94,21 @@
       draggingPhantomClassTimeout: null,
 
       // references to a functions we'll need when removing events
-      barMousedown: null,
-      documentMousemove: null,
-      documentMouseup: null,
       windowResize: null,
       scrollHandler: null,
       wheelHandler: null,
+
+      y: {
+        barMousedown: null,
+        documentMousemove: null,
+        documentMouseup: null,
+      },
+
+      x: {
+        barMousedown: null,
+        documentMousemove: null,
+        documentMouseup: null,
+      },
 
     }
 
@@ -186,16 +199,23 @@
     this.initializeEvents = function(){
 
       // create and reference event listeners
-      this.ins.barMousedown = this.barMousedown();
-      this.ins.documentMousemove = this.documentMousemove();
-      this.ins.documentMouseup = this.documentMouseup();
+      this.ins.y.barMousedown = this.barMousedown('y');
+      this.ins.x.barMousedown = this.barMousedown('x');
+
+      this.ins.y.documentMousemove = this.documentMousemove('y');
+      this.ins.x.documentMousemove = this.documentMousemove('x');
+
+      this.ins.y.documentMouseup = this.documentMouseup('y');
+      this.ins.x.documentMouseup = this.documentMouseup('x');
+
       this.ins.windowResize = this.windowResize();
       this.ins.scrollHandler = this.scrollHandler();
       this.ins.wheelHandler = this.wheelHandler();
 
       // add events
       this.ins.el2.addEventListener('scroll', this.ins.scrollHandler, 0);
-      this.ins.dragger.addEventListener('mousedown', this.ins.barMousedown, 0);
+      this.ins.draggerY.addEventListener('mousedown', this.ins.y.barMousedown, 0);
+      this.ins.draggerX.addEventListener('mousedown', this.ins.x.barMousedown, 0);
 
       // - wheel event is only needed when preventParentScroll option is enabled
       this.config.preventParentScroll ? this.ins.el2.addEventListener('wheel', this.ins.wheelHandler, 0) : null;
@@ -210,6 +230,9 @@
     // setup element styles and classess
     this.initializeStyles = function(){
 
+      // need to have visibleRatios calculate beforehand...
+      //this.computeVisibleRatios();
+
       // el1 styles and class
       this.util.aC(this.ins.el1, this.config.el1Class);
       this.ins.el1.style.position = 'relative';
@@ -219,19 +242,22 @@
       this.util.aC(this.ins.el2, this.config.el2Class);
       this.util.cS(this.ins.el2, 'BoxSizing', 'content-box');
       this.ins.el2.style.display = 'block';
-      this.ins.el2.style.overflowX = 'hidden';
+      this.ins.el2.style.overflowX = 'scroll';
       this.ins.el2.style.overflowY = 'scroll';
       this.ins.el2.style.height = '100%';
+      this.ins.el2.style.width = '100%';
+
 
       // how much of el2 to hide... if native scrollbar width is 0 it's either overlay scrollbar or hidden
       // ... so let's use constant of 20px because it's impossible (?) to calculate scrollbar width in this case
       // and 20px is a safe value that should cover 99% of cases (PRs welcome!)
-      var widthToHide = this.state.nativeScrollbarSize ? this.state.nativeScrollbarSize : 20;
+      var pxToHide = this.state.nativeScrollbarSize ? this.state.nativeScrollbarSize : 20;
 
       // do the magic
       // hide el2 scrollbar by making it larger than el1 overflow boundaries
-      if (this.state.y.visibleRatio<1){
-        this.ins.el2.style.marginRight = '-' + widthToHide + 'px';
+      if (this.state.y.visibleRatio<1 || this.state.x.visibleRatio<1){
+        this.ins.el2.style.width = 'calc(100% + ' + pxToHide + 'px)';
+        this.ins.el2.style.height = 'calc(100% + ' + pxToHide + 'px)';
       }
 
       // add padding to overlayed/0 scrollbars, so the proper el2 content won't get cut off
@@ -286,8 +312,9 @@
       this.ins.el1 = el;
       this.ins.el2 = el.firstElementChild;
 
-      // create dragger
-      this.ins.dragger = this.createDragger();
+      // create draggers
+      this.ins.draggerY = this.createDragger('y');
+      this.ins.draggerX = this.createDragger('x');
 
       // initialize events and observer...
       this.initializeEvents();
@@ -317,7 +344,8 @@
       var options = options ? options : {};
 
       // clear events
-      this.ins.dragger.removeEventListener('mousedown', this.ins.barMousedown, 0);
+      this.ins.draggerY.removeEventListener('mousedown', this.ins.y.barMousedown, 0);
+      this.ins.draggerX.removeEventListener('mousedown', this.ins.x.barMousedown, 0);
       this.ins.el2.removeEventListener('scroll', this.ins.scrollHandler, 0);
       this.ins.el2.removeEventListener('wheel', this.ins.scrollHandler, 0);
       window.removeEventListener('resize', this.ins.windowResize, 0);
@@ -355,8 +383,8 @@
       }
 
       // clear dragger
-      this.ins.dragger.removeChild(this.ins.dragger.firstChild);
-      this.ins.el1.removeChild(this.ins.dragger);
+      this.ins.draggerY.removeChild(this.ins.draggerY.firstChild);
+      this.ins.el1.removeChild(this.ins.draggerY);
 
       // clear timeouts that may be still running
       this.ins.scrollingPhantomClassTimeout ?
@@ -385,6 +413,7 @@
         this.computeVisibleRatios();
         this.computeBarTopOnScroll();
         this.computeBarBaseHeight();
+        this.computeBarBaseWidth();
         this.updateDragger();
       }
       Vue.nextTick(function(){
@@ -392,6 +421,7 @@
         this.computeVisibleRatios();
         this.computeBarTopOnScroll();
         this.computeBarBaseHeight();
+        this.computeBarBaseWidth();
         this.updateDragger();
       }.bind(this));
     }
@@ -427,7 +457,7 @@
 
       // calculate scroll percentage...
       // I SPENT 5 HOURS to come up with these 2 lines below - lets say I've suffered "writer's block" =) / Dom
-      var barHeight = this.ins.dragger.offsetHeight;
+      var barHeight = this.ins.draggerY.offsetHeight;
       this.state.y.scrollPercent = this.state.y.barTop / (this.ins.el2.clientHeight - barHeight);
 
       // convert scroll percentage to scrollTop pixels
@@ -447,6 +477,25 @@
     }
 
 
+
+    this.computeScrollLeft = function(){
+
+      // calculate scroll percentage...
+      var barWidth = this.ins.draggerX.offsetWidth;
+      this.state.x.scrollPercent = this.state.x.barLeft / (this.ins.el2.clientWidth - barWidth);
+
+      // convert scroll percentage to scrollTop pixels
+      var availablePixels = (this.ins.el2.scrollWidth - this.ins.el2.clientWidth);
+      var scrollLeft = availablePixels * this.state.x.scrollPercent;
+
+      this.state.x.scrollLeft = scrollLeft;
+    }
+
+
+
+
+
+    // for y scrollbar
     this.computeBarBaseHeight = function(){
       if (this.state.y.visibleRatio >= 1) {
         this.state.y.barBaseHeight = 0;
@@ -456,12 +505,22 @@
     }
 
 
+    // for x scrollbar
+    this.computeBarBaseWidth = function(){
+      if (this.state.x.visibleRatio >= 1) {
+        this.state.x.barBaseWidth = 0;
+      } else {
+        this.state.x.barBaseWidth = this.ins.el2.clientWidth * this.state.x.visibleRatio;
+      }
+    }
+
+
 
 
     this.computeBarTopOnDrag = function(event){
 
       // get bar height
-      var barHeight = this.ins.dragger.offsetHeight;
+      var barHeight = this.ins.draggerY.offsetHeight;
 
       // get relative mouse y position (mouse position - el1 offset from window)
       var relativeMouseY = (event.clientY - this.ins.el1.getBoundingClientRect().top);
@@ -493,11 +552,52 @@
 
 
 
+    this.computeBarLeftOnDrag = function(event){
+
+      // get bar width
+      var barWidth = this.ins.draggerX.offsetWidth;
+
+      // get relative mouse x position (mouse position - el1 offset from window)
+      var relativeMouseX = (event.clientX - this.ins.el1.getBoundingClientRect().left);
+
+      // if bar is trying to go over top
+      if (relativeMouseX <= this.state.x.barClickOffset) {
+        this.state.x.barLeft = 0;
+      }
+
+      // if bar is moving between top and bottom
+      if (relativeMouseX > this.state.x.barClickOffset) {
+        this.state.x.barLeft = relativeMouseX - this.state.x.barClickOffset;
+      }
+
+      // if bar is trying to go over bottom
+      if ( (this.state.x.barLeft + barWidth ) >= this.ins.el2.clientWidth ) {
+        this.state.x.barLeft = this.ins.el2.clientWidth - barWidth;
+      }
+
+      // debug
+      //this.state.x.barLeft = relativeMouseX - this.state.x.barClickOffset;
+
+    }
+
+
+
+
+
+
 
     this.computeBarTopOnScroll = function(){
       var scrollPercent = this.ins.el2.scrollTop / (this.ins.el2.scrollHeight - this.ins.el2.clientHeight);
-      var availablePixels = (this.ins.el2.clientHeight - this.ins.dragger.offsetHeight);
+      var availablePixels = (this.ins.el2.clientHeight - this.ins.draggerY.offsetHeight);
       this.state.y.barTop = availablePixels * scrollPercent;
+    }
+
+
+
+    this.computeBarLeftOnScroll = function(){
+      var scrollPercent = this.ins.el2.scrollLeft / (this.ins.el2.scrollWidth - this.ins.el2.clientWidth);
+      var availablePixels = (this.ins.el2.clientWidth - this.ins.draggerX.offsetWidth);
+      this.state.x.barLeft = availablePixels * scrollPercent;
     }
 
 
@@ -510,16 +610,17 @@
     /*------------------------------------*\
       Styles & DOM
     \*------------------------------------*/
-    this.createDragger = function(){
+    this.createDragger = function(plane){
 
       var dragger = document.createElement('div');
       var draggerStyler = document.createElement('div');
 
-      dragger.className = this.config.draggerClass;
+      this.util.aC(dragger, this.config.draggerCommonClass);
+      this.util.aC(draggerStyler, this.config.draggerCommonStylerClass);
+      if (plane==='y') this.util.aC(dragger, this.config.draggerYClass);
+      if (plane==='x') this.util.aC(dragger, this.config.draggerXClass);
 
       dragger.style.position = 'absolute';
-
-      draggerStyler.className = this.config.draggerStylerClass;
 
       dragger.appendChild(draggerStyler);
       this.ins.el1.appendChild(dragger);
@@ -532,10 +633,14 @@
       var options = options ? options : {};
 
       // setting dragger styles
-      this.ins.dragger.style.height = parseInt(Math.round(this.state.y.barBaseHeight)) + 'px';
-      this.ins.dragger.style.top = parseInt(Math.round(this.state.y.barTop)) + 'px';
-      //this.ins.dragger.style.height = Math.ceil( this.state.y.barBaseHeight ) + 'px';
-      //this.ins.dragger.style.top = Math.ceil( this.state.y.barTop ) + 'px';
+      this.ins.draggerY.style.height = parseInt(Math.round(this.state.y.barBaseHeight)) + 'px';
+      this.ins.draggerY.style.top = parseInt(Math.round(this.state.y.barTop)) + 'px';
+
+      this.ins.draggerX.style.width = parseInt(Math.round(this.state.x.barBaseWidth)) + 'px';
+      this.ins.draggerX.style.left = parseInt(Math.round(this.state.x.barLeft)) + 'px';
+
+      //this.ins.draggerY.style.height = Math.ceil( this.state.y.barBaseHeight ) + 'px';
+      //this.ins.draggerY.style.top = Math.ceil( this.state.y.barTop ) + 'px';
 
       // scrollbar visible / invisible classes
       if (this.state.y.visibleRatio<1) {
@@ -621,8 +726,10 @@
       return this.util.throttle(function(event){
         this.computeVisibleRatios();
         this.computeBarBaseHeight(); // fallback for an undetected content change
+        this.computeBarBaseWidth();
         if (!this.state.barDragging) {
           this.computeBarTopOnScroll();
+          this.computeBarLeftOnScroll();
           this.updateDragger({withScrollingClasses: true});
         }
       }.bind(this), this.config.scrollThrottle);
@@ -636,17 +743,24 @@
     }
 
 
-    this.documentMousemove = function(){
+    this.documentMousemove = function(plane){
       return this.util.throttle(function(event){
-        this.computeBarTopOnDrag(event);
+
+        if (plane==='y') this.computeBarTopOnDrag(event);
+        if (plane==='x') this.computeBarLeftOnDrag(event);
+
         this.updateDragger();
-        this.computeScrollTop();
+
+        if (plane==='y') this.computeScrollTop();
+        if (plane==='x') this.computeScrollLeft();
+
         this.updateScroll();
+
       }.bind(this), this.config.draggerThrottle);
     }
 
 
-    this.documentMouseup = function(){
+    this.documentMouseup = function(plane){
       return function(event){
 
         //
@@ -664,22 +778,29 @@
 
 
         // remove events
-        document.removeEventListener('mousemove', this.ins.documentMousemove, 0);
-        document.removeEventListener('mouseup', this.ins.documentMouseup, 0);
+        document.removeEventListener('mousemove', this.ins[plane].documentMousemove, 0);
+        document.removeEventListener('mouseup', this.ins[plane].documentMouseup, 0);
 
       }.bind(this);
 
     }
 
 
-    this.barMousedown = function(){
+    this.barMousedown = function(plane){
       return function(event){
 
         // do nothing if it's not left mouse button
         if ( event.which!==1 ) { return false }
 
-        this.state.barDragging = true;
-        this.state.y.barClickOffset = event.offsetY;
+        if (plane==='y') {
+          this.state.barDragging = 'y';
+          this.state.y.barClickOffset = event.offsetY;
+        }
+
+        if (plane==='x') {
+          this.state.barDragging = 'x';
+          this.state.x.barClickOffset = event.offsetX;
+        }
 
         // disable user select
         this.ins.el1.style.userSelect = 'none';
@@ -691,12 +812,18 @@
         clearTimeout(this.ins.draggingPhantomClassTimeout) : null;
         this.util.aC(this.ins.el1, this.config.el1DraggingPhantomClass);
 
+
         // add events
-        document.addEventListener('mousemove', this.ins.documentMousemove, 0);
-        document.addEventListener('mouseup', this.ins.documentMouseup, 0);
+        document.addEventListener('mousemove', this.ins[plane].documentMousemove, 0);
+        document.addEventListener('mouseup', this.ins[plane].documentMouseup, 0);
+
 
       }.bind(this);
     }
+
+
+
+
 
 
     this.windowResize = function(){
