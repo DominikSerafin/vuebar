@@ -377,14 +377,16 @@
         this.ins.el2.style.overflowX = '';
         this.ins.el2.style.overflowY = '';
         this.ins.el2.style.height = '';
-        //this.ins.el2.style.width = '';
-        this.ins.el2.style.marginRight = '';
+        this.ins.el2.style.width = '';
+        //this.ins.el2.style.marginRight = '';
         this.ins.el2.style.paddingRight = '';
       }
 
       // clear dragger
       this.ins.draggerY.removeChild(this.ins.draggerY.firstChild);
+      this.ins.draggerX.removeChild(this.ins.draggerX.firstChild);
       this.ins.el1.removeChild(this.ins.draggerY);
+      this.ins.el1.removeChild(this.ins.draggerX);
 
       // clear timeouts that may be still running
       this.ins.scrollingPhantomClassTimeout ?
@@ -414,7 +416,7 @@
         this.computeBarTopOnScroll();
         this.computeBarBaseHeight();
         this.computeBarBaseWidth();
-        this.updateDragger();
+        this.updateDraggers();
       }
       Vue.nextTick(function(){
         if (!el.$_vuebar) return;
@@ -422,7 +424,7 @@
         this.computeBarTopOnScroll();
         this.computeBarBaseHeight();
         this.computeBarBaseWidth();
-        this.updateDragger();
+        this.updateDraggers();
       }.bind(this));
     }
 
@@ -629,7 +631,7 @@
     }
 
 
-    this.updateDragger = function(options){
+    this.updateDraggers = function(options){
       var options = options ? options : {};
 
       // setting dragger styles
@@ -731,7 +733,7 @@
         if (!this.state.barDragging) {
           this.computeBarTopOnScroll();
           this.computeBarLeftOnScroll();
-          this.updateDragger({withScrollingClasses: true});
+          this.updateDraggers({withScrollingClasses: true});
         }
       }.bind(this), this.config.scrollThrottle);
     }
@@ -750,7 +752,7 @@
         if (plane==='y') this.computeBarTopOnDrag(event);
         if (plane==='x') this.computeBarLeftOnDrag(event);
 
-        this.updateDragger();
+        this.updateDraggers();
 
         if (plane==='y') this.computeScrollTop();
         if (plane==='x') this.computeScrollLeft();
