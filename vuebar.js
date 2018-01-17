@@ -132,23 +132,23 @@
 
       // dynamic properties for y plane
       y: {
+        visibleRatio: 0, // ratio between container height and scrollable content height
         barTop: 0, // position (top) of dragger in px
         barBaseHeight: 0, // base height of dragger in px
         barClickOffset: 0, // relative position of mouse at the time of clicking on dragger
         scrollPercent: 0, // scroll percentage on y plane
         scrollTop: 0, // position of content scrollTop in px
-        visibleRatio: 0, // ratio between container height and scrollable content height
       },
 
 
       // dynamic properties for x plane
       x: {
+        visibleRatio: 0, // ratio between container height and scrollable content height
         barLeft: 0, // position (left) of dragger in px
         barBaseWidth: 0, // base width of dragger in px
         barClickOffset: 0, // relative position of mouse at the time of clicking on dragger
         scrollPercent: 0, // scroll percentage on x plane
-        scrollTop: 0,
-        visibleRatio: 0, // ratio between container height and scrollable content height
+        scrollLeft: 0,
       },
 
 
@@ -710,6 +710,7 @@
 
     this.updateScroll = function(){
       this.ins.el2.scrollTop = this.state.y.scrollTop;
+      this.ins.el2.scrollLeft = this.state.x.scrollLeft;
     }
 
 
@@ -791,6 +792,7 @@
 
         // do nothing if it's not left mouse button
         if ( event.which!==1 ) { return false }
+
 
         if (plane==='y') {
           this.state.barDragging = 'y';
