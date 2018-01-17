@@ -113,7 +113,6 @@
     this.state = {
 
       // constants + cached properties
-      browser: null,
       nativeScrollbarSize: null,
       el2WidthToHide: null,
 
@@ -258,9 +257,6 @@
 
       // initialize options...
       this.initializeOptions();
-
-      // detect browser
-      this.state.browser = this.util.detectBrowser();
 
       //  native scrollbar size
       this.state.nativeScrollbarSize = this.util.getNativeScrollbarSize(el.firstElementChild);
@@ -840,7 +836,7 @@
 
       // addClass
       aC: function(el, classToAdd) {
-        var hC = this.util ? this.util.hC : this.hC; // fix for < ie9
+        var hC = (this.util && this.util.hC) ? this.util.hC : this.hC; // fix for < ie9
         if (el.classList) { el.classList.add(classToAdd); }
         else if (!hC(el, classToAdd)) { el.className += ' ' + classToAdd };
       },
@@ -857,7 +853,9 @@
 
       /*------------------------------------*\
         Browser Detection Helper
+        - Unused... To delete?
       \*------------------------------------*/
+      /*
       detectBrowser: function(){
 
         // get ie version helper
@@ -907,6 +905,7 @@
         };
 
       },
+      */
 
 
       /*------------------------------------*\
@@ -933,7 +932,7 @@
         wrapper.style.bottom = '0';
         wrapper.style.right = '0';
         wrapper.style.width = '100px';
-        wrapper.style.height = '10px';
+        wrapper.style.height = '30px';
         wrapper.style.overflow = 'hidden';
 
         wrapper.appendChild(child);
@@ -944,14 +943,13 @@
         wrapper.style.overflowY = 'scroll';
 
         // fix for safari https://github.com/DominikSerafin/vuebar/pull/45
-        child.style.height = '20px';
+        child.style.height = '60px';
         child.style.width = '100%';
 
         barWidth = fullWidth - child.offsetWidth;
 
         container.removeChild(wrapper);
 
-        console.dir(barWidth);
         return barWidth;
       },
 
