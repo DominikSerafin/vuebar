@@ -11,6 +11,8 @@
   NOTE: take in consideration content height/width change between horizontal/vertical height/width calculations
   TODO: reimplement override floating scrollbar option
   TODO: don't overwrite vuebar element classess completely, use aC
+  TODO: Site: add limitations (no tables, etc.) ?
+  TODO: There is a problem with hiding overlayed/0 scrollbars when in vertical+horizonal mode
 
 */
 
@@ -238,30 +240,43 @@
 
       // el2 styles and class
       this.util.aC(this.ins.el2, this.config.el2Class);
-      this.util.cS(this.ins.el2, 'BoxSizing', 'content-box');
       this.ins.el2.style.display = 'block';
       this.ins.el2.style.overflowX = 'scroll';
       this.ins.el2.style.overflowY = 'scroll';
-      this.ins.el2.style.height = '100%';
       this.ins.el2.style.width = '100%';
+      this.ins.el2.style.height = '100%';
+      this.util.cS(this.ins.el2, 'BoxSizing', 'content-box'); // safe guard for user styling
 
+
+      // do we need scrollbars?
+      var scrollbarsWanted = (this.state.y.visibleRatio<1 || this.state.x.visibleRatio<1) &&        this.state.nativeScrollbarSize;
 
       // how much of el2 to hide... if native scrollbar width is 0 it's either overlay scrollbar or hidden
       // ... so let's use constant of 20px because it's impossible (?) to calculate scrollbar width in this case
       // and 20px is a safe value that should cover 99% of cases (PRs welcome!)
-      var pxToHide = this.state.nativeScrollbarSize ? this.state.nativeScrollbarSize : 20;
+      //var pxToHide = this.state.nativeScrollbarSize ? this.state.nativeScrollbarSize : 20;
+
 
       // do the magic
-      // hide el2 scrollbar by making it larger than el1 overflow boundaries
-      if (this.state.y.visibleRatio<1 || this.state.x.visibleRatio<1){
-        this.ins.el2.style.width = 'calc(100% + ' + pxToHide + 'px)';
-        this.ins.el2.style.height = 'calc(100% + ' + pxToHide + 'px)';
+      if (scrollbarsWanted){
+
+        // for in-the-flow scrollbars (not overlayed)
+        // hide el2 scrollbar by making it larger than el1 overflow boundaries
+        if (this.state.nativeScrollbarSize>0) {
+          this.ins.el2.style.width = 'calc(100% + ' + pxToHide + 'px)';
+          this.ins.el2.style.height = 'calc(100% + ' + pxToHide + 'px)';
+        }
+
+        // for overlayed/0 scrollbars
+        // add padding to overlayed/0 scrollbars, so the proper el2 content won't get cut off
+        else {
+          // TODO: todo this
+        }
+
+
       }
 
-      // add padding to overlayed/0 scrollbars, so the proper el2 content won't get cut off
-      if ((this.state.y.visibleRatio<1) && (this.state.nativeScrollbarSize===0)) {
-        this.ins.el2.style.paddingRight = '20px';
-      }
+
 
     }
 
@@ -643,6 +658,16 @@
 
     this.updateDraggers = function(options){
       var options = options ? options : {};
+
+
+      // do we need draggers visible?
+      var scrollbarsWanted = (this.state.y.visibleRatio<1 || this.state.x.visibleRatio<1) &&        this.state.nativeScrollbarSize;
+      if (!scrollbarsWanted) {
+        this.ins.draggerY.style.display = 'none';
+        this.ins.draggerX.style.display = 'none';
+        return;
+      }
+
 
       // setting dragger styles
       this.ins.draggerY.style.height = parseInt(Math.round(this.state.y.barBaseHeight)) + 'px';
