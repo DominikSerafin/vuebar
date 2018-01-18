@@ -11,7 +11,6 @@
   NOTE: take in consideration content height/width change between horizontal/vertical height/width calculations
   TODO: reimplement override floating scrollbar option
   TODO: don't overwrite vuebar element classess completely, use aC
-  TODO: fix "scroll then drag" problem of horizontal scrollbar
 
 */
 
@@ -413,6 +412,7 @@
       if (options.alsoImmediately) {
         this.computeVisibleRatios();
         this.computeBarTopOnScroll();
+        this.computeBarLeftOnScroll();
         this.computeBarBaseHeight();
         this.computeBarBaseWidth();
         this.updateDraggers();
@@ -421,6 +421,7 @@
         if (!el.$_vuebar) return;
         this.computeVisibleRatios();
         this.computeBarTopOnScroll();
+        this.computeBarLeftOnScroll();
         this.computeBarBaseHeight();
         this.computeBarBaseWidth();
         this.updateDraggers();
@@ -588,16 +589,26 @@
 
 
     this.computeBarTopOnScroll = function(){
-      var scrollPercent = this.ins.el2.scrollTop / (this.ins.el2.scrollHeight - this.ins.el2.clientHeight);
-      var availablePixels = (this.ins.el2.clientHeight - this.ins.draggerY.offsetHeight);
+      var el2ClientHeight = this.ins.el2.clientHeight;
+      var el2ScrollHeight = this.ins.el2.scrollHeight;
+      var el2ScrollTop = this.ins.el2.scrollTop;
+      var draggerYOffsetHeight = this.ins.draggerY.offsetHeight;
+
+      var scrollPercent = el2ScrollTop / (el2ScrollHeight - el2ClientHeight);
+      var availablePixels = (el2ClientHeight - draggerYOffsetHeight);
       this.state.y.barTop = availablePixels * scrollPercent;
     }
 
 
 
     this.computeBarLeftOnScroll = function(){
-      var scrollPercent = this.ins.el2.scrollLeft / (this.ins.el2.scrollWidth - this.ins.el2.clientWidth);
-      var availablePixels = (this.ins.el2.clientWidth - this.ins.draggerX.offsetWidth);
+      var el2ClientWidth = this.ins.el2.clientWidth;
+      var el2ScrollWidth = this.ins.el2.scrollWidth;
+      var el2ScrollLeft = this.ins.el2.scrollLeft;
+      var draggerXOffsetWidth = this.ins.draggerX.offsetWidth;
+
+      var scrollPercent = el2ScrollLeft / (el2ScrollWidth - el2ClientWidth);
+      var availablePixels = (el2ClientWidth - draggerXOffsetWidth);
       this.state.x.barLeft = availablePixels * scrollPercent;
     }
 
@@ -753,8 +764,11 @@
 
         this.updateDraggers();
 
-        if (plane==='y') this.computeScrollTop();
-        if (plane==='x') this.computeScrollLeft();
+        // we need to calculate both, so the other scrollbar
+        // wont return to it's old scroll position
+        // "scroll then drag problem"
+        this.computeScrollTop();
+        this.computeScrollLeft();
 
         this.updateScroll();
 
