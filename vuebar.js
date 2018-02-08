@@ -11,7 +11,8 @@
     \*------------------------------------*/
     var Vuebar = {};
     Vuebar.install = function(Vue, options){
-
+        options = options || {};
+        options.directive = options.directive || 'bar';
 
 
         /*------------------------------------*\
@@ -662,7 +663,7 @@
         /*------------------------------------*\
             Directive Install
         \*------------------------------------*/
-        Vue.directive('bar', {
+        Vue.directive(options.directive, {
 
             inserted: function(el, binding, vnode){
                 initScrollbar.call(this, el, binding);
