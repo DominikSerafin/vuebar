@@ -13,6 +13,7 @@
   TODO: don't overwrite vuebar element classess completely, use aC
   TODO: Site: add limitations (no tables, etc.) ?
   TODO: There is a problem with hiding overlayed/0 scrollbars when in vertical+horizonal mode
+  TODO: SSR support / https://ssr.vuejs.org/en/universal.html#custom-directives
 
 */
 
@@ -254,7 +255,7 @@
       // how much of el2 to hide... if native scrollbar width is 0 it's either overlay scrollbar or hidden
       // ... so let's use constant of 20px because it's impossible (?) to calculate scrollbar width in this case
       // and 20px is a safe value that should cover 99% of cases (PRs welcome!)
-      //var pxToHide = this.state.nativeScrollbarSize ? this.state.nativeScrollbarSize : 20;
+      var pxToHide = this.state.nativeScrollbarSize ? this.state.nativeScrollbarSize : 20; // <---- TODO?
 
 
       // do the magic
