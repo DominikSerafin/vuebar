@@ -122,12 +122,12 @@
         \*------------------------------------*/
         function computeVisibleArea(el){
             var state = getState(el);
-            state.visibleArea = (state.el2.clientHeight / state.el2.scrollHeight);
+            state.visibleArea = (state.el1.clientHeight / state.el2.scrollHeight);
         }
 
         function computeScrollTop(el){
             var state = getState(el);
-            state.scrollTop = state.barTop * (state.el2.scrollHeight / state.el2.clientHeight);
+            state.scrollTop = state.barTop * (state.el2.scrollHeight / state.el1.clientHeight);
         }
 
         function computeBarTop(el, event){
@@ -150,8 +150,8 @@
             }
 
 
-            if ( (state.barTop + state.barHeight ) >= state.el2.clientHeight ) { // if bar is trying to go over bottom
-                state.barTop = state.el2.clientHeight - state.barHeight;
+            if ( (state.barTop + state.barHeight ) >= state.el1.clientHeight ) { // if bar is trying to go over bottom
+                state.barTop = state.el1.clientHeight - state.barHeight;
             }
 
         }
@@ -161,7 +161,7 @@
             if (state.visibleArea >= 1) {
                 state.barHeight = 0;
             } else {
-                state.barHeight = state.el2.clientHeight * state.visibleArea;
+                state.barHeight = state.el1.clientHeight * state.visibleArea;
             }
         }
 
@@ -296,7 +296,7 @@
                 return false;
             }
 
-            var scrollDist = state.el2.scrollHeight - state.el2.clientHeight;
+            var scrollDist = state.el2.scrollHeight - state.el1.clientHeight;
             var scrollTop = state.el2.scrollTop;
 
             var wheelingUp = event.deltaY < 0;
@@ -529,13 +529,15 @@
             addClass(state.el1, state.config.el1Class);
             state.el1.style.position = 'relative';
             state.el1.style.overflow = 'hidden';
+            state.el1.style.display = 'flex';
+            state.el1.style.flexDirection = 'column';
 
             // el2 styles and class
             addClass(state.el2, state.config.el2Class);
             state.el2.style.display = 'block';
             state.el2.style.overflowX = 'hidden';
             state.el2.style.overflowY = 'scroll';
-            state.el2.style.height = '100%';
+            state.el2.style.flex = '0 1 auto';
 
             // do the magic
             if (state.draggerEnabled) {
