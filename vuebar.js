@@ -668,6 +668,9 @@
         this.ins.draggerY.style.display = 'none';
         this.ins.draggerX.style.display = 'none';
         return;
+      } else {
+        this.ins.draggerY.style.display = '';
+        this.ins.draggerX.style.display = '';
       }
 
 
