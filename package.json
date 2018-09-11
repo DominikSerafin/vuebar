@@ -3,7 +3,7 @@
   "description": "Vue directive for custom scrollbar that uses native scroll behavior. Lightweight, performant and without dependencies.",
   "author": "Dominik Serafin <dominikdsgnr@gmail.com>",
   "license": "MIT",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "private": false,
   "repository": {
     "type": "git",
