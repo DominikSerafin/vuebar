@@ -590,11 +590,8 @@
         function destroyScrollbar(el, options){
             var options = options ? options : {};
             var state = getState(el);
+            if (!state) return;
 
-            if (!state) {
-                return;
-            }
-            
             // clear events
             state.dragger.removeEventListener('mousedown', state.barMousedown, 0);
             state.el2.removeEventListener('scroll', state.scrollHandler, 0);
