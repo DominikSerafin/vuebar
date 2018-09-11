@@ -9,6 +9,7 @@
   TODO: add dragger min-height to default styles
   TODO: change name of dragger to something more fitting
   NOTE: take in consideration content height/width change between horizontal/vertical height/width calculations
+  TODO: content min/max height support
   TODO: reimplement override floating scrollbar option
   TODO: don't overwrite vuebar element classess completely, use aC
   TODO: Site: add limitations (no tables, etc.) ?
@@ -1109,7 +1110,7 @@
         // we shouldn't clear styles because it actually doesn't matter that much
         // the element will be always deleted on unbind and its styles also
         // and if we do clear styles then it looks bad on transitions
-        el.$_vuebar ? el.$_vuebar.destroyScrollbar({skipStyles: true}) : null;
+        el.$_vuebar ? el.$_vuebar.destroy({skipStyles: true}) : null;
       },
 
     });
