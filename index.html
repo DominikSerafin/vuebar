@@ -991,6 +991,12 @@
     Vue.config.devtools = true;
     Vue.config.performance = true;
     Vue.config.silent = false;
+
+    Vue.use(window.Vuebar);
+
+    // custom directive name...
+    //Vue.use(window.Vuebar, {directive: 'scrollbar'});
+
     var app = new Vue({
 
       el: '#app',

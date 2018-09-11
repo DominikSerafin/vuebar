@@ -1085,6 +1085,15 @@
   function VuebarPlugin(Vue, options){
 
 
+
+    /*------------------------------------*\
+      Custom Directive Name
+    \*------------------------------------*/
+    options = options || {};
+    options.directive = options.directive || 'bar';
+
+
+
     /*------------------------------------*\
       Public Methods Install
     \*------------------------------------*/
@@ -1096,7 +1105,7 @@
     /*------------------------------------*\
       Directive Install
     \*------------------------------------*/
-    Vue.directive('bar', {
+    Vue.directive(options.directive, {
 
       inserted: function(el, binding, vnode){
         (new Vuebar(Vue, el, binding, vnode)).initialize();
@@ -1129,9 +1138,9 @@
     window.Vuebar = VuebarPlugin;
   }
 
-  if (typeof Vue !== typeof void 0) {
-    Vue.use(VuebarPlugin);
-  }
+  //if (typeof Vue !== typeof void 0) {
+  //  Vue.use(VuebarPlugin);
+  //}
 
 
 })();
