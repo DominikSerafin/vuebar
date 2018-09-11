@@ -60,6 +60,10 @@
             font-family: serif;
           }
 
+
+          .example-wrapper.mod-content-max-height .example {height: auto; max-height: 300px;}
+
+
           .example-wrapper.mod-without-vuebar .example {overflow: auto;}
           .example-wrapper.mod-ie-autohiding-scrollbar .example {-ms-overflow-style: -ms-autohiding-scrollbar;}
           .example-wrapper.mod-ie-none-scrollbar .example {-ms-overflow-style: none;}
@@ -754,10 +758,30 @@
 
 
 
+       <h2 class="examples-section-title">Content Min/Max Height</h2>
+       <div class="examples-section">
+
+         <div class="example-wrapper mod-content-max-height">
+           <h2>Example 1</h2>
+           <code></code>
+           <div class="example" v-bar>
+             <div class="example-inner">
+               <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur.</span>
+             </div>
+           </div>
+         </div>
 
 
 
-      <h2 class="examples-section-title">Min/Max Height</h2>
+
+
+       </div>
+
+
+
+
+
+      <h2 class="examples-section-title">Dragger Min/Max Height</h2>
       <div class="examples-section">
 
         <div class="example-wrapper">
