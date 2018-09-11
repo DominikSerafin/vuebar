@@ -1,8 +1,5 @@
 /*
 
-  TODO: Validate el1/el2 style attributes (prevent or warn about custom inline styles)
-  TODO: Check again if all references (this.ins/this.state/this.config) were refactored properly
-  TODO: Check of events are removed properly on destroy method
   TODO: min-height of scrollbar support
   TODO: revisit naming of state properties: especially scrollTop, barTop, barHeight
   TODO: performance: cache in state all properties that make render/reflow of document (like el2.offsetTop, etc.)
@@ -10,11 +7,17 @@
   TODO: change name of dragger to something more fitting
   NOTE: take in consideration content height/width change between horizontal/vertical height/width calculations
   TODO: content min/max height support
-  TODO: reimplement override floating scrollbar option
+  TODO: reimplement replaceOverlayScrollbars (new overrideFloatingScrollbar) option
   TODO: don't overwrite vuebar element classess completely, use aC
   TODO: Site: add limitations (no tables, etc.) ?
-  TODO: There is a problem with hiding overlayed/0 scrollbars when in vertical+horizonal mode
+  TODO: There is a problem with hiding overlayed/0 scrollbars when in vertical+horizonal mode - maybe just add warning to replaceOverlayScrollbars option?
+  TODO: el1ScrollInvisibleClass/el1ScrollVisibleClass should be either for X or Y pane, not both
+
+  Upon Completion
+  TODO: Validate el1/el2 style attributes (prevent or warn about custom inline styles)
   TODO: SSR support / https://ssr.vuejs.org/en/universal.html#custom-directives
+  TODO: Check again if all references (this.ins/this.state/this.config) were refactored properly
+  TODO: Check if events are removed properly on destroy method
 
 */
 
@@ -44,7 +47,7 @@
       observerThrottle: 100,
       resizeDebounce: 100,
       unselectableBody: true,
-      overrideFloatingScrollbar: true,
+      //replaceOverlayScrollbars: false, // TODO
       scrollingPhantomDelay: 1000,
       draggingPhantomDelay: 1000,
       preventParentScroll: false,
@@ -64,6 +67,7 @@
 
       draggerYClass: 'vb-dragger-y',
       draggerXClass: 'vb-dragger-x',
+
 
     }
 
@@ -661,16 +665,31 @@
     this.updateDraggers = function(options){
       var options = options ? options : {};
 
-
       // do we need draggers visible?
-      var scrollbarsWanted = (this.state.y.visibleRatio<1 || this.state.x.visibleRatio<1) &&        this.state.nativeScrollbarSize;
-      if (!scrollbarsWanted) {
-        this.ins.draggerY.style.display = 'none';
-        this.ins.draggerX.style.display = 'none';
-        return;
-      } else {
+      var scrollbarYWanted = !!this.state.nativeScrollbarSize && this.state.y.visibleRatio<1;
+      var scrollbarXWanted = !!this.state.nativeScrollbarSize && this.state.x.visibleRatio<1;
+
+      if (scrollbarYWanted) {
         this.ins.draggerY.style.display = '';
+      } else {
+        this.ins.draggerY.style.display = 'none';
+      }
+
+      if (scrollbarXWanted) {
         this.ins.draggerX.style.display = '';
+      } else {
+        this.ins.draggerX.style.display = 'none';
+      }
+
+
+      if (scrollbarYWanted || scrollbarXWanted) {
+        this.util.rC(this.ins.el1, this.config.el1ScrollInvisibleClass);
+        this.util.aC(this.ins.el1, this.config.el1ScrollVisibleClass);
+      } else {
+        this.util.rC(this.ins.el1, this.config.el1ScrollVisibleClass);
+        this.util.aC(this.ins.el1, this.config.el1ScrollInvisibleClass);
+        // we can stop here since we don't need calculations if scrollbars are not wanted at all
+        return;
       }
 
 
@@ -683,15 +702,6 @@
 
       //this.ins.draggerY.style.height = Math.ceil( this.state.y.barBaseHeight ) + 'px';
       //this.ins.draggerY.style.top = Math.ceil( this.state.y.barTop ) + 'px';
-
-      // scrollbar visible / invisible classes
-      if (this.state.y.visibleRatio<1) {
-        this.util.rC(this.ins.el1, this.config.el1ScrollInvisibleClass);
-        this.util.aC(this.ins.el1, this.config.el1ScrollVisibleClass);
-      } else {
-        this.util.rC(this.ins.el1, this.config.el1ScrollVisibleClass);
-        this.util.aC(this.ins.el1, this.config.el1ScrollInvisibleClass);
-      }
 
 
 
