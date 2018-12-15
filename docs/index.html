@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en" class="mod-js-parsing">
+<head>
+
+  <!-- Basic information -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- Site information -->
+  <title>Vuebar</title>
+  <meta name="description" content="Vue 2 directive for custom scrollbars that is built on top of native scroll behavior. Lightweight, performant, customizable and without dependencies.">
+
+  <!-- Favicon -->
+
+
+  <!-- Normalize Styles -->
+  <link rel="stylesheet" href="./deps/style/normalize.css" />
+
+  <!-- GitHub Markdown -->
+  <link rel="stylesheet" href="./deps/style/github-markdown.css" />
+
+  <!-- Site Styles -->
+  <link rel="stylesheet" href="./deps/style/defaults.css" />
+  <link rel="stylesheet" href="./deps/style/site.css" />
+  <link rel="stylesheet" href="./deps/style/topbar.css" />
+  <link rel="stylesheet" href="./deps/style/nav.css" />
+  <link rel="stylesheet" href="./deps/style/content.css" />
+  <link rel="stylesheet" href="./deps/style/browser.css" />
+  <link rel="stylesheet" href="./deps/style/hamburger.css" />
+
+
+</head>
+<body>
+
+
+
+  <!-- Site-Outer-Wrapper -->
+  <div class="site-outer-wrapper">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Nav-Wrapper -->
+    <nav class="nav-wrapper" id="nav-wrapper">
+
+      <transition name="nav-backdrop-fade">
+      <div class="nav-backdrop" v-if="$store.state.navActive" @click="$store.commit('navActive', false)"></div>
+      </transition>
+
+      <div class="nav-inner">
+
+
+
+
+
+
+        <div class="nav-content" :class="{'mod-active': $store.state.navActive}">
+          <div class="nav-content-inner">
+            <div class="nav-content-inner-inner">
+
+              <section class="nav-content-index">
+
+                <ul>
+
+                  <li><a href="#"><h2>TODO</h2></a></li>
+                  <li>
+                    <ul>
+                      <li><a href="#"><h3>Link 1</h3></a></li>
+                      <li><a href="#"><h3>Link 2</h3></a></li>
+                    </ul>
+                  </li>
+
+
+
+                  <li><a href="#nav-examples"><h2>Examples</h2></a></li>
+                  <li>
+                    <ul>
+                      <li><a href="#"><h3>Basic</h3></a></li>
+                      <li><a href="#"><h3>Advanced</h3></a></li>
+                    </ul>
+                  </li>
+
+
+
+                </ul>
+
+              </section>
+
+
+
+
+
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <div class="nav-site-place-holder"></div>
+
+
+      </div>
+    </nav>
+    <!-- / Nav-Wrapper -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Topbar-Wrapper -->
+    <header class="topbar-wrapper">
+
+      <div class="topbar" id="topbar">
+
+        <section class="topbar-section">
+
+          <button type="button" class="topbar-hamburger"
+            @click.prevent="$store.commit('navActive', !$store.state.navActive)">
+            <div class="hamburger" :class="{'mod-active': $store.state.navActive}">
+              <div class="hamburger-box">
+                <div class="hamburger-inner"></div>
+              </div>
+            </div>
+          </button>
+
+          <div class="topbar-title">
+            <a href="https://serafin.io" target="_blank" rel="noopener noreferrer">DominikSerafin</a>
+            <span>/</span>
+            <span>vuebar</span>
+          </div>
+
+        </section>
+
+
+
+
+        <section class="topbar-section">
+
+
+          <a href="https://www.npmjs.com/package/vuebar" class="topbar-badge-link" aria-label="npm link" title="NPM Package" target="_blank" rel="noopener noreferrer">
+            <img :src="badgesOn ? 'https://img.shields.io/npm/v/vuebar.svg?style=flat-square' : ''">
+          </a>
+
+
+
+          <a href="https://www.npmjs.com/package/vuebar" class="topbar-icon-link mod-npm" aria-label="npm link" title="NPM Package" target="_blank" rel="noopener noreferrer">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="#fff" aria-label="NPM" height="512" width="512"  viewBox="0 0 512 512">
+              <rect width="512" height="512" fill="#cb3837" rx="10%" />
+              <path d="M136.34300000000002 382.394H265.89V187.952h64.895v194.44h64.894V123.058H136.343z"/>
+            </svg>
+          </a>
+
+          <a href="https://github.com/DominikSerafin/vuebar" class="topbar-icon-link mod-github"  aria-label="github link"  title="GitHub Repository" target="_blank" rel="noopener noreferrer">
+            <svg width="16" height="16" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+              <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+            </svg>
+          </a>
+
+        </section>
+
+
+
+
+      </div>
+    </header>
+    <!-- / Topbar-Wrapper -->
+
+
+
+    <!-- Site-Wrapper -->
+    <div class="site-wrapper">
+
+
+
+
+      <!-- Site-Nav-Place-Holder -->
+      <div class="site-nav-place-holder"></div>
+
+
+
+      <!-- Content-Wrapper -->
+      <main role="main" class="content-wrapper">
+
+        <!-- Content -->
+        <div class="content">
+
+
+          <article class="markdown-body">
+
+
+            <h1>Vuebar</h1>
+
+            <p>Vue 2 directive for custom scrollbar that uses native scroll behavior. Lightweight, performant, customizable and without dependencies.</p>
+
+
+            <div style="padding-top:50px;" id='nav-examples'></div>
+
+
+            <h1>Examples</h1>
+
+
+            <!-- https://mothereff.in/html-entities -->
+            <div vue-browser>
+              <browser url="./examples/basic.html">
+                <div slot="code">
+<pre><code>
+  &#x3C;!DOCTYPE html&#x3E;
+  &#x3C;html&#x3E;
+  &#x3C;head&#x3E;
+
+    &#x3C;!-- Basic information --&#x3E;
+    &#x3C;meta charset=&#x22;UTF-8&#x22;&#x3E;
+    &#x3C;meta name=&#x22;viewport&#x22; content=&#x22;width=device-width, height=device-height, initial-scale=1.0&#x22;&#x3E;
+    &#x3C;meta http-equiv=&#x22;X-UA-Compatible&#x22; content=&#x22;IE=edge&#x22;&#x3E;
+
+    &#x3C;!-- Site information --&#x3E;
+    &#x3C;title&#x3E;Basic Example&#x3C;/title&#x3E;
+
+    &#x3C;!-- Normalize Styles --&#x3E;
+    &#x3C;link rel=&#x22;stylesheet&#x22; href=&#x22;../deps/style/normalize.css&#x22; /&#x3E;
+
+    &#x3C;!-- Style --&#x3E;
+    &#x3C;style&#x3E;
+
+      html,
+      body {
+        background: #4d8bf5;
+        font-family: sans-serif;
+      }
+
+      body {
+        padding: 20px;
+      }
+
+      .example {
+        margin-top: 10px;
+        width: 300px;
+        height: 300px;
+        background-color: #fdfeff;
+        color: #325898;
+        overflow: auto;
+        box-shadow: 0 2px 6px 2px rgba(27, 58, 113, 0.17), 0 1px 2px 1px rgba(27, 58, 113, 0.17);
+        border-radius: 6px;
+      }
+
+      .example.vb &#x3E; .vb-dragger {
+        z-index: 2;
+      }
+
+      .example.vb &#x3E; .vb-dragger-y {
+        z-index: 3;
+        right: 0;
+        width: 12px;
+        /*min-height: 30px;*/
+      }
+
+      .example.vb &#x3E; .vb-dragger-x {
+        z-index: 2;
+        bottom: 0;
+        height: 12px;
+        /*min-width: 30px;*/
+      }
+
+      .example.vb &#x3E; .vb-dragger &#x3E; .vb-dragger-styler {
+        backface-visibility: hidden;
+        transform: rotate3d(0,0,0,0);
+        transition:
+          background-color 100ms ease-out,
+          margin 100ms ease-out,
+          height 100ms ease-out,
+          width 100ms ease-out;
+        background-color: rgba(48, 121, 244,.1);
+        border-radius: 20px;
+        display: block;
+      }
+
+      .example.vb &#x3E; .vb-dragger-y &#x3E; .vb-dragger-styler {
+        margin: 5px 5px 5px 0;
+        width: calc(100% - 5px);
+        height: calc(100% - 10px);
+      }
+
+      .example.vb &#x3E; .vb-dragger-x &#x3E; .vb-dragger-styler {
+        margin: 0 5px 5px 5px;
+        height: calc(100% - 5px);
+        width: calc(100% - 10px);
+      }
+
+      .example.vb.vb-scrolling-phantom &#x3E; .vb-dragger &#x3E; .vb-dragger-styler {
+        background-color: rgba(48, 121, 244,.3);
+      }
+
+      .example.vb &#x3E; .vb-dragger:hover &#x3E; .vb-dragger-styler {
+        background-color: rgba(48, 121, 244,.5);
+        margin: 0px;
+        height: 100%;
+        width: 100%;
+      }
+
+
+      .example.vb.vb-dragging &#x3E; .vb-dragger &#x3E; .vb-dragger-styler {
+        background-color: rgba(48, 121, 244,.5);
+        margin: 0px;
+        height: 100%;
+        width: 100%;
+      }
+
+      .example.vb.vb-dragging-phantom &#x3E; .vb-dragger &#x3E; .vb-dragger-styler {
+        background-color: rgba(48, 121, 244,.5);
+      }
+
+    &#x3C;/style&#x3E;
+
+  &#x3C;/head&#x3E;
+  &#x3C;body&#x3E;
+
+    &#x3C;div id=&#x22;app&#x22;&#x3E;
+
+
+      &#x3C;div class=&#x22;example&#x22; v-bar&#x3E;
+        &#x3C;div class=&#x22;example-inner&#x22;&#x3E;
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+        &#x3C;/div&#x3E;
+      &#x3C;/div&#x3E;
+
+
+    &#x3C;/div&#x3E;
+
+    &#x3C;!-- Vue --&#x3E;
+    &#x3C;script src=&#x22;../deps/script/vue-2.5.16.js&#x22;&#x3E;&#x3C;/script&#x3E;
+
+    &#x3C;!-- Library --&#x3E;
+    &#x3C;script src=&#x22;../deps/library/vuebar.js&#x22;&#x3E;&#x3C;/script&#x3E;
+
+    &#x3C;!-- Script --&#x3E;
+    &#x3C;script&#x3E;
+      Vue.use(window.Vuebar);
+      var app = new Vue({
+        el: &#x27;#app&#x27;,
+        data: function(){
+          return {
+          }
+        },
+        created: function(){
+        },
+        mounted: function(){
+        },
+        methods: {
+        },
+      });
+    &#x3C;/script&#x3E;
+
+  &#x3C;/body&#x3E;
+  &#x3C;/html&#x3E;
+
+</code></pre>
+                </div>
+              </browser>
+            </div>
+
+
+
+            <p>Fore more examples - see test page / codepen</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          <h2>Some content</h2>
+
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe consectetur perferendis, pariatur rerum praesentium maiores inventore debitis aperiam eaque dicta eligendi molestiae enim veritatis officia repellendus obcaecati non commodi nisi!</p>
+
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe consectetur perferendis, pariatur rerum praesentium maiores inventore debitis aperiam eaque dicta eligendi molestiae enim veritatis officia repellendus obcaecati non commodi nisi!</p>
+
+
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe consectetur perferendis, pariatur rerum praesentium maiores inventore debitis aperiam eaque dicta eligendi molestiae enim veritatis officia repellendus obcaecati non commodi nisi!</p>
+
+
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe consectetur perferendis, pariatur rerum praesentium maiores inventore debitis aperiam eaque dicta eligendi molestiae enim veritatis officia repellendus obcaecati non commodi nisi!</p>
+
+
+
+
+
+          <h2>Code...</h2>
+<pre><code>  var app = new Vue({
+
+    el: &#x27;#app&#x27;,
+
+    data: function(){
+      return {
+        popoverOpen: false,
+        daySeconds: 0,
+      }
+    },
+
+    created: function(){
+      this.setDaySeconds();
+    },
+
+    mounted: function(){
+      this.daySecondsInterval();
+    },
+
+    methods: {
+
+      setDaySeconds: function(){
+        var dt = new Date();
+        var secs = dt.getSeconds() + (60 * dt.getMinutes()) + (60 * 60 * dt.getHours());
+        this.daySeconds = secs;
+      },
+
+      daySecondsInterval: function(){
+        setInterval(function () {
+          this.setDaySeconds();
+        }.bind(this), 1000);
+      },
+
+    },
+
+  });
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </article>
+
+
+
+
+
+
+        </div>
+        <!-- / Content -->
+
+
+
+        <!-- Content-Footer -->
+        <footer class="content-footer">
+
+          <p>
+            Dominik Serafin / <a href="https://serafin.io">serafin.io</a> / &copy; 2018 
+          </p>
+
+        </footer>
+        <!-- / Content-Footer -->
+
+
+      </main>
+      <!-- / Content-Wrapper -->
+
+    </div>
+    <!-- / Site-Wrapper -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+  <!-- / Site-Outer-Wrapper -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Vue -->
+  <script src="./deps/script/vue-2.5.16.js"></script>
+  <script src="./deps/script/vuex-3.0.1.js"></script>
+
+  <!-- Highlight Style -->
+  <link rel="stylesheet" href="./deps/style/hljs-themes/vuebar.css" />
+
+  <!-- Highlight -->
+  <script src="./deps/script/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <!-- Site Script -->
+  <script src="./deps/script/global.js"></script>
+
+
+</body>
+</html>

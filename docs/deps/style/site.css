@@ -1,0 +1,41 @@
+
+
+
+
+.site-outer-wrapper {
+
+}
+
+
+
+  .site-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    padding-top: 50px;
+  }
+  @media(max-width: 1240px) {
+    .site-wrapper {
+      max-width: 900px;
+    }
+  }
+
+  @media(max-width: 960px) {
+    .site-wrapper {
+      max-width: none;
+    }
+  }
+
+
+
+    .site-nav-place-holder {
+      width: 300px;
+      flex: 0 0 300px;
+    }
+
+    @media(max-width: 960px) {
+      .site-nav-place-holder {
+        display: none;
+      }
+    }

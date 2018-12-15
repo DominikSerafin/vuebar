@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <!-- Basic information -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- Site information -->
+  <title>Basic Example</title>
+
+  <!-- Normalize Styles -->
+  <link rel="stylesheet" href="../deps/style/normalize.css" />
+
+  <!-- Style -->
+  <style>
+
+    html,
+    body {
+      background: #457ddc;
+      font-family: sans-serif;
+    }
+
+    body {
+      padding: 20px;
+    }
+
+    .example {
+      margin-top: 10px;
+      width: 300px;
+      height: 300px;
+      background-color: #fdfeff;
+      color: #325898;
+      overflow: auto;
+      box-shadow: 0 2px 6px 2px rgba(27, 58, 113, 0.17), 0 1px 2px 1px rgba(27, 58, 113, 0.17);
+      border-radius: 6px;
+    }
+
+    .example.vb > .vb-dragger {
+      z-index: 2;
+    }
+
+    .example.vb > .vb-dragger-y {
+      z-index: 3;
+      right: 0;
+      width: 12px;
+      /*min-height: 30px;*/
+    }
+
+    .example.vb > .vb-dragger-x {
+      z-index: 2;
+      bottom: 0;
+      height: 12px;
+      /*min-width: 30px;*/
+    }
+
+    .example.vb > .vb-dragger > .vb-dragger-styler {
+      backface-visibility: hidden;
+      transform: rotate3d(0,0,0,0);
+      transition:
+        background-color 100ms ease-out,
+        margin 100ms ease-out,
+        height 100ms ease-out,
+        width 100ms ease-out;
+      background-color: rgba(48, 121, 244,.1);
+      border-radius: 20px;
+      display: block;
+    }
+
+    .example.vb > .vb-dragger-y > .vb-dragger-styler {
+      margin: 5px 5px 5px 0;
+      width: calc(100% - 5px);
+      height: calc(100% - 10px);
+    }
+
+    .example.vb > .vb-dragger-x > .vb-dragger-styler {
+      margin: 0 5px 5px 5px;
+      height: calc(100% - 5px);
+      width: calc(100% - 10px);
+    }
+
+    .example.vb.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler {
+      background-color: rgba(48, 121, 244,.3);
+    }
+
+    .example.vb > .vb-dragger:hover > .vb-dragger-styler {
+      background-color: rgba(48, 121, 244,.5);
+      margin: 0px;
+      height: 100%;
+      width: 100%;
+    }
+
+
+    .example.vb.vb-dragging > .vb-dragger > .vb-dragger-styler {
+      background-color: rgba(48, 121, 244,.5);
+      margin: 0px;
+      height: 100%;
+      width: 100%;
+    }
+
+    .example.vb.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler {
+      background-color: rgba(48, 121, 244,.5);
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <div id="app">
+
+
+    <div class="example" v-bar>
+      <div class="example-inner">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos quibusdam consequuntur tempora cumque praesentium distinctio placeat aspernatur, facere neque natus. Mollitia doloremque excepturi nobis animi vel? Iure quos, dolores nulla? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste labore, facere rerum reiciendis quibusdam maiores pariatur cupiditate itaque quasi molestias similique amet, error animi adipisci minus! Accusantium ipsum explicabo velit.
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- Vue -->
+  <script src="../deps/script/vue-2.5.16.js"></script>
+
+  <!-- Library -->
+  <script src="../deps/library/vuebar.js"></script>
+
+  <!-- Script -->
+  <script>
+    Vue.use(window.Vuebar);
+    var app = new Vue({
+      el: '#app',
+      data: function(){
+        return {
+        }
+      },
+      created: function(){
+      },
+      mounted: function(){
+      },
+      methods: {
+      },
+    });
+  </script>
+
+</body>
+</html>
