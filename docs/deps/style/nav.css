@@ -221,7 +221,7 @@
 
 
       .nav-content-index p {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 400;
         color: rgba(0,0,0,.9);
         margin-bottom: 10px;
@@ -231,7 +231,7 @@
 
 
       .nav-content-index h1 {
-        font-size: 18px;
+        font-size: 17px;
         font-weight: 600;
         color: rgba(0,0,0,1);
         margin-top: 20px;
@@ -239,15 +239,15 @@
       }
 
       .nav-content-index h2 {
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 500;
         color: rgba(0,0,0,1);
-        margin-top: 20px;
-        margin-bottom: 20px;
+        margin-top: 22px;
+        margin-bottom: 16px;
       }
 
       .nav-content-index h3 {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 400;
         color: rgba(0,0,0,.8);
         margin-top: 10px;
@@ -255,7 +255,7 @@
       }
 
       .nav-content-index h4 {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 400;
         color: rgba(0,0,0,1);
         margin-top: 10px;

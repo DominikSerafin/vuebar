@@ -36,7 +36,21 @@
     }
 
 
-    /* out of scope class */
+    /* out of scope classes */
+    .content.content .markdown-body {
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .content.content p {
+      margin-bottom: 12px;
+    }
+    .content.content a {
+      color: #0c5feb;
+      font-weight: 600;
+    }
+    .content.content h1 {
+      margin-top: 90px;
+    }
     .content.content .browser-code pre {
       border-radius: 0;
       width: fit-content;

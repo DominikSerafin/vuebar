@@ -94,24 +94,45 @@
 
                 <ul>
 
-                  <li><a href="#"><h2>TODO</h2></a></li>
+                  <li><a href="#"><h2>Information</h2></a></li>
                   <li>
                     <ul>
-                      <li><a href="#"><h3>Link 1</h3></a></li>
-                      <li><a href="#"><h3>Link 2</h3></a></li>
+                      <li><a href="#"><h3>About</h3></a></li>
+                      <li><a href="#"><h3>Limitations</h3></a></li>
                     </ul>
                   </li>
 
+
+
+                  <li><a href="#nav-examples"><h2>Usage</h2></a></li>
+                  <li>
+                    <ul>
+                      <li><a href="#"><h3>Installation & Quick Start</h3></a></li>
+                      <li><a href="#"><h3>Styling</h3></a></li>
+                      <li><a href="#"><h3>Customization</h3></a></li>
+                      <li><a href="#"><h3>Customizable Classes</h3></a></li>
+                    </ul>
+                  </li>
 
 
                   <li><a href="#nav-examples"><h2>Examples</h2></a></li>
                   <li>
                     <ul>
                       <li><a href="#"><h3>Basic</h3></a></li>
-                      <li><a href="#"><h3>Advanced</h3></a></li>
+                      <li><a href="#"><h3>Playground</h3></a></li>
+                      <li><a href="#"><h3>Demo/Test Examples</h3></a></li>
                     </ul>
                   </li>
 
+
+                  <li><a href="#nav-examples"><h2>Credits</h2></a></li>
+                  <li>
+                    <ul>
+                      <li><a href="#"><h3>Author</h3></a></li>
+                      <li><a href="#"><h3>Vuebar in the wild</h3></a></li>
+                      <li><a href="#"><h3>Contributing</h3></a></li>
+                    </ul>
+                  </li>
 
 
                 </ul>
@@ -262,21 +283,126 @@
           <article class="markdown-body">
 
 
-            <h1>Vuebar</h1>
+            <h1>Vuebar v2.0</h1>
 
-            <p>Vue 2 directive for custom scrollbar that uses native scroll behavior. Lightweight, performant, customizable and without dependencies.</p>
+            <p>The first Vue 2 custom scrollbar library that only enhances vanilla scrolling instead of reimplementing/hijacking it with custom scroll behavior. <strong> It uses native scroll events to detect and synchronize scrollbar position. </strong> This makes possible to hack into the native events of scrolling elements without hassle.</p>
 
-            <p><a href="./demotests.html">./demotests.html</a></p>
-
-            <div style="padding-top:50px;" id='nav-examples'></div>
+            <p> It was built by <a href="https://serafin.io/" target="_blank" rel="noopener noreferrer">Dominik Serafin</a> for <a href="https://ggather.com/"  target="_blank" rel="noopener noreferrer">GGather.com</a> where it plays nicely with a lot of dynamic content changes and most importantly infinite scrolling and drag and drop features. And now after testing, fixes, improvements and added customization options - it's ready to be shared with the world.</p>
 
 
-            <h1>Note</h1>
-            <p>
-				GsHeri commented 25 days ago
-				ohhhh GOD PLEASE write somewhere prominent in the docs that you have to specify height and not max-height.
-				i've spent an hour of my life banging my head and wondering why the hell it doesn't work
-            </p>
+            <h1>Features</h1>
+
+            <ul>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    Directive instead of a custom wrapper component.
+                </li>
+
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    Doesn't hijack native scroll events and methods.
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    Can be used to style vertical or horizontal (new in v2.0) scrollbars.
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    Highly customizable. Simple to use.
+                </li>
+
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    Lightweight &amp; performant. No 3rd party dependencies.
+                </li>
+
+
+
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    Works in browser and also build (webpack, etc.) environments.
+                </li>
+
+
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    Compatible with server-side rendered Vue applications and <a href="https://nuxtjs.org/" target="_blank" rel="noopener noreferrer">Nuxt</a>.
+                </li>
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    Compatible with all major browsers including IE9 and above.
+                </li>
+
+
+                <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="16" height="16"><path color="#000" d="M 19.28125 5.28125 L 9 15.5625 L 4.71875 11.28125 L 3.28125 12.71875 L 8.28125 17.71875 L 9 18.40625 L 9.71875 17.71875 L 20.71875 6.71875 L 19.28125 5.28125 z"/></svg>
+                    Tested in production.
+                </li>
+
+
+            </ul>
+
+
+
+
+            <h1>Limitations</h1>
+
+            <p>Unfortunately, after long time researching and working on it - I couldn't find a way to make Vuebar work properly (content gets partially hidden) with both vertical and horizontal scrollbars active when browser uses overlayed scrollbars (while still retaining native scroll events & methods).</p>
+
+            <p><strong>Popular devices and browsers that use overlayed scrollbars:</strong></p>
+
+            <ul>
+              <li>Most of mobile (iOS, Android, etc.) devices and browsers.</li>
+              <li>Microsoft Edge, IE10 & IE11, when <code>-ms-overflow-style: -ms-autohiding-scrollbar</code> styling is enabled.</li>
+              <li>macOS, when <code>Show scroll bars</code> system option is set to <code>When scrolling</code> or to <code>Automatically based on mouse or trackpad</code> and mouse is used.</li>
+            </ul>
+
+            <p>In such cases, as a fallback - Vuebar will disable itself on these browsers & devices.</p>
+
+            <p>If you know how to fix this or are willing to investigate - any contributions are welcome!</p>
+
+
+            <h1>Quick Start</h1>
+
+            <h2>Installation</h2>
+
+
+            <h3 class="first">NPM</h3>
+
+<pre><code class="full">npm install vuebar --save</code></pre>
+
+            <h3>CDN</h3>
+
+<pre><code class="full">https://unpkg.com/vuebar</code></pre>
+
+
+            <h3>Manual</h3>
+
+            <p>Download the .js file directly from latest commit or release and include manually in your project</p>
+
+<a class="pure-button" target="_blank" href="https://raw.githubusercontent.com/DominikSerafin/vuebar/master/vuebar.js" download>vuebar.js</a>
+
+
+            <h2>Quick Start</h2>
+
+            <h3>Alternative #1: Include in browser</h3>
+<pre><code class="full">&#x3C;script src=&#x22;vuebar.js&#x22;&#x3E;&#x3C;/script&#x3E;</code></pre>
+
+            <h3>Alternative #2: Include in your build</h3>
+
+<pre><code class="full">import Vuebar from 'vuebar';
+Vue.use(Vuebar);</code></pre>
+
+
+
 
 
             <h1>Examples</h1>
@@ -443,32 +569,12 @@
 
 
 
-            <p>Fore more examples - see test page / codepen</p>
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-          <h2>Some content</h2>
-
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe consectetur perferendis, pariatur rerum praesentium maiores inventore debitis aperiam eaque dicta eligendi molestiae enim veritatis officia repellendus obcaecati non commodi nisi!</p>
-
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe consectetur perferendis, pariatur rerum praesentium maiores inventore debitis aperiam eaque dicta eligendi molestiae enim veritatis officia repellendus obcaecati non commodi nisi!</p>
-
-
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe consectetur perferendis, pariatur rerum praesentium maiores inventore debitis aperiam eaque dicta eligendi molestiae enim veritatis officia repellendus obcaecati non commodi nisi!</p>
-
-
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe consectetur perferendis, pariatur rerum praesentium maiores inventore debitis aperiam eaque dicta eligendi molestiae enim veritatis officia repellendus obcaecati non commodi nisi!</p>
 
 
 
@@ -517,6 +623,21 @@
 
 
 
+
+          <h1>TODO</h1>
+
+          <p>
+          GsHeri commented 25 days ago
+          ohhhh GOD PLEASE write somewhere prominent in the docs that you have to specify height and not max-height.
+          i've spent an hour of my life banging my head and wondering why the hell it doesn't work
+          </p>
+
+
+          <p>Fore more examples - see test page / codepen</p>
+
+          <p><a href="./demotests.html">./demotests.html</a></p>
+
+          <div style="padding-top:50px;" id='nav-examples'></div>
 
 
 
