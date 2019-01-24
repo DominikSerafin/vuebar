@@ -303,7 +303,7 @@
             }
 
             var scrollDist = state.el2.scrollHeight - state.el2.clientHeight;
-            var scrollTop = state.el2.scrollTop;
+            var scrollTop = Math.ceil(state.el2.scrollTop);
 
             var wheelingUp = event.deltaY < 0;
             var wheelingDown = event.deltaY > 0;
