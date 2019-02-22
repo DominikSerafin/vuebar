@@ -29,6 +29,7 @@
 
                 // config with default values that may be overwritten on directive intialization
                 config: {
+                    barMinHeight: 30, // support minimum scrollbar height (cf. https://github.com/DominikSerafin/vuebar/issues/11)
                     scrollThrottle: 10,
                     draggerThrottle: 10,
                     resizeRefresh: true,
@@ -134,6 +135,12 @@
         function computeScrollTop(el){
             var state = getState(el);
             state.scrollTop = state.barTop * (state.el2.scrollHeight / state.el2.clientHeight);
+            
+            var barHeight = state.el2.clientHeight * state.visibleArea;
+            if (barHeight < state.config.barMinHeight) {
+                var virtualClientHeight = state.el2.clientHeight * (state.config.barMinHeight / barHeight);
+                state.scrollTop += (virtualClientHeight - state.el2.clientHeight);
+            }
         }
 
         function computeBarTop(el, event){
@@ -142,6 +149,16 @@
             // if the function gets called on scroll event
             if (!event) {
                 state.barTop = state.el2.scrollTop * state.visibleArea;
+                
+                var barHeight = state.el2.clientHeight * state.visibleArea;
+                if (barHeight < state.config.barMinHeight) {
+                    state.barTop -= (state.config.barMinHeight - barHeight);
+
+                    if (state.barTop < 0) {
+                        state.barTop = 0;
+                    }
+                }
+                
                 return false;
             } // else the function gets called when moving dragger with mouse
 
@@ -167,7 +184,10 @@
             if (state.visibleArea >= 1) {
                 state.barHeight = 0;
             } else {
-                state.barHeight = state.el2.clientHeight * state.visibleArea;
+                state.barHeight = Math.min(
+                  state.el2.clientHeight / 2,
+                  Math.max(state.el2.clientHeight * state.visibleArea, state.config.barMinHeight)
+                );
             }
         }
 
