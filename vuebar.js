@@ -184,11 +184,11 @@
             if (state.visibleArea >= 1) {
                 state.barHeight = 0;
             } else {
-				state.barHeight = state.el2.clientHeight * state.visibleArea;
+		        state.barHeight = state.el2.clientHeight * state.visibleArea;
 				
-				if (state.barHeight < state.config.barMinHeight) {
-					state.barHeight = state.config.barMinHeight;
-				}
+		        if (state.barHeight < state.config.barMinHeight) {
+			        state.barHeight = state.config.barMinHeight;
+		        }
             }
         }
 
