@@ -595,7 +595,7 @@
             // clear events
             state.dragger.removeEventListener('mousedown', state.barMousedown, 0);
             state.el2.removeEventListener('scroll', state.scrollHandler, 0);
-            state.el2.removeEventListener('wheel', state.scrollHandler, 0);
+            state.el2.removeEventListener('wheel', state.wheelHandler, 0);
             window.removeEventListener('resize', state.windowResize, 0);
 
             // disconnect mutation observer
