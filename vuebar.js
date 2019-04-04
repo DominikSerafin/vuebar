@@ -366,7 +366,7 @@
       this.ins.draggerY.removeEventListener('mousedown', this.ins.y.barMousedown, 0);
       this.ins.draggerX.removeEventListener('mousedown', this.ins.x.barMousedown, 0);
       this.ins.el2.removeEventListener('scroll', this.ins.scrollHandler, 0);
-      this.ins.el2.removeEventListener('wheel', this.ins.scrollHandler, 0);
+      this.ins.el2.removeEventListener('wheel', this.ins.wheelHandler, 0);
       window.removeEventListener('resize', this.ins.windowResize, 0);
 
       // disconnect mutation observer
