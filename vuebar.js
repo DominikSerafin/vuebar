@@ -266,7 +266,7 @@
       // do the magic
       if (scrollbarsWanted){
 
-        // for in-the-flow scrollbars (not overlayed)
+        // for inline scrollbars (not overlayed)
         // hide el2 scrollbar by making it larger than el1 overflow boundaries
         if (this.state.nativeScrollbarSize>0) {
           this.ins.el2.style.width = 'calc(100% + ' + pxToHide + 'px)';
