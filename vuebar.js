@@ -338,6 +338,7 @@
             var options = options ? options : {};
 
             if (options.immediate) {
+                computeContentWidth(el);
                 computeVisibleArea(el);
                 computeBarTop(el);
                 computeBarHeight(el);
@@ -346,6 +347,7 @@
 
             Vue.nextTick(function(){
                 if ( !getState(el) ) { return false }
+                computeContentWidth(el);
                 computeVisibleArea(el);
                 computeBarTop(el);
                 computeBarHeight(el);
@@ -353,6 +355,14 @@
             }.bind(this));
         }
 
+        function computeContentWidth(el) {
+            var state = getState(el);
+            var browser = detectBrowser();
+            if (!(state.config.useScrollbarPseudo && (browser.chrome || browser.safari))) {
+                var width = getNativeScrollbarWidth(el);
+                state.el2.style.width = 'calc(100% + ' + width + 'px)';
+            }
+        }
 
 
 
