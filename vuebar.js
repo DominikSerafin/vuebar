@@ -29,6 +29,7 @@
 
                 // config with default values that may be overwritten on directive intialization
                 config: {
+                    minDraggerHeight: 40,
                     scrollThrottle: 10,
                     draggerThrottle: 10,
                     resizeRefresh: true,
@@ -71,7 +72,7 @@
                 scrollTop: 0, // position of content scrollTop in px
                 barTop: 0, // position of dragger in px
                 barHeight: 0, // height of dragger in px
-                mouseBarOffsetY: 0, // relative position of mouse at the time of clicking on dragger
+                mouseDownY: 0, // relative position of mouse at the time of clicking on dragger
                 barDragging: false, // when the dragger is used
 
                 // reference to MutationObserver
@@ -133,7 +134,10 @@
 
         function computeScrollTop(el){
             var state = getState(el);
-            state.scrollTop = state.barTop * (state.el2.scrollHeight / state.el2.clientHeight);
+            // state.scrollTop = state.barTop * (state.el2.scrollHeight / state.el2.clientHeight);
+            let height = state.el2.clientHeight - state.barHeight;
+            let ratio = state.barTop / height;
+            state.scrollTop = ratio * (state.el2.scrollHeight - state.el2.clientHeight);
         }
 
         function computeBarTop(el, event){
@@ -141,25 +145,17 @@
 
             // if the function gets called on scroll event
             if (!event) {
-                state.barTop = state.el2.scrollTop * state.visibleArea;
-                return false;
+                let height = state.el2.clientHeight - state.barHeight;
+                let ratio = state.el2.scrollTop / (state.el2.scrollHeight - state.el2.clientHeight); 
+                state.barTop = ratio * height;
             } // else the function gets called when moving dragger with mouse
-
-
-            var relativeMouseY = (event.clientY - state.el1.getBoundingClientRect().top);
-            if (relativeMouseY <= state.mouseBarOffsetY) { // if bar is trying to go over top
-                state.barTop = 0;
+            else {
+                const vbTop = state.el1.getBoundingClientRect().top;
+                var mouseY = (event.clientY - vbTop);
+                const diff = mouseY - state.mouseDownY;
+                const top = state.mouseDownBarTop + diff;
+                state.barTop = Math.max( 0, Math.min( top, state.el2.clientHeight - state.barHeight ));
             }
-
-            if (relativeMouseY > state.mouseBarOffsetY) { // if bar is moving between top and bottom
-                state.barTop = relativeMouseY - state.mouseBarOffsetY;
-            }
-
-
-            if ( (state.barTop + state.barHeight ) >= state.el2.clientHeight ) { // if bar is trying to go over bottom
-                state.barTop = state.el2.clientHeight - state.barHeight;
-            }
-
         }
 
         function computeBarHeight(el){
@@ -167,7 +163,8 @@
             if (state.visibleArea >= 1) {
                 state.barHeight = 0;
             } else {
-                state.barHeight = state.el2.clientHeight * state.visibleArea;
+                let height = state.el2.clientHeight * state.visibleArea;
+                state.barHeight = Math.max(height, state.config.minDraggerHeight);
             }
         }
 
@@ -205,7 +202,7 @@
             var state = getState(el);
 
             // setting dragger styles
-            state.dragger.style.height = parseInt( Math.round( state.barHeight)  ) + 'px';
+            state.dragger.style.height = parseInt( Math.round( state.barHeight) ) + 'px';
             state.dragger.style.top = parseInt( Math.round( state.barTop ) ) + 'px';
             //state.dragger.style.height = Math.ceil( state.barHeight ) + 'px';
             //state.dragger.style.top = Math.ceil( state.barTop ) + 'px';
@@ -338,10 +335,10 @@
             var options = options ? options : {};
 
             if (options.immediate) {
-                computeContentWidth(el);
+                // computeContentWidth(el);
                 computeVisibleArea(el);
-                computeBarTop(el);
                 computeBarHeight(el);
+                computeBarTop(el);
                 updateDragger(el);
             }
 
@@ -349,8 +346,8 @@
                 if ( !getState(el) ) { return false }
                 computeContentWidth(el);
                 computeVisibleArea(el);
-                computeBarTop(el);
                 computeBarHeight(el);
+                computeBarTop(el);
                 updateDragger(el);
             }.bind(this));
         }
@@ -436,7 +433,11 @@
                 if ( event.which!==1 ) { return false }
 
                 state.barDragging = true;
-                state.mouseBarOffsetY = event.offsetY;
+                // state.mouseDownY = event.offsetY;
+                const vbTop = state.el1.getBoundingClientRect().top;
+                state.mouseDownY = (event.clientY - vbTop);
+                
+                state.mouseDownBarTop = state.barTop;
 
                 // disable user select
                 state.el1.style.userSelect = 'none';
