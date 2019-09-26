@@ -92,6 +92,8 @@
                 scrollHandler: null,
                 wheelHandler: null,
 
+                // freeze dragger visible/invisible for height transitions
+                freeze: false,
             };
             return el._vuebarState;
         }
@@ -332,6 +334,10 @@
         \*------------------------------------*/
 
         function refreshScrollbar(el, options){
+            var state = getState(el);
+            if (state.freeze)
+                return;
+
             var options = options ? options : {};
 
             if (options.immediate) {
@@ -350,6 +356,16 @@
                 computeBarTop(el);
                 updateDragger(el);
             }.bind(this));
+        }
+
+        function freezeScrollbar(el) {
+            var state = getState(el);
+            state.freeze = true;
+        }
+
+        function unfreezeScrollbar(el) {
+            var state = getState(el);
+            state.freeze = false;
         }
 
         function computeContentWidth(el) {
@@ -663,10 +679,12 @@
         \*------------------------------------*/
         function publicMethods(){
             return {
-                getState: getState,
-                initScrollbar: initScrollbar,
-                destroyScrollbar: destroyScrollbar,
-                refreshScrollbar: refreshScrollbar,
+                getState,
+                initScrollbar,
+                destroyScrollbar,
+                refreshScrollbar,
+                freezeScrollbar,
+                unfreezeScrollbar,
             };
         }
         Vue.vuebar = publicMethods();

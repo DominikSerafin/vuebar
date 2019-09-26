@@ -30,5 +30,6 @@
     "cross-env": "^3.1.4",
     "webpack": "^2.2.0-rc.3",
     "webpack-dev-server": "^2.2.0-rc.0"
-  }
+  },
+  "dependencies": {}
 }
