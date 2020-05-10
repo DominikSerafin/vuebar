@@ -1,6 +1,6 @@
 # 🗃️ Archived & No Longer Maintained
 
-I've decided to archive this library because at this time I don't have enough resources (time, money, motivation, etc.) for FOSS. There's a chance I might come back and start working on this library again in future (however, currently, I don't plan on doing that).
+I've decided to archive this library because my priorities changed a bit and I no longer have enough resources (time, money, motivation, etc.) for FOSS. There's a chance I might come back and start working on this library again in future (however, currently, I don't plan on doing that).
 
 I won't maintain this library, but it's still pretty usable (and if you're looking for horizontal scrollbars, you can take a look into development branch `/docs/demotests.html` which has some examples).
 
